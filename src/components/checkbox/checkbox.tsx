@@ -40,7 +40,7 @@ const CheckboxInner = (
 
   return (
     <label
-      className={`relative inline-flex ${disabled ? "cursor-not-allowed" : "cursor-pointer"} items-center justify-center rounded border-2 border-border bg-white p-0 transition focus-within:outline-none focus-within:ring-2 focus-within:ring-primary-200 ${className ?? ""
+      className={`h-[15px] w-[15px] relative inline-flex ${disabled ? "cursor-not-allowed" : "cursor-pointer"} items-center justify-center rounded bg-white p-0 transition focus-within:outline-none focus-within:ring-2 focus-within:ring-primary-200 ${className ?? ""
         }`}
       data-indeterminate={indeterminate ? "true" : undefined}
     >
@@ -53,24 +53,22 @@ const CheckboxInner = (
       />
       <span
         className={`
-          h-[15px] w-[15px] relative flex items-center justify-center rounded border transition
+          h-[15px] w-[15px] absolute inset-0 flex items-center justify-center rounded border transition
           ${disabled ? "border-whiteScale-80 bg-tertiary-200" : "bg-white"}
-          peer-checked:border-primary-600 peer-checked:bg-primary-600
-          peer-checked:ring-0 peer-checked:ring-primary-500/20 peer-checked:shadow-[0_0_0_1px_#0f172a]
+          peer-checked:border-primary-600 peer-checked:bg-primary-600 peer-disabled:bg-tertiary-200 peer-disabled:border-tertiary-200
           data-[indeterminate=true]:border-primary-600 data-[indeterminate=true]:bg-primary-600
         `}
+      />
+      <span
+        className={`h-[15px] w-[15px] pointer-events-none absolute inset-0 flex items-center justify-center opacity-0 peer-checked:opacity-100 ${indeterminate ? "hidden" : ""}`}
       >
-        <span
-          className={`pointer-events-none absolute inset-0 flex items-center justify-center ${indeterminate ? "hidden" : "peer-checked:opacity-100"}`}
-        >
-          <Icon name="check" size={16} className={disabled ? "text-divider" : "text-white"} />
-        </span>
-        {indeterminate && (
-          <span className="pointer-events-none absolute inset-0 flex items-center justify-center">
-            <Icon name="minus" size={16} className="text-white" />
-          </span>
-        )}
+        <Icon name="check" size={13} className={disabled ? "text-divider" : "text-white"} />
       </span>
+      {indeterminate && (
+        <span className="h-[15px] w-[15px] pointer-events-none absolute inset-0 flex items-center justify-center">
+          <Icon name="minus" size={13} className="text-white" />
+        </span>
+      )}
     </label>
   );
 };

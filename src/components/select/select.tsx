@@ -257,8 +257,7 @@ const SelectInner = (
 
   const listPositionClass = dropUp ? "bottom-full mb-2" : "top-full mt-2";
   const listClasses = [
-    "absolute left-0 right-0 z-20 max-h-60 overflow-auto rounded-md border border-border bg-white shadow-lg px-1.5 py-1",
-    dropUp ? "flex flex-col-reverse gap-1" : "flex flex-col gap-1",
+    "absolute left-0 right-0 z-20 max-h-72 overflow-auto rounded-md border border-border bg-white shadow-lg px-1.5 py-1",
     listPositionClass,
     open ? "block" : "hidden",
   ]
@@ -347,69 +346,71 @@ const SelectInner = (
           }
         </button>
         <div className={listClasses}>
-          {searchable && (
-            <input
-              type="text"
-              value={searchTerm}
-              disabled={disabled}
-              onChange={(event) => handleSearch(event.target.value)}
-              placeholder="Search..."
-              className="w-full rounded-[12px] border border-border bg-white px-3 py-2 text-sm text-text-primary focus:border-primary-500 focus:outline-none"
-            />
-          )}
-          {loadingText && (
-            <div className="px-4 py-2">
-              <Typography className="text-xs" tone="muted">
-                {loadingText}
-              </Typography>
-            </div>
-          )}
-          {filteredOptions.length === 0 && !loadingText && (
-            <div className="px-4 py-3">
-              <Typography className="text-xs" tone="muted">
-                {noResultsText}
-              </Typography>
-            </div>
-          )}
-          {canCreateOption ? (
-            <div className="px-1.5 pb-1">
-              <Button
-                type="button"
-                variant="outline"
-                color="primary"
-                isFullSize
-                onClick={handleCreateOption}
-                disabled={createLoading}
-                iconLeft={<Icon name="add" size={18} className="text-primary" />}
-              >
-                {createLoading ? "Adding..." : createLabel}
-              </Button>
-            </div>
-          ) : null}
-          {filteredOptions.map((option) => {
-            const isActive = selectedValue.includes(option.value);
-            return (
-              <button
-                key={option.value}
-                type="button"
-                disabled={option.disabled}
-                onClick={() => handleSelect(option)}
-                className={`${optionClasses} ${isActive ? "bg-primary-50" : ""} ${option.disabled ? "cursor-not-allowed text-blackScale-40" : ""}`}
-              >
-                <div>
-                  <Typography variant="bodyMedium" className="text-greyScale-60">
-                    {option.label}
-                  </Typography>
-                  {option.subtitle && (
-                    <Typography variant="code" className="text-greyScale-60 text-xs">
-                      {option.subtitle}
+          <div className={`flex gap-1 relative ${dropUp ? "flex-col-reverse" : "flex-col"}`}>
+            {searchable && (
+              <input
+                type="text"
+                value={searchTerm}
+                disabled={disabled}
+                onChange={(event) => handleSearch(event.target.value)}
+                placeholder="Search..."
+                className="w-full rounded-[12px] border border-border bg-white px-3 py-2 text-sm text-text-primary focus:border-primary-500 focus:outline-none sticky top-0"
+              />
+            )}
+            {loadingText && (
+              <div className="px-4 py-2">
+                <Typography className="text-xs" tone="muted">
+                  {loadingText}
+                </Typography>
+              </div>
+            )}
+            {filteredOptions.length === 0 && !loadingText && (
+              <div className="px-4 py-3">
+                <Typography className="text-xs" tone="muted">
+                  {noResultsText}
+                </Typography>
+              </div>
+            )}
+            {canCreateOption ? (
+              <div className="px-1.5 pb-1">
+                <Button
+                  type="button"
+                  variant="outline"
+                  color="primary"
+                  isFullSize
+                  onClick={handleCreateOption}
+                  disabled={createLoading}
+                  iconLeft={<Icon name="add" size={18} className="text-primary" />}
+                >
+                  {createLoading ? "Adding..." : createLabel}
+                </Button>
+              </div>
+            ) : null}
+            {filteredOptions.map((option) => {
+              const isActive = selectedValue.includes(option.value);
+              return (
+                <button
+                  key={option.value}
+                  type="button"
+                  disabled={option.disabled}
+                  onClick={() => handleSelect(option)}
+                  className={`${optionClasses} ${isActive ? "bg-primary-50" : ""} ${option.disabled ? "cursor-not-allowed text-blackScale-40" : ""}`}
+                >
+                  <div>
+                    <Typography variant="bodyMedium" className="text-greyScale-60">
+                      {option.label}
                     </Typography>
-                  )}
-                </div>
-                {isActive && <Icon name="tick-circle" size={12} className="text-primary-500" />}
-              </button>
-            );
-          })}
+                    {option.subtitle && (
+                      <Typography variant="code" className="text-greyScale-60 text-xs">
+                        {option.subtitle}
+                      </Typography>
+                    )}
+                  </div>
+                  {isActive && <Icon name="tick-circle" size={12} className="text-primary-500" />}
+                </button>
+              );
+            })}
+          </div>
         </div>
       </div>
       {(reserveHelperSpace || helperMessage) ? (
