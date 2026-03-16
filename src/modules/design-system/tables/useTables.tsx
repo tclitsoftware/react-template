@@ -36,11 +36,10 @@ const useTables = () => {
       {
         id: "customer",
         fieldId: "customer",
-        label: "Title",
+        label: "Customer",
         sortable: true,
         filterable: true,
         filterPlaceholder: "Search by",
-        width: "290px",
       },
       {
         id: "quantity",
@@ -49,7 +48,6 @@ const useTables = () => {
         sortable: true,
         filterable: true,
         filterPlaceholder: "Search by",
-        width: "280px",
         render: (row) => (
           <div className="flex flex-col gap-1">
             <span className="text-[24px] leading-none text-text-secondary">

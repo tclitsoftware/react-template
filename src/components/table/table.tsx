@@ -1,16 +1,28 @@
+import {
+  closestCenter,
+  DndContext,
+  DragEndEvent,
+  DragOverlay,
+  DragOverEvent,
+  DragStartEvent,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  horizontalListSortingStrategy,
+  SortableContext,
+  useSortable,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import EmptyLottie from "assets/images/empty.json";
 import Checkbox from "components/checkbox";
 import Icon from "components/icon";
 import Input from "components/input";
 import Select, { SelectOption } from "components/select";
 import { isEmpty } from "lodash";
-import React, {
-  DragEvent,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Lottie from "react-lottie";
 
 type Primitive = string | number;
@@ -73,6 +85,14 @@ interface Props<T> {
   onColumnOrderChange?: (columnIds: string[]) => void;
   selectableLabel?: string;
 }
+
+type HeaderCellProps = {
+  id: string;
+  disabled?: boolean;
+  children: React.ReactNode;
+  className?: string;
+  width?: string;
+};
 
 function classNames(...classes: Array<string | false | null | undefined>) {
   return classes.filter(Boolean).join(" ");
@@ -138,6 +158,49 @@ function getDefaultCellValue<T>(
   );
 }
 
+const SortableHeaderCell = ({
+  id,
+  disabled,
+  children,
+  className,
+  width,
+}: HeaderCellProps) => {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({
+    id,
+    disabled,
+  });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    width,
+    zIndex: isDragging ? 20 : undefined,
+  };
+
+  return (
+    <th
+      ref={setNodeRef}
+      style={style}
+      className={classNames(
+        "align-middle transition-shadow duration-150",
+        isDragging ? "opacity-0" : "",
+        className,
+      )}
+      {...attributes}
+      {...listeners}
+    >
+      {children}
+    </th>
+  );
+};
+
 export function Table<T>({
   data = [],
   columns = [],
@@ -172,7 +235,16 @@ export function Table<T>({
     useState<Record<string, string>>(defaultFilterValues);
   const [internalSelectedRowKeys, setInternalSelectedRowKeys] =
     useState<Primitive[]>(defaultSelectedRowKeys);
-  const dragColumnIdRef = useRef<string | null>(null);
+  const [activeDragColumnId, setActiveDragColumnId] = useState<string | null>(null);
+  const [dragOverColumnId, setDragOverColumnId] = useState<string | null>(null);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
+  );
 
   useEffect(() => {
     setColumnOrder((currentOrder) => {
@@ -199,6 +271,14 @@ export function Table<T>({
       .map((columnId) => columnMap.get(columnId))
       .filter((column): column is Columns<T> => Boolean(column));
   }, [columnOrder, columns]);
+
+  const activeColumn = useMemo(
+    () =>
+      orderedColumns.find(
+        (column, index) => getColumnId(column, index) === activeDragColumnId,
+      ) ?? null,
+    [activeDragColumnId, orderedColumns],
+  );
 
   const rowsWithKeys = useMemo(
     () =>
@@ -291,306 +371,391 @@ export function Table<T>({
     commitSelectedKeys(nextKeys);
   };
 
-  const handleColumnDragStart =
-    (columnId: string, dragDisabled?: boolean) =>
-    (event: DragEvent<HTMLTableCellElement>) => {
-      if (!enableColumnDrag || dragDisabled) {
-        event.preventDefault();
-        return;
-      }
+  const handleDragStart = (event: DragStartEvent) => {
+    setActiveDragColumnId(String(event.active.id));
+    setDragOverColumnId(String(event.active.id));
+  };
 
-      dragColumnIdRef.current = columnId;
-      event.dataTransfer.effectAllowed = "move";
-      event.dataTransfer.setData("text/plain", columnId);
-    };
+  const handleDragOver = (event: DragOverEvent) => {
+    if (event.over) {
+      setDragOverColumnId(String(event.over.id));
+    }
+  };
 
-  const handleColumnDragOver = (event: DragEvent<HTMLTableCellElement>) => {
-    if (!enableColumnDrag) {
+  const handleDragEnd = (event: DragEndEvent) => {
+    const activeId = String(event.active.id);
+    const overId = event.over ? String(event.over.id) : null;
+
+    setActiveDragColumnId(null);
+    setDragOverColumnId(null);
+
+    if (!overId || activeId === overId) {
       return;
     }
 
-    event.preventDefault();
-    event.dataTransfer.dropEffect = "move";
-  };
+    setColumnOrder((currentOrder) => {
+      const oldIndex = currentOrder.indexOf(activeId);
+      const newIndex = currentOrder.indexOf(overId);
 
-  const handleColumnDrop =
-    (targetColumnId: string, dragDisabled?: boolean) =>
-    (event: DragEvent<HTMLTableCellElement>) => {
-      event.preventDefault();
-
-      const sourceColumnId = dragColumnIdRef.current;
-      dragColumnIdRef.current = null;
-
-      if (
-        !enableColumnDrag ||
-        dragDisabled ||
-        !sourceColumnId ||
-        sourceColumnId === targetColumnId
-      ) {
-        return;
+      if (oldIndex === -1 || newIndex === -1) {
+        return currentOrder;
       }
 
-      setColumnOrder((currentOrder) => {
-        const sourceIndex = currentOrder.indexOf(sourceColumnId);
-        const targetIndex = currentOrder.indexOf(targetColumnId);
+      const nextOrder = arrayMove(currentOrder, oldIndex, newIndex);
+      onColumnOrderChange?.(nextOrder);
+      return nextOrder;
+    });
+  };
 
-        if (sourceIndex === -1 || targetIndex === -1) {
-          return currentOrder;
-        }
+  const handleDragCancel = () => {
+    setActiveDragColumnId(null);
+    setDragOverColumnId(null);
+  };
 
-        const nextOrder = [...currentOrder];
-        nextOrder.splice(sourceIndex, 1);
-        nextOrder.splice(targetIndex, 0, sourceColumnId);
-        onColumnOrderChange?.(nextOrder);
-        return nextOrder;
+  const getColumnDragState = (columnId: string) => ({
+    isDragSource: activeDragColumnId === columnId,
+    isDragTarget:
+      dragOverColumnId === columnId && activeDragColumnId !== columnId,
+  });
+
+  const renderFilterCell = (column: Columns<T>, columnId: string) => {
+    if (column.renderFilter) {
+      return column.renderFilter({
+        columnId,
+        value: activeFilterValues[columnId] ?? "",
+        onChange: (nextValue) => handleFilterChange(columnId, nextValue),
       });
-    };
+    }
+
+    if (!column.filterable) {
+      return null;
+    }
+
+    if (column.filterOptions?.length || column.filterSearch) {
+      return (
+        <Select
+          options={column.filterOptions ?? []}
+          value={activeFilterValues[columnId] ?? ""}
+          onValueChange={(nextValue) =>
+            handleFilterChange(
+              columnId,
+              Array.isArray(nextValue) ? nextValue[0] ?? "" : nextValue,
+            )
+          }
+          searchable={column.filterSearchable}
+          onSearch={column.filterSearch}
+          placeholder={column.filterPlaceholder ?? "All Data"}
+          reserveHelperSpace={false}
+          overrideClassName="min-h-[40px] rounded-[8px] border-border text-sm"
+        />
+      );
+    }
+
+    return (
+      <Input
+        placeholder={column.filterPlaceholder ?? "Search by"}
+        value={activeFilterValues[columnId] ?? ""}
+        onChange={(event) => handleFilterChange(columnId, event.target.value)}
+        leftIcon={<Icon name="search" size={16} />}
+        reserveHelperSpace={false}
+        overrideClassName="min-h-[40px] rounded-[8px] border-border"
+      />
+    );
+  };
 
   const hasRows = !isEmpty(rowsWithKeys);
   const totalColumnCount = orderedColumns.length + (selectable ? 1 : 0);
 
   return (
-    <div className="overflow-hidden rounded-xl border border-border bg-white">
-      <div className="overflow-x-auto">
-        <table className="min-w-full border-separate border-spacing-0">
-          <thead>
-            <tr className="bg-tertiary-100">
-              {selectable ? (
-                <th className="w-[68px] border-b border-dashed border-divider px-3 py-5 text-left">
-                  <div className="flex items-center gap-3">
-                    <Checkbox
-                      checked={allVisibleRowsSelected}
-                      indeterminate={someVisibleRowsSelected}
-                      onChange={handleToggleAllRows}
-                      aria-label="Select all rows"
-                    />
-                    <span className="text-base font-semibold text-primary-600">
-                      {selectableLabel}
-                    </span>
-                  </div>
-                </th>
-              ) : null}
-              {orderedColumns.map((column, index) => {
-                const columnId = getColumnId(column, index);
-                const isSorted = activeSortState?.columnId === columnId;
-
-                return (
-                  <th
-                    key={columnId}
-                    scope="col"
-                    draggable={enableColumnDrag && !column.dragDisabled}
-                    onDragStart={handleColumnDragStart(columnId, column.dragDisabled)}
-                    onDragOver={handleColumnDragOver}
-                    onDrop={handleColumnDrop(columnId, column.dragDisabled)}
-                    className={classNames(
-                      "border-b border-dashed border-divider px-4 py-5 align-middle",
-                      column.align === "center" ? "text-center" : "",
-                      column.align === "right" ? "text-right" : "text-left",
-                    )}
-                    style={column.width ? { width: column.width } : undefined}
-                  >
-                    <div
-                      className={classNames(
-                        "flex items-center gap-3",
-                        column.align === "center"
-                          ? "justify-center"
-                          : column.align === "right"
-                            ? "justify-end"
-                            : "justify-between",
-                      )}
-                    >
-                      <div className="flex items-center gap-3">
-                        {enableColumnDrag && !column.dragDisabled ? (
-                          <Icon
-                            name="drag"
-                            size={14}
-                            className="cursor-grab text-primary-500"
-                          />
-                        ) : null}
-                        <span className="text-sm font-semibold text-primary-600">
-                          {column.label}
-                        </span>
-                        {column.renderHeader?.()}
-                      </div>
-                      {column.sortable ? (
-                        <button
-                          type="button"
-                          onClick={() => handleSort(columnId, column.sortable)}
-                          className="inline-flex items-center text-primary-600"
-                          aria-label={`Sort ${column.label}`}
-                        >
-                          <Icon
-                            name={
-                              isSorted
-                                ? activeSortState?.direction === "asc"
-                                  ? "arrow-up"
-                                  : "arrow-down"
-                                : "arrow-swap-vertical"
-                            }
-                            size={16}
-                          />
-                        </button>
-                      ) : null}
+    <DndContext
+      sensors={sensors}
+      collisionDetection={closestCenter}
+      onDragStart={handleDragStart}
+      onDragOver={handleDragOver}
+      onDragEnd={handleDragEnd}
+      onDragCancel={handleDragCancel}
+    >
+      <div className="overflow-hidden rounded-xl border border-border bg-white">
+        <div className="overflow-x-auto">
+          <table className="min-w-full border-separate border-spacing-0">
+            <thead>
+              <tr className="bg-tertiary-100">
+                {selectable ? (
+                  <th className="w-[68px] border-b border-dashed border-divider px-3 py-5 text-left">
+                    <div className="flex items-center gap-3">
+                      <Checkbox
+                        checked={allVisibleRowsSelected}
+                        indeterminate={someVisibleRowsSelected}
+                        onChange={handleToggleAllRows}
+                        aria-label="Select all rows"
+                      />
+                      <span className="text-base font-semibold text-primary-600">
+                        {selectableLabel}
+                      </span>
                     </div>
                   </th>
-                );
-              })}
-            </tr>
-            <tr className="bg-white">
-              {selectable ? (
-                <th className="border-b border-dashed border-divider px-3 py-3" />
-              ) : null}
-              {orderedColumns.map((column, index) => {
-                const columnId = getColumnId(column, index);
+                ) : null}
+                <SortableContext
+                  items={orderedColumns.map((column, index) =>
+                    getColumnId(column, index),
+                  )}
+                  strategy={horizontalListSortingStrategy}
+                >
+                  {orderedColumns.map((column, index) => {
+                    const columnId = getColumnId(column, index);
+                    const isSorted = activeSortState?.columnId === columnId;
+                    const { isDragSource, isDragTarget } =
+                      getColumnDragState(columnId);
 
-                return (
-                  <th
-                    key={`${columnId}-filter`}
-                    className="border-b border-dashed border-divider px-4 py-3 align-top"
-                  >
-                    {column.renderFilter ? (
-                      column.renderFilter({
-                        columnId,
-                        value: activeFilterValues[columnId] ?? "",
-                        onChange: (nextValue) =>
-                          handleFilterChange(columnId, nextValue),
-                      })
-                    ) : column.filterable ? (
-                      column.filterOptions?.length || column.filterSearch ? (
-                        <Select
-                          options={column.filterOptions ?? []}
-                          value={activeFilterValues[columnId] ?? ""}
-                          onValueChange={(nextValue) =>
-                            handleFilterChange(
-                              columnId,
-                              Array.isArray(nextValue) ? nextValue[0] ?? "" : nextValue,
-                            )
-                          }
-                          searchable={column.filterSearchable}
-                          onSearch={column.filterSearch}
-                          placeholder={column.filterPlaceholder ?? "All Data"}
-                          reserveHelperSpace={false}
-                          overrideClassName="min-h-[40px] rounded-[8px] border-border text-sm"
-                        />
-                      ) : (
-                        <Input
-                          placeholder={column.filterPlaceholder ?? "Search by"}
-                          value={activeFilterValues[columnId] ?? ""}
-                          onChange={(event) =>
-                            handleFilterChange(columnId, event.target.value)
-                          }
-                          leftIcon={<Icon name="search" size={16} />}
-                          reserveHelperSpace={false}
-                          overrideClassName="min-h-[40px] rounded-[8px] border-border"
-                        />
-                      )
-                    ) : null}
-                  </th>
-                );
-              })}
-            </tr>
-          </thead>
-          <tbody className="bg-white">
-            {!loading && isEmpty(error) && hasRows
-              ? rowsWithKeys.map(({ row, key }, index) => (
-                  <tr
-                    key={String(key)}
-                    className={classNames(
-                      ranked
-                        ? index === 0
-                          ? "bg-success-100/40"
-                          : index === 1
-                            ? "bg-primary-50"
-                            : index === 2
-                              ? "bg-warning-100/50"
-                              : ""
-                        : "",
-                      onRowClick ? "cursor-pointer hover:bg-whiteScale-90" : "",
-                    )}
-                    onClick={() => onRowClick?.(row)}
-                    role={action ? "button" : undefined}
-                  >
-                    {selectable ? (
-                      <td className="border-b border-dashed border-divider px-3 py-4">
-                        <div
-                          className="flex items-center justify-center"
-                          onClick={(event) => event.stopPropagation()}
-                        >
-                          <Checkbox
-                            checked={activeSelectedKeys.includes(key)}
-                            onChange={() => handleToggleRow(key)}
-                            aria-label={`Select row ${index + 1}`}
-                          />
-                        </div>
-                      </td>
-                    ) : null}
-                    {orderedColumns.map((column, columnIndex) => (
-                      <td
-                        key={getColumnId(column, columnIndex)}
+                    return (
+                      <SortableHeaderCell
+                        key={columnId}
+                        id={columnId}
+                        disabled={!enableColumnDrag || column.dragDisabled}
+                        width={column.width}
                         className={classNames(
-                          "border-b border-dashed border-divider px-4 py-4 text-sm text-text-primary",
+                          "border-b border-dashed border-divider px-4 py-5 text-left transition-colors duration-150",
                           column.align === "center" ? "text-center" : "",
                           column.align === "right" ? "text-right" : "text-left",
+                          isDragSource ? "bg-primary-100/70 shadow-[inset_0_0_0_1px_rgba(34,74,138,0.24)]" : "",
+                          isDragTarget ? "bg-secondary-100/70 shadow-[inset_0_0_0_1px_rgba(0,153,156,0.24)]" : "",
                         )}
                       >
-                        {column.render
-                          ? column.render(row)
-                          : getDefaultCellValue(
-                              row,
-                              column,
-                              index,
-                              currentPage,
-                              limit,
+                        <div
+                          className={classNames(
+                            "flex items-center gap-3",
+                            column.align === "center"
+                              ? "justify-center"
+                              : column.align === "right"
+                                ? "justify-end"
+                                : "justify-between",
+                          )}
+                        >
+                          <div className="flex items-center gap-3">
+                            {enableColumnDrag && !column.dragDisabled ? (
+                              <Icon
+                                name="drag"
+                                size={14}
+                                className="cursor-grab text-primary-500"
+                              />
+                            ) : null}
+                            <span className="text-base font-semibold text-primary-600">
+                              {column.label}
+                            </span>
+                            {column.renderHeader?.()}
+                          </div>
+                          {column.sortable ? (
+                            <button
+                              type="button"
+                              onClick={() => handleSort(columnId, column.sortable)}
+                              className="inline-flex items-center text-primary-600"
+                              aria-label={`Sort ${column.label}`}
+                            >
+                              <Icon
+                                name={
+                                  isSorted
+                                    ? activeSortState?.direction === "asc"
+                                      ? "arrow-up-2"
+                                      : "arrow-down-2"
+                                    : "arrow-swap-vertical"
+                                }
+                                size={16}
+                              />
+                            </button>
+                          ) : null}
+                        </div>
+                      </SortableHeaderCell>
+                    );
+                  })}
+                </SortableContext>
+              </tr>
+              <tr className="bg-white">
+                {selectable ? (
+                  <th className="border-b border-dashed border-divider px-3 py-3" />
+                ) : null}
+                {orderedColumns.map((column, index) => {
+                  const columnId = getColumnId(column, index);
+                  const { isDragSource, isDragTarget } =
+                    getColumnDragState(columnId);
+
+                  return (
+                    <th
+                      key={`${columnId}-filter`}
+                      className={classNames(
+                        "border-b border-dashed border-divider px-4 py-3 text-left align-top transition-colors duration-150",
+                        isDragSource ? "bg-primary-50/70" : "",
+                        isDragTarget ? "bg-secondary-50/70" : "",
+                      )}
+                    >
+                      {renderFilterCell(column, columnId)}
+                    </th>
+                  );
+                })}
+              </tr>
+            </thead>
+            <tbody className="bg-white">
+              {!loading && isEmpty(error) && hasRows
+                ? rowsWithKeys.map(({ row, key }, index) => (
+                    <tr
+                      key={String(key)}
+                      className={classNames(
+                        ranked
+                          ? index === 0
+                            ? "bg-success-100/40"
+                            : index === 1
+                              ? "bg-primary-50"
+                              : index === 2
+                                ? "bg-warning-100/50"
+                                : ""
+                          : "",
+                        onRowClick ? "cursor-pointer hover:bg-whiteScale-90" : "",
+                      )}
+                      onClick={() => onRowClick?.(row)}
+                      role={action ? "button" : undefined}
+                    >
+                      {selectable ? (
+                        <td className="border-b border-dashed border-divider px-3 py-4">
+                          <div
+                            className="flex items-center justify-center"
+                            onClick={(event) => event.stopPropagation()}
+                          >
+                            <Checkbox
+                              checked={activeSelectedKeys.includes(key)}
+                              onChange={() => handleToggleRow(key)}
+                              aria-label={`Select row ${index + 1}`}
+                            />
+                          </div>
+                        </td>
+                      ) : null}
+                      {orderedColumns.map((column, columnIndex) => {
+                        const columnId = getColumnId(column, columnIndex);
+                        const { isDragSource, isDragTarget } =
+                          getColumnDragState(columnId);
+
+                        return (
+                          <td
+                            key={columnId}
+                            className={classNames(
+                              "border-b border-dashed border-divider px-4 py-4 text-sm text-text-primary transition-colors duration-150",
+                              column.align === "center" ? "text-center" : "",
+                              column.align === "right" ? "text-right" : "text-left",
+                              isDragSource ? "bg-primary-50/70" : "",
+                              isDragTarget ? "bg-secondary-50/70" : "",
                             )}
-                      </td>
-                    ))}
-                  </tr>
-                ))
-              : null}
-            {loading ? (
-              <tr>
-                <td
-                  colSpan={totalColumnCount}
-                  className="px-4 py-12 text-center text-sm text-text-secondary"
-                >
-                  Loading...
-                </td>
-              </tr>
-            ) : null}
-            {!loading && !isEmpty(error) ? (
-              <tr>
-                <td
-                  colSpan={totalColumnCount}
-                  className="px-4 py-12 text-center text-sm text-error"
-                >
-                  {error}
-                </td>
-              </tr>
-            ) : null}
-            {!loading && isEmpty(error) && !hasRows ? (
-              <tr>
-                <td colSpan={totalColumnCount} className="px-4 py-12 text-center">
-                  <div className="flex flex-col items-center justify-center gap-2">
-                    <Lottie
-                      options={{
-                        loop: true,
-                        autoplay: true,
-                        animationData: EmptyLottie,
-                        rendererSettings: {
-                          preserveAspectRatio: "xMidYMid slice",
-                        },
-                      }}
-                      height={100}
-                      width={100}
-                    />
-                    <span className="text-sm text-text-secondary">No data found</span>
-                  </div>
-                </td>
-              </tr>
-            ) : null}
-          </tbody>
-        </table>
+                          >
+                            {column.render
+                              ? column.render(row)
+                              : getDefaultCellValue(
+                                  row,
+                                  column,
+                                  index,
+                                  currentPage,
+                                  limit,
+                                )}
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  ))
+                : null}
+              {loading ? (
+                <tr>
+                  <td
+                    colSpan={totalColumnCount}
+                    className="px-4 py-12 text-center text-sm text-text-secondary"
+                  >
+                    Loading...
+                  </td>
+                </tr>
+              ) : null}
+              {!loading && !isEmpty(error) ? (
+                <tr>
+                  <td
+                    colSpan={totalColumnCount}
+                    className="px-4 py-12 text-center text-sm text-error"
+                  >
+                    {error}
+                  </td>
+                </tr>
+              ) : null}
+              {!loading && isEmpty(error) && !hasRows ? (
+                <tr>
+                  <td colSpan={totalColumnCount} className="px-4 py-12 text-center">
+                    <div className="flex flex-col items-center justify-center gap-2">
+                      <Lottie
+                        options={{
+                          loop: true,
+                          autoplay: true,
+                          animationData: EmptyLottie,
+                          rendererSettings: {
+                            preserveAspectRatio: "xMidYMid slice",
+                          },
+                        }}
+                        height={100}
+                        width={100}
+                      />
+                      <span className="text-sm text-text-secondary">
+                        No data found
+                      </span>
+                    </div>
+                  </td>
+                </tr>
+              ) : null}
+            </tbody>
+          </table>
+        </div>
       </div>
-    </div>
+      <DragOverlay>
+        {activeColumn ? (
+          <div
+            className="min-w-[220px] overflow-hidden rounded-xl border border-primary-200 bg-white shadow-[0_18px_40px_rgba(15,23,42,0.18)]"
+            style={activeColumn.width ? { width: activeColumn.width } : undefined}
+          >
+            <div className="border-b border-dashed border-divider bg-tertiary-100 px-4 py-5">
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <Icon name="drag" size={14} className="text-primary-500" />
+                  <span className="text-base font-semibold text-primary-600">
+                    {activeColumn.label}
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div className="border-b border-dashed border-divider px-4 py-3">
+              {renderFilterCell(activeColumn, activeDragColumnId ?? "")}
+            </div>
+            <div className="max-h-[320px] overflow-hidden bg-white">
+              {rowsWithKeys.map(({ row, key }, index) => (
+                <div
+                  key={String(key)}
+                  className={classNames(
+                    "border-b border-dashed border-divider px-4 py-4 text-sm text-text-primary",
+                    ranked
+                      ? index === 0
+                        ? "bg-success-100/40"
+                        : index === 1
+                          ? "bg-primary-50"
+                          : index === 2
+                            ? "bg-warning-100/50"
+                            : ""
+                      : "",
+                  )}
+                >
+                  {activeColumn.render
+                    ? activeColumn.render(row)
+                    : getDefaultCellValue(
+                        row,
+                        activeColumn,
+                        index,
+                        currentPage,
+                        limit,
+                      )}
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : null}
+      </DragOverlay>
+    </DndContext>
   );
 }
