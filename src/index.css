@@ -1,0 +1,75 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: "Inter Variable";
+  src: url("./assets/fonts/Inter/Inter-VariableFont_opsz,wght.ttf") format("truetype-variations");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+  font-optical-sizing: auto;
+}
+
+@font-face {
+  font-family: "Inter Variable";
+  src: url("./assets/fonts/Inter/Inter-Italic-VariableFont_opsz,wght.ttf") format("truetype-variations");
+  font-weight: 100 900;
+  font-style: italic;
+  font-display: swap;
+  font-optical-sizing: auto;
+}
+
+@font-face {
+  font-family: "Manrope Variable";
+  src: url("./assets/fonts/Manrope/Manrope-VariableFont_wght.ttf") format("truetype-variations");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+  font-optical-sizing: auto;
+}
+
+:root {
+  --font-body: "Inter Variable", "Inter", system-ui, -apple-system, sans-serif;
+  --font-heading: "Manrope Variable", "Manrope", system-ui, -apple-system, sans-serif;
+}
+
+body {
+  font-family: var(--font-body);
+}
+
+/* input:not([type="file"]) {
+  @apply !border-[#BDBDBD];
+} */
+
+input:disabled {
+  @apply !bg-gray-100;
+}
+
+.checkbox:disabled {
+  @apply !border-gray-600;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.widthPDF {
+  width: calc(100vw - 200px);
+}
+
+.no-tailwind {
+  all: unset;
+}
+
+.dump-card-shadow {
+  box-shadow: 0px 4px 8px 1px #00000014; box-shadow: 0px 0px 0px 1px #00000014;
+}

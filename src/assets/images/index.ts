@@ -1,0 +1,9 @@
+export { default as Like } from "./like.svg";
+export { default as PDF } from "./pdf.png";
+export { default as Laser } from "./dump/laser.svg";
+export { default as Draw } from "./dump/draw.svg";
+export { default as Emoji } from "./dump/emoji.svg";
+export { default as Ellipsis } from "./dump/ellipsis.svg";
+export { default as Print } from "./dump/print.svg";
+export { default as Cut } from "./dump/cut.svg";
+export { default as Grab } from "./dump/grab.svg";
