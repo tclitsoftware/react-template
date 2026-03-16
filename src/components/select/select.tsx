@@ -1,3 +1,4 @@
+import Button from "components/button";
 import Icon from "components/icon";
 import Typography from "components/typography";
 import React, {
@@ -36,6 +37,8 @@ type SelectProps = Omit<
   overrideClassName?: string;
   reserveHelperSpace?: boolean;
   placeholder?: string;
+  onCreateOption?: (term: string) => Promise<SelectOption | null | undefined> | SelectOption | null | undefined;
+  createOptionLabel?: string | ((term: string) => string);
 };
 
 const normalizeValues = (
@@ -79,6 +82,8 @@ const SelectInner = (
     overrideClassName,
     reserveHelperSpace = true,
     placeholder,
+    onCreateOption,
+    createOptionLabel,
     ...rest
   } = props;
 
@@ -92,6 +97,7 @@ const SelectInner = (
   const [dropUp, setDropUp] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchLoading, setSearchLoading] = useState(false);
+  const [createLoading, setCreateLoading] = useState(false);
   const [searchResults, setSearchResults] = useState<SelectOption[]>(options);
 
   useEffect(() => {
@@ -104,6 +110,20 @@ const SelectInner = (
     }
   }, [value, multiple]);
 
+  const resolvedOptions = useMemo(() => {
+    const mergedOptions = new Map<string, SelectOption>();
+
+    options.forEach((option) => {
+      mergedOptions.set(option.value, option);
+    });
+
+    searchResults.forEach((option) => {
+      mergedOptions.set(option.value, option);
+    });
+
+    return Array.from(mergedOptions.values());
+  }, [options, searchResults]);
+
   const filteredOptions = useMemo(() => {
     if (onSearch || !searchable || searchTerm === "") {
       return searchResults;
@@ -114,7 +134,7 @@ const SelectInner = (
   }, [options, onSearch, searchResults, searchable, searchTerm]);
 
   const selectedLabels = selectedValue
-    .map((val) => options.find((option) => option.value === val)?.label)
+    .map((val) => resolvedOptions.find((option) => option.value === val)?.label)
     .filter((label): label is string => Boolean(label));
 
   const displayLabel = multiple
@@ -171,6 +191,34 @@ const SelectInner = (
     }
   };
 
+  const handleCreateOption = async () => {
+    const normalizedTerm = searchTerm.trim();
+    if (!normalizedTerm || !onCreateOption) {
+      return;
+    }
+
+    setCreateLoading(true);
+    try {
+      const nextOption = await onCreateOption(normalizedTerm);
+      if (!nextOption) {
+        return;
+      }
+
+      setSearchResults((currentOptions) => {
+        if (currentOptions.some((option) => option.value === nextOption.value)) {
+          return currentOptions;
+        }
+
+        return [nextOption, ...currentOptions];
+      });
+      handleSelect(nextOption);
+      setSearchTerm("");
+      setOpen(false);
+    } finally {
+      setCreateLoading(false);
+    }
+  };
+
   useEffect(() => {
     const listener = (event: MouseEvent) => {
       if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
@@ -223,6 +271,15 @@ const SelectInner = (
 
   const loadingText = externalLoading || searchLoading ? "Searching..." : null;
   const noResultsText = noOptionsText ?? "No options";
+  const canCreateOption =
+    Boolean(onCreateOption) &&
+    searchTerm.trim().length > 0 &&
+    filteredOptions.length === 0 &&
+    !loadingText;
+  const createLabel =
+    typeof createOptionLabel === "function"
+      ? createOptionLabel(searchTerm.trim())
+      : createOptionLabel ?? `Add "${searchTerm.trim()}"`;
 
   return (
     <div ref={ref ?? wrapperRef} className={wrapperClasses} {...rest}>
@@ -246,7 +303,7 @@ const SelectInner = (
             <div className="flex flex-wrap gap-2 py-2">
               {selectedValue.length ? (
                 selectedValue.map((value) => {
-                  const option = options.find((opt) => opt.value === value);
+                  const option = resolvedOptions.find((opt) => opt.value === value);
                   if (!option) return null;
                   return (
                     <span
@@ -314,6 +371,21 @@ const SelectInner = (
               </Typography>
             </div>
           )}
+          {canCreateOption ? (
+            <div className="px-1.5 pb-1">
+              <Button
+                type="button"
+                variant="outline"
+                color="primary"
+                isFullSize
+                onClick={handleCreateOption}
+                disabled={createLoading}
+                iconLeft={<Icon name="add" size={18} className="text-primary" />}
+              >
+                {createLoading ? "Adding..." : createLabel}
+              </Button>
+            </div>
+          ) : null}
           {filteredOptions.map((option) => {
             const isActive = selectedValue.includes(option.value);
             return (

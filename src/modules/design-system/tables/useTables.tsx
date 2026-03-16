@@ -7,9 +7,9 @@ import { useAppDispatch } from "store";
 import { setGlobalComponent } from "store/global-components";
 
 const statusClasses: Record<CustomerRow["status"], string> = {
-  active: "bg-primary-600",
-  pending: "bg-warning-500",
-  inactive: "bg-greyScale-60",
+  active: "bg-primary-600 border-2 border-primary-100",
+  pending: "bg-warning-500 border-2 border-warning-100",
+  inactive: "bg-greyScale-60 border-2 border-greyScale-90",
 };
 
 const useTables = () => {
@@ -72,7 +72,7 @@ const useTables = () => {
         render: (row) => (
           <div className="inline-flex items-center gap-2 text-base text-primary-600">
             <span
-              className={`h-3 w-3 rounded-full ${statusClasses[row.status]}`}
+              className={`h-3.5 w-3.5 rounded-full ${statusClasses[row.status]}`}
             />
             <span className="capitalize">{row.status}</span>
           </div>
