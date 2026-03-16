@@ -1,6 +1,7 @@
 import { useGetCustomerTableQuery, CustomerRow } from "_services/modules/table-example";
 import Button from "components/button";
 import Icon from "components/icon";
+import Input from "components/input";
 import { TableSortState, Columns } from "components/table";
 import { useEffect, useMemo, useState } from "react";
 import { useAppDispatch } from "store";
@@ -84,6 +85,11 @@ const useTables = () => {
         label: "Action",
         width: "260px",
         dragDisabled: true,
+        renderFilter: ({ onChange }) => {
+          return (
+            <Input type="date" onChange={(e) => { onChange(e.target.value) }} />
+          );
+        },
         render: () => (
           <div className="flex items-center gap-3">
             <Button

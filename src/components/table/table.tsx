@@ -22,7 +22,7 @@ import Icon from "components/icon";
 import Input from "components/input";
 import Select, { SelectOption } from "components/select";
 import { isEmpty } from "lodash";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import Lottie from "react-lottie";
 
 type Primitive = string | number;
@@ -83,15 +83,26 @@ interface Props<T> {
   defaultFilterValues?: Record<string, string>;
   onFilterValuesChange?: (filters: Record<string, string>) => void;
   onColumnOrderChange?: (columnIds: string[]) => void;
+  enableColumnResize?: boolean;
+  columnWidths?: Record<string, number>;
+  defaultColumnWidths?: Record<string, number>;
+  onColumnWidthsChange?: (widths: Record<string, number>) => void;
+  minColumnWidth?: number;
   selectableLabel?: string;
 }
 
 type HeaderCellProps = {
   id: string;
   disabled?: boolean;
-  children: React.ReactNode;
+  children: (args: {
+    dragHandleProps: {
+      attributes: ReturnType<typeof useSortable>["attributes"];
+      listeners: ReturnType<typeof useSortable>["listeners"];
+    } | null;
+    isDragging: boolean;
+  }) => React.ReactNode;
   className?: string;
-  width?: string;
+  style?: React.CSSProperties;
 };
 
 function classNames(...classes: Array<string | false | null | undefined>) {
@@ -158,12 +169,21 @@ function getDefaultCellValue<T>(
   );
 }
 
+function parseColumnWidth(width?: string) {
+  if (!width) {
+    return undefined;
+  }
+
+  const numericWidth = Number.parseFloat(width);
+  return Number.isFinite(numericWidth) ? numericWidth : undefined;
+}
+
 const SortableHeaderCell = ({
   id,
   disabled,
   children,
   className,
-  width,
+  style,
 }: HeaderCellProps) => {
   const {
     attributes,
@@ -177,26 +197,27 @@ const SortableHeaderCell = ({
     disabled,
   });
 
-  const style = {
+  const resolvedStyle = {
     transform: CSS.Transform.toString(transform),
     transition,
-    width,
     zIndex: isDragging ? 20 : undefined,
+    ...style,
   };
 
   return (
     <th
       ref={setNodeRef}
-      style={style}
+      style={resolvedStyle}
       className={classNames(
         "align-middle transition-shadow duration-150",
         isDragging ? "opacity-0" : "",
         className,
       )}
-      {...attributes}
-      {...listeners}
     >
-      {children}
+      {children({
+        dragHandleProps: disabled ? null : { attributes, listeners },
+        isDragging,
+      })}
     </th>
   );
 };
@@ -224,6 +245,11 @@ export function Table<T>({
   defaultFilterValues = {},
   onFilterValuesChange,
   onColumnOrderChange,
+  enableColumnResize = true,
+  columnWidths,
+  defaultColumnWidths = {},
+  onColumnWidthsChange,
+  minColumnWidth = 140,
   selectableLabel = "All",
 }: Props<T>): React.ReactElement {
   const [columnOrder, setColumnOrder] = useState(() =>
@@ -235,8 +261,15 @@ export function Table<T>({
     useState<Record<string, string>>(defaultFilterValues);
   const [internalSelectedRowKeys, setInternalSelectedRowKeys] =
     useState<Primitive[]>(defaultSelectedRowKeys);
+  const [internalColumnWidths, setInternalColumnWidths] =
+    useState<Record<string, number>>(defaultColumnWidths);
   const [activeDragColumnId, setActiveDragColumnId] = useState<string | null>(null);
   const [dragOverColumnId, setDragOverColumnId] = useState<string | null>(null);
+  const resizeStateRef = useRef<{
+    columnId: string;
+    startX: number;
+    startWidth: number;
+  } | null>(null);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -261,6 +294,8 @@ export function Table<T>({
     filterValues !== undefined ? filterValues : internalFilterValues;
   const activeSelectedKeys =
     selectedRowKeys !== undefined ? selectedRowKeys : internalSelectedRowKeys;
+  const activeColumnWidths =
+    columnWidths !== undefined ? columnWidths : internalColumnWidths;
 
   const orderedColumns = useMemo(() => {
     const columnMap = new Map(
@@ -271,6 +306,29 @@ export function Table<T>({
       .map((columnId) => columnMap.get(columnId))
       .filter((column): column is Columns<T> => Boolean(column));
   }, [columnOrder, columns]);
+
+  useEffect(() => {
+    setInternalColumnWidths((currentWidths) => {
+      const nextWidths = { ...currentWidths };
+      let hasChange = false;
+
+      columns.forEach((column, index) => {
+        const columnId = getColumnId(column, index);
+        const configuredWidth = parseColumnWidth(column.width);
+
+        if (
+          configuredWidth !== undefined &&
+          nextWidths[columnId] === undefined &&
+          defaultColumnWidths[columnId] === undefined
+        ) {
+          nextWidths[columnId] = configuredWidth;
+          hasChange = true;
+        }
+      });
+
+      return hasChange ? nextWidths : currentWidths;
+    });
+  }, [columns, defaultColumnWidths]);
 
   const activeColumn = useMemo(
     () =>
@@ -322,6 +380,14 @@ export function Table<T>({
       .map(({ row }) => row);
 
     onSelectedRowKeysChange?.(nextKeys, nextRows);
+  };
+
+  const commitColumnWidths = (nextWidths: Record<string, number>) => {
+    if (columnWidths === undefined) {
+      setInternalColumnWidths(nextWidths);
+    }
+
+    onColumnWidthsChange?.(nextWidths);
   };
 
   const handleSort = (columnId: string, sortable?: boolean) => {
@@ -412,11 +478,88 @@ export function Table<T>({
     setDragOverColumnId(null);
   };
 
+  useEffect(() => {
+    const handleResizeMove = (event: MouseEvent) => {
+      const resizeState = resizeStateRef.current;
+
+      if (!resizeState) {
+        return;
+      }
+
+      const nextWidth = Math.max(
+        minColumnWidth,
+        resizeState.startWidth + (event.clientX - resizeState.startX),
+      );
+
+      commitColumnWidths({
+        ...activeColumnWidths,
+        [resizeState.columnId]: nextWidth,
+      });
+    };
+
+    const handleResizeEnd = () => {
+      resizeStateRef.current = null;
+      document.body.style.cursor = "";
+      document.body.style.userSelect = "";
+    };
+
+    window.addEventListener("mousemove", handleResizeMove);
+    window.addEventListener("mouseup", handleResizeEnd);
+
+    return () => {
+      window.removeEventListener("mousemove", handleResizeMove);
+      window.removeEventListener("mouseup", handleResizeEnd);
+    };
+  }, [activeColumnWidths, minColumnWidth]);
+
   const getColumnDragState = (columnId: string) => ({
     isDragSource: activeDragColumnId === columnId,
     isDragTarget:
       dragOverColumnId === columnId && activeDragColumnId !== columnId,
   });
+
+  const getColumnStyle = (column: Columns<T>, columnId: string) => {
+    const resizedWidth = activeColumnWidths[columnId];
+
+    if (resizedWidth !== undefined) {
+      return {
+        width: `${resizedWidth}px`,
+        minWidth: `${resizedWidth}px`,
+      };
+    }
+
+    if (column.width) {
+      return {
+        width: column.width,
+        minWidth: column.width,
+      };
+    }
+
+    return undefined;
+  };
+
+  const handleResizeStart = (
+    event: React.MouseEvent<HTMLButtonElement>,
+    columnId: string,
+  ) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const headerCell = event.currentTarget.closest("th");
+    const startWidth = headerCell?.getBoundingClientRect().width;
+
+    if (!startWidth) {
+      return;
+    }
+
+    resizeStateRef.current = {
+      columnId,
+      startX: event.clientX,
+      startWidth,
+    };
+    document.body.style.cursor = "col-resize";
+    document.body.style.userSelect = "none";
+  };
 
   const renderFilterCell = (column: Columns<T>, columnId: string) => {
     if (column.renderFilter) {
@@ -512,58 +655,82 @@ export function Table<T>({
                         key={columnId}
                         id={columnId}
                         disabled={!enableColumnDrag || column.dragDisabled}
-                        width={column.width}
+                        style={getColumnStyle(column, columnId)}
                         className={classNames(
-                          "border-b border-dashed border-divider px-4 py-5 text-left transition-colors duration-150",
+                          "relative border-b border-dashed border-divider px-4 py-5 text-left transition-colors duration-150",
                           column.align === "center" ? "text-center" : "",
                           column.align === "right" ? "text-right" : "text-left",
                           isDragSource ? "bg-primary-100/70 shadow-[inset_0_0_0_1px_rgba(34,74,138,0.24)]" : "",
                           isDragTarget ? "bg-secondary-100/70 shadow-[inset_0_0_0_1px_rgba(0,153,156,0.24)]" : "",
                         )}
                       >
-                        <div
-                          className={classNames(
-                            "flex items-center gap-3",
-                            column.align === "center"
-                              ? "justify-center"
-                              : column.align === "right"
-                                ? "justify-end"
-                                : "justify-between",
-                          )}
-                        >
-                          <div className="flex items-center gap-3">
-                            {enableColumnDrag && !column.dragDisabled ? (
-                              <Icon
-                                name="drag"
-                                size={14}
-                                className="cursor-grab text-primary-500"
-                              />
-                            ) : null}
-                            <span className="text-base font-semibold text-primary-600">
-                              {column.label}
-                            </span>
-                            {column.renderHeader?.()}
-                          </div>
-                          {column.sortable ? (
-                            <button
-                              type="button"
-                              onClick={() => handleSort(columnId, column.sortable)}
-                              className="inline-flex items-center text-primary-600"
-                              aria-label={`Sort ${column.label}`}
+                        {({ dragHandleProps }) => (
+                          <>
+                            <div
+                              className={classNames(
+                                "flex items-center gap-3 pr-3",
+                                column.align === "center"
+                                  ? "justify-center"
+                                  : column.align === "right"
+                                    ? "justify-end"
+                                    : "justify-between",
+                              )}
                             >
-                              <Icon
-                                name={
-                                  isSorted
-                                    ? activeSortState?.direction === "asc"
-                                      ? "arrow-up-2"
-                                      : "arrow-down-2"
-                                    : "arrow-swap-vertical"
+                              <div className="flex items-center gap-3">
+                                {enableColumnDrag && !column.dragDisabled ? (
+                                  <button
+                                    type="button"
+                                    aria-label={`Drag ${column.label}`}
+                                    className="cursor-grab touch-none text-primary-500 active:cursor-grabbing"
+                                    {...dragHandleProps?.attributes}
+                                    {...dragHandleProps?.listeners}
+                                  >
+                                    <Icon
+                                      name="drag"
+                                      size={14}
+                                      className="text-primary-500"
+                                    />
+                                  </button>
+                                ) : null}
+                                <span className="text-base font-semibold text-primary-600">
+                                  {column.label}
+                                </span>
+                                {column.renderHeader?.()}
+                              </div>
+                              {column.sortable ? (
+                                <button
+                                  type="button"
+                                  onClick={() => handleSort(columnId, column.sortable)}
+                                  className="inline-flex items-center text-primary-600"
+                                  aria-label={`Sort ${column.label}`}
+                                >
+                                  <Icon
+                                    name={
+                                      isSorted
+                                        ? activeSortState?.direction === "asc"
+                                          ? "arrow-up"
+                                          : "arrow-down"
+                                        : "arrow-2-vertical"
+                                    }
+                                    size={16}
+                                  />
+                                </button>
+                              ) : null}
+                            </div>
+                            {enableColumnResize && index !== orderedColumns.length - 1 ? (
+                              <button
+                                type="button"
+                                aria-label={`Resize ${column.label}`}
+                                onMouseDown={(event) =>
+                                  handleResizeStart(event, columnId)
                                 }
-                                size={16}
-                              />
-                            </button>
-                          ) : null}
-                        </div>
+                                className="absolute right-0 top-0 h-full w-3 cursor-col-resize touch-none"
+                              >
+                                <span className="absolute right-1 top-1/2 h-10 w-px -translate-y-1/2 bg-divider transition-colors group-hover:bg-primary-300" />
+                              </button>
+                            ) : null}
+                          </>
+                        )}
                       </SortableHeaderCell>
                     );
                   })}
@@ -581,6 +748,7 @@ export function Table<T>({
                   return (
                     <th
                       key={`${columnId}-filter`}
+                      style={getColumnStyle(column, columnId)}
                       className={classNames(
                         "border-b border-dashed border-divider px-4 py-3 text-left align-top transition-colors duration-150",
                         isDragSource ? "bg-primary-50/70" : "",
@@ -596,67 +764,68 @@ export function Table<T>({
             <tbody className="bg-white">
               {!loading && isEmpty(error) && hasRows
                 ? rowsWithKeys.map(({ row, key }, index) => (
-                    <tr
-                      key={String(key)}
-                      className={classNames(
-                        ranked
-                          ? index === 0
-                            ? "bg-success-100/40"
-                            : index === 1
-                              ? "bg-primary-50"
-                              : index === 2
-                                ? "bg-warning-100/50"
-                                : ""
-                          : "",
-                        onRowClick ? "cursor-pointer hover:bg-whiteScale-90" : "",
-                      )}
-                      onClick={() => onRowClick?.(row)}
-                      role={action ? "button" : undefined}
-                    >
-                      {selectable ? (
-                        <td className="border-b border-dashed border-divider px-3 py-4">
-                          <div
-                            className="flex items-center justify-center"
-                            onClick={(event) => event.stopPropagation()}
-                          >
-                            <Checkbox
-                              checked={activeSelectedKeys.includes(key)}
-                              onChange={() => handleToggleRow(key)}
-                              aria-label={`Select row ${index + 1}`}
-                            />
-                          </div>
-                        </td>
-                      ) : null}
-                      {orderedColumns.map((column, columnIndex) => {
-                        const columnId = getColumnId(column, columnIndex);
-                        const { isDragSource, isDragTarget } =
-                          getColumnDragState(columnId);
+                  <tr
+                    key={String(key)}
+                    className={classNames(
+                      ranked
+                        ? index === 0
+                          ? "bg-success-100/40"
+                          : index === 1
+                            ? "bg-primary-50"
+                            : index === 2
+                              ? "bg-warning-100/50"
+                              : ""
+                        : "",
+                      onRowClick ? "cursor-pointer hover:bg-whiteScale-90" : "",
+                    )}
+                    onClick={() => onRowClick?.(row)}
+                    role={action ? "button" : undefined}
+                  >
+                    {selectable ? (
+                      <td className="border-b border-dashed border-divider px-3 py-4">
+                        <div
+                          className="flex items-center justify-center"
+                          onClick={(event) => event.stopPropagation()}
+                        >
+                          <Checkbox
+                            checked={activeSelectedKeys.includes(key)}
+                            onChange={() => handleToggleRow(key)}
+                            aria-label={`Select row ${index + 1}`}
+                          />
+                        </div>
+                      </td>
+                    ) : null}
+                    {orderedColumns.map((column, columnIndex) => {
+                      const columnId = getColumnId(column, columnIndex);
+                      const { isDragSource, isDragTarget } =
+                        getColumnDragState(columnId);
 
-                        return (
-                          <td
-                            key={columnId}
-                            className={classNames(
-                              "border-b border-dashed border-divider px-4 py-4 text-sm text-text-primary transition-colors duration-150",
-                              column.align === "center" ? "text-center" : "",
-                              column.align === "right" ? "text-right" : "text-left",
-                              isDragSource ? "bg-primary-50/70" : "",
-                              isDragTarget ? "bg-secondary-50/70" : "",
+                      return (
+                        <td
+                          key={columnId}
+                          style={getColumnStyle(column, columnId)}
+                          className={classNames(
+                            "border-b border-dashed border-divider px-4 py-4 text-sm text-text-primary transition-colors duration-150",
+                            column.align === "center" ? "text-center" : "",
+                            column.align === "right" ? "text-right" : "text-left",
+                            isDragSource ? "bg-primary-50/70" : "",
+                            isDragTarget ? "bg-secondary-50/70" : "",
+                          )}
+                        >
+                          {column.render
+                            ? column.render(row)
+                            : getDefaultCellValue(
+                              row,
+                              column,
+                              index,
+                              currentPage,
+                              limit,
                             )}
-                          >
-                            {column.render
-                              ? column.render(row)
-                              : getDefaultCellValue(
-                                  row,
-                                  column,
-                                  index,
-                                  currentPage,
-                                  limit,
-                                )}
-                          </td>
-                        );
-                      })}
-                    </tr>
-                  ))
+                        </td>
+                      );
+                    })}
+                  </tr>
+                ))
                 : null}
               {loading ? (
                 <tr>
@@ -709,7 +878,10 @@ export function Table<T>({
         {activeColumn ? (
           <div
             className="min-w-[220px] overflow-hidden rounded-xl border border-primary-200 bg-white shadow-[0_18px_40px_rgba(15,23,42,0.18)]"
-            style={activeColumn.width ? { width: activeColumn.width } : undefined}
+            style={getColumnStyle(
+              activeColumn,
+              activeDragColumnId ?? getColumnId(activeColumn, 0),
+            )}
           >
             <div className="border-b border-dashed border-divider bg-tertiary-100 px-4 py-5">
               <div className="flex items-center justify-between gap-3">
@@ -744,12 +916,12 @@ export function Table<T>({
                   {activeColumn.render
                     ? activeColumn.render(row)
                     : getDefaultCellValue(
-                        row,
-                        activeColumn,
-                        index,
-                        currentPage,
-                        limit,
-                      )}
+                      row,
+                      activeColumn,
+                      index,
+                      currentPage,
+                      limit,
+                    )}
                 </div>
               ))}
             </div>

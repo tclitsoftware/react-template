@@ -51,12 +51,25 @@ project-root/
 │   │   │   ├── page.json
 │   │   │   └── index.tsx
 │   │   └── ...
-│   ├── pages/
+│   ├── modules/
 │   │   ├── module1/
-│   │   │   └── feature.tsx
+│   │   │   ├── page1/
+│   │   │   │		├── index.page.tsx
+│   │   │   │		├── useCustomHooks.tsx
+│   │   │   │		└── sections/
+│   │   │   └── page2/
+│   │   │   		├── index.page.tsx
+│   │   │   		├── useCustomHooks.tsx
+│   │   │   		└── sections/
 │   │   ├── module2/
-│   │   │   ├── feature.tsx
-│   │   │   └── feature.tsx
+│   │   │   ├── page1/
+│   │   │   │		├── index.page.tsx
+│   │   │   │		├── useCustomHooks.tsx
+│   │   │   │		└── sections/
+│   │   │   └── page2/
+│   │   │   		├── index.page.tsx
+│   │   │   		├── useCustomHooks.tsx
+│   │   │   		└── sections/
 │   │   └── ...
 │   ├── routes/
 │   │   ├── index.tsx
@@ -132,7 +145,10 @@ The primary dependencies for this project are:
 
 1. **Component Development**: Develop your components inside the `src/components` directory.
 2. **Entry Point**: The entry point of your application is `src/index.tsx`.
-3. **Run the Project**: Start the development server using `yarn start:[env]`.
-4. **Build**: Build your project for production using `yarn build:[env]`.
+3. **Feature Development**: You should group pages in modules.
+4. **Clean Codes**: You have to separate UI and logic, store logic inside custom hooks.
+5. **Separate Sections**: If the page is too big, so you have to separate sections and place it at `/sections` folder
+6. **Run the Project**: Start the development server using `yarn start:[env]`.
+7. **Build**: Build your project for production using `yarn build:[env]`.
 
 Happy coding!
