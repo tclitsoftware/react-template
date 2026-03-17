@@ -13,6 +13,8 @@ import { buttonPageRouteName } from "modules/design-system/button/index.page";
 import { formFieldPageRouteName } from "modules/design-system/form-field/index.page";
 import { iconPageRouteName } from "modules/design-system/icon/index.page";
 import { tablesPageRouteName } from "modules/design-system/tables/index.page";
+import { translationPageRouteName } from "modules/design-system/translation/index.page";
+import { useAppTranslation } from "locale/useAppTranslation";
 
 interface SidebarProps {
   active: boolean;
@@ -60,6 +62,11 @@ const navSections: NavbarSectionDefinition[] = [
         path: iconPageRouteName,
       },
       {
+        id: "translations",
+        title: "Translations",
+        path: translationPageRouteName,
+      },
+      {
         id: `tables`,
         title: "Tables",
         path: tablesPageRouteName,
@@ -93,6 +100,7 @@ const navSections: NavbarSectionDefinition[] = [
 const allNavItems = navSections.flatMap((section) => section.items);
 
 const Sidebar: React.FC<SidebarProps> = ({ active }) => {
+  const { t } = useAppTranslation("menu");
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useAppDispatch();
@@ -117,7 +125,33 @@ const Sidebar: React.FC<SidebarProps> = ({ active }) => {
         }`}
     >
       <Navbar
-        sections={navSections}
+        sections={navSections.map((section) =>
+          section.id === "components"
+            ? {
+                ...section,
+                title: t("components-section-label"),
+                items: section.items.map((item) => ({
+                  ...item,
+                  title:
+                    item.id === "typography"
+                      ? t("nav-typography")
+                      : item.id === "colors"
+                        ? t("nav-colors")
+                        : item.id === "buttons"
+                          ? t("nav-buttons")
+                          : item.id === "form-fields"
+                            ? t("nav-form-field")
+                            : item.id === "icons"
+                              ? t("nav-icons")
+                              : item.id === "tables"
+                                ? t("nav-tables")
+                                : item.id === "translations"
+                                  ? t("nav-translations")
+                                  : item.title,
+                })),
+              }
+            : section,
+        )}
         activeItemId={activeItemId}
         onItemClick={handleItemClick}
         className="h-full"

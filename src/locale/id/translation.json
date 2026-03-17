@@ -1,0 +1,15 @@
+{
+  "page-title": "Sistem Terjemahan",
+  "translation-section-title": "Sistem terjemahan",
+  "translation-section-description": "Akses translation yang bertipe menjaga copy tetap terpusat dan mengurangi typo saat skala tim bertambah.",
+  "translation-example-title": "Penggunaan translation",
+  "translation-example-body": "Gunakan hook khusus namespace di komponen React dan helper translate di modul non-React.",
+  "language-switcher-title": "Pengganti bahasa",
+  "language-switcher-description": "Ubah bahasa aktif untuk memastikan key yang sama mengarah ke file resource yang berbeda.",
+  "current-language-label": "Bahasa aktif",
+  "general-namespace-label": "Namespace general",
+  "menu-namespace-label": "Namespace menu",
+  "react-example-label": "Penggunaan React",
+  "helper-example-label": "Penggunaan non React",
+  "helper-output-label": "Output helper saat ini"
+}

@@ -1,29 +1,32 @@
 import Typography from "components/typography";
 import Button from "components/button";
+import { useAppTranslation } from "locale/useAppTranslation";
 import { fillColors } from "../constants";
 
-const capitalize = (value: string) => value.charAt(0).toUpperCase() + value.slice(1);
+const FillSection = () => {
+  const { t } = useAppTranslation("button");
 
-const FillSection = () => (
-  <section className="border border-border rounded-xl bg-white p-6 space-y-4 shadow-sm">
-    <Typography variant="heading3">Fill variant</Typography>
-    <Typography variant="bodySmall" tone="muted">
-      Base, hover, and focus states use the 500 / 700 / 400 stops from the brand and semantic scales. Disabled buttons switch to whiteScale/blackScale tokens for consistent contrast.
-    </Typography>
-    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-      {fillColors.map((color) => (
-        <Button key={color} color={color}>
-          {capitalize(color)} fill
+  return (
+    <section className="border border-border rounded-xl bg-white p-6 space-y-4 shadow-sm">
+      <Typography variant="heading3">{t("fill-title")}</Typography>
+      <Typography variant="bodySmall" tone="muted">
+        {t("fill-description")}
+      </Typography>
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+        {fillColors.map((color) => (
+          <Button key={color} color={color}>
+            {`${t(`color-${color}` as never)} ${t("fill-suffix")}`}
+          </Button>
+        ))}
+      </div>
+      <div className="flex flex-wrap gap-3">
+        <Button color="primary">{t("fill-primary")}</Button>
+        <Button color="primary" disabled>
+          {t("fill-disabled")}
         </Button>
-      ))}
-    </div>
-    <div className="flex flex-wrap gap-3">
-      <Button color="primary">Primary fill</Button>
-      <Button color="primary" disabled>
-        Primary disabled
-      </Button>
-    </div>
-  </section>
-);
+      </div>
+    </section>
+  );
+};
 
 export default FillSection;

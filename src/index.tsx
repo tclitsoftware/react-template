@@ -1,21 +1,14 @@
 import './index.css';
-import * as i18n from 'i18next';
 import moment from 'moment';
 import 'moment/locale/id';
 import { createRoot } from 'react-dom/client';
-import { initReactI18next } from 'react-i18next';
 import App from './App';
-import LANG_EN from './locale/en';
+import './locale/i18n';
 import reportWebVitals from './reportWebVitals';
 
 moment.locale('en-EN');
 
 const root = createRoot(document.getElementById('root') as HTMLElement);
-i18n.use(initReactI18next).init({
-  resources: { en: { translation: LANG_EN } },
-  lng: 'id',
-  fallbackLng: 'id',
-});
 
 root.render(
   <App />

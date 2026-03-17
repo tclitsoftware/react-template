@@ -1,0 +1,18 @@
+{
+  "page-title": "Tabel Data",
+  "eyebrow": "Tabel",
+  "description": "Filter dan sorting dikendalikan hanya dari state halaman. Di production, state ini seharusnya diteruskan ke request params RTK Query dan endpoint mengembalikan baris berikutnya.",
+  "params-title": "Request params saat ini",
+  "error-load": "Gagal memuat data tabel",
+  "column-customer": "Pelanggan",
+  "column-quantity": "Jumlah",
+  "column-status": "Status",
+  "column-action": "Aksi",
+  "filter-search-by": "Cari berdasarkan",
+  "filter-all-data": "Semua data",
+  "status-active": "Aktif",
+  "status-pending": "Menunggu",
+  "status-inactive": "Tidak aktif",
+  "action-edit": "Edit",
+  "select-all": "Semua"
+}

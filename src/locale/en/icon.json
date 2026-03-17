@@ -1,0 +1,12 @@
+{
+  "page-title": "Icon System",
+  "overview-title": "Icon usage",
+  "overview-description": "Reference any SVG under src/assets/icons by its file name without the extension. The Icon component accepts size and color overrides so you can adapt to different contexts without editing the SVG source.",
+  "example-add": "Add item",
+  "example-schedule": "Schedule",
+  "example-comments": "Comments",
+  "example-shortcut-title": "Example shortcut",
+  "example-override-title": "Or (but not recommended)",
+  "gallery-title": "Icon gallery",
+  "gallery-description": "Each name maps to a matching SVG under src/assets/icons. Combine the name with the Icon component for consistent sizing and color control."
+}

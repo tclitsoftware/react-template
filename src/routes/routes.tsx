@@ -9,6 +9,7 @@ import ButtonPage, { buttonPageRouteName } from "modules/design-system/button/in
 import FormFieldPage, { formFieldPageRouteName } from "modules/design-system/form-field/index.page";
 import IconPage, { iconPageRouteName } from "modules/design-system/icon/index.page";
 import TablesPage, { tablesPageRouteName } from "modules/design-system/tables/index.page";
+import TranslationPage, { translationPageRouteName } from "modules/design-system/translation/index.page";
 
 const publicRoutes: Array<RouteObject> = [
   {
@@ -26,6 +27,7 @@ const publicRoutes: Array<RouteObject> = [
           { path: buttonPageRouteName, element: <ButtonPage /> },
           { path: formFieldPageRouteName, element: <FormFieldPage /> },
           { path: iconPageRouteName, element: <IconPage /> },
+          { path: translationPageRouteName, element: <TranslationPage /> },
         ],
       },
       { path: notFoundRouteName, element: <NotFoundPage /> },

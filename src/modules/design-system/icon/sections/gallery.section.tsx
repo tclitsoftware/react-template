@@ -1,16 +1,17 @@
 import Icon, { IconName, iconNames } from "components/icon";
 import Typography from "components/typography";
+import { useAppTranslation } from "locale/useAppTranslation";
 
 const previewIcons: IconName[] = iconNames.filter(icon => !icon.includes("/")).sort();
 
 const IconGallerySection = () => {
+  const { t } = useAppTranslation("icon");
   return (
     <section className="border border-border rounded-xl bg-white p-6 space-y-4 shadow-sm">
       <div className="flex flex-col gap-2">
-        <Typography variant="heading3">Icon gallery</Typography>
+        <Typography variant="heading3">{t("gallery-title")}</Typography>
         <Typography variant="bodySmall" tone="muted">
-          Each name maps to a matching SVG under <code className="font-mono">src/assets/icons</code>. Combine the name with the
-          <code className="font-mono">Icon</code> component for consistent sizing and color control.
+          {t("gallery-description")}
         </Typography>
       </div>
 

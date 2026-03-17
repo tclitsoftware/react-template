@@ -1,0 +1,18 @@
+{
+  "page-title": "Data Tables",
+  "eyebrow": "Table",
+  "description": "Filters and sorting are controlled from the page state only. In production, this state should be passed into RTK Query request params and the endpoint should return the next rows.",
+  "params-title": "Current request params",
+  "error-load": "Failed to load table data",
+  "column-customer": "Customer",
+  "column-quantity": "Quantity",
+  "column-status": "Status",
+  "column-action": "Action",
+  "filter-search-by": "Search by",
+  "filter-all-data": "All Data",
+  "status-active": "Active",
+  "status-pending": "Pending",
+  "status-inactive": "Inactive",
+  "action-edit": "Edit",
+  "select-all": "All"
+}

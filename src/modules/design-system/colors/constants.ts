@@ -2,8 +2,8 @@ import { ColorPalette } from "_interfaces/colors-component.interfaces";
 
 export const brandPalettes: ColorPalette[] = [
   {
-    name: "Primary",
-    description: "Brand hero and CTA colors from lightest to darkest.",
+    name: "palette-primary-name",
+    description: "palette-primary-description",
     shades: [
       { label: "50", value: "#DAEDFF" },
       { label: "100", value: "#D3E7F9" },
@@ -16,8 +16,8 @@ export const brandPalettes: ColorPalette[] = [
     ],
   },
   {
-    name: "Secondary",
-    description: "Secondary brand accent for badges and interactive elements.",
+    name: "palette-secondary-name",
+    description: "palette-secondary-description",
     shades: [
       { label: "100", value: "#C8F7FA" },
       { label: "200", value: "#93EAF5" },
@@ -29,8 +29,8 @@ export const brandPalettes: ColorPalette[] = [
     ],
   },
   {
-    name: "Tertiary",
-    description: "Tertiary gray-blue scale used for backgrounds and muted labels.",
+    name: "palette-tertiary-name",
+    description: "palette-tertiary-description",
     shades: [
       { label: "100", value: "#F0F4F8" },
       { label: "200", value: "#E2E9F2" },
@@ -45,8 +45,8 @@ export const brandPalettes: ColorPalette[] = [
 
 export const semanticPalettes: ColorPalette[] = [
   {
-    name: "Success",
-    description: "Positive states, confirmations, and badges.",
+    name: "palette-success-name",
+    description: "palette-success-description",
     shades: [
       { label: "100", value: "#CDF9D4" },
       { label: "200", value: "#0DF3B4" },
@@ -58,8 +58,8 @@ export const semanticPalettes: ColorPalette[] = [
     ],
   },
   {
-    name: "Warning",
-    description: "Warnings and attention states.",
+    name: "palette-warning-name",
+    description: "palette-warning-description",
     shades: [
       { label: "100", value: "#FFF5CC" },
       { label: "200", value: "#FFE799" },
@@ -71,8 +71,8 @@ export const semanticPalettes: ColorPalette[] = [
     ],
   },
   {
-    name: "Error",
-    description: "Invalid and destructive states.",
+    name: "palette-error-name",
+    description: "palette-error-description",
     shades: [
       { label: "100", value: "#FDE1D3" },
       { label: "200", value: "#FBBDA8" },
@@ -84,8 +84,8 @@ export const semanticPalettes: ColorPalette[] = [
     ],
   },
   {
-    name: "Info",
-    description: "Informational badges and helper text.",
+    name: "palette-info-name",
+    description: "palette-info-description",
     shades: [
       { label: "100", value: "#CAF7FC" },
       { label: "200", value: "#96EAF9" },
@@ -100,8 +100,8 @@ export const semanticPalettes: ColorPalette[] = [
 
 export const scalePalettes: ColorPalette[] = [
   {
-    name: "Black scale",
-    description: "Black/white scale for strong text, borders, and backgrounds.",
+    name: "palette-black-scale-name",
+    description: "palette-black-scale-description",
     shades: [
       { label: "0", value: "#FFFFFF" },
       { label: "20", value: "#64748B" },
@@ -112,8 +112,8 @@ export const scalePalettes: ColorPalette[] = [
     ],
   },
   {
-    name: "White scale",
-    description: "Tones for light backgrounds and surfaces.",
+    name: "palette-white-scale-name",
+    description: "palette-white-scale-description",
     shades: [
       { label: "60", value: "#CBD5E1" },
       { label: "70", value: "#E2E8F0" },
@@ -123,8 +123,8 @@ export const scalePalettes: ColorPalette[] = [
     ],
   },
   {
-    name: "Grey scale",
-    description: "Mid tone blend for disabled states and dividers.",
+    name: "palette-grey-scale-name",
+    description: "palette-grey-scale-description",
     shades: [
       { label: "0", value: "#020617" },
       { label: "20", value: "#0F172A" },
@@ -138,8 +138,8 @@ export const scalePalettes: ColorPalette[] = [
 
 export const utilityPalettes: ColorPalette[] = [
   {
-    name: "Text tokens",
-    description: "Primary copy, secondary copy, and link colors.",
+    name: "palette-text-tokens-name",
+    description: "palette-text-tokens-description",
     shades: [
       { label: "primary", value: "#0F172A" },
       { label: "secondary", value: "#64748B" },
@@ -149,8 +149,8 @@ export const utilityPalettes: ColorPalette[] = [
     ],
   },
   {
-    name: "Background tokens",
-    description: "Default backgrounds for cards, panels, and pages.",
+    name: "palette-background-tokens-name",
+    description: "palette-background-tokens-description",
     shades: [
       { label: "DEFAULT", value: "#F8FAFC" },
       { label: "primary", value: "#224A8A" },
@@ -159,8 +159,8 @@ export const utilityPalettes: ColorPalette[] = [
     ],
   },
   {
-    name: "Border tokens",
-    description: "Standard border, focus, and error strokes.",
+    name: "palette-border-tokens-name",
+    description: "palette-border-tokens-description",
     shades: [
       { label: "DEFAULT", value: "#CED4DA" },
       { label: "subtle", value: "#F1F5F9" },
@@ -170,8 +170,8 @@ export const utilityPalettes: ColorPalette[] = [
     ],
   },
   {
-    name: "Divider",
-    description: "Divider stroke between sections.",
+    name: "palette-divider-name",
+    description: "palette-divider-description",
     shades: [{ label: "DEFAULT", value: "#CED4DA" }],
   },
 ];

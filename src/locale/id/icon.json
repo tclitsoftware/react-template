@@ -1,0 +1,12 @@
+{
+  "page-title": "Sistem simbol",
+  "overview-title": "Penggunaan simbol",
+  "overview-description": "Referensikan SVG apa pun di bawah src/assets/icons berdasarkan nama file tanpa ekstensi. Komponen Icon menerima override ukuran dan warna sehingga bisa disesuaikan tanpa mengedit sumber SVG.",
+  "example-add": "Tambah item",
+  "example-schedule": "Jadwalkan",
+  "example-comments": "Komentar",
+  "example-shortcut-title": "Contoh shortcut",
+  "example-override-title": "Atau (tidak direkomendasikan)",
+  "gallery-title": "Galeri simbol",
+  "gallery-description": "Setiap nama dipetakan ke SVG yang sesuai di bawah src/assets/icons. Gabungkan nama dengan komponen Icon untuk ukuran dan kontrol warna yang konsisten."
+}

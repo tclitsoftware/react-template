@@ -1,11 +1,13 @@
 import { Table } from "components/table";
 import Typography from "components/typography";
+import { useAppTranslation } from "locale/useAppTranslation";
 import { CustomerRow } from "_services/modules/table-example";
 import useTables from "./useTables";
 
 export const tablesPageRouteName = "/components/tables";
 
 const TablesPage = () => {
+  const { t } = useAppTranslation("tables");
   const {
     columns,
     sortState,
@@ -25,14 +27,14 @@ const TablesPage = () => {
       <section className="rounded-2xl border border-border bg-white p-6 shadow-sm">
         <div className="flex flex-col gap-2">
           <Typography variant="bodyExtraSmall" tone="muted" className="uppercase tracking-[0.24em]">
-            Table
+            {t("eyebrow")}
           </Typography>
           <Typography variant="bodySmall" tone="muted">
-            Filters and sorting are controlled from the page state only. In production, this state should be passed into RTK Query request params and the endpoint should return the next rows.
+            {t("description")}
           </Typography>
           <div className="mt-2 rounded-xl bg-whiteScale-90 p-4">
             <Typography variant="bodyExtraSmall" tone="muted">
-              Current request params
+              {t("params-title")}
             </Typography>
             <Typography variant="code" className="mt-1 block whitespace-pre-wrap">
               {JSON.stringify(
@@ -59,7 +61,8 @@ const TablesPage = () => {
           filterValues={filterValues}
           onFilterValuesChange={setFilterValues}
           loading={isFetching}
-          error={error ? "Failed to load table data" : ""}
+          error={error ? t("error-load") : ""}
+          selectableLabel={t("select-all")}
         />
       </section>
     </div>

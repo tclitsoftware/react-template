@@ -1,10 +1,12 @@
 import Typography from "components/typography"
+import { useAppTranslation } from "locale/useAppTranslation";
 import { variantDetails } from "../constants"
 
 const VariantOverviewSection = () => {
+  const { t } = useAppTranslation("typography");
   return (
     <section className="border border-border rounded-xl bg-white p-6 space-y-4 shadow-sm">
-      <Typography variant="heading3">Variants overview</Typography>
+      <Typography variant="heading3">{t("variants-title")}</Typography>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         {variantDetails.map((variant) => (
           <div
@@ -16,10 +18,10 @@ const VariantOverviewSection = () => {
               tone="primary"
               weight="semibold"
             >
-              {variant.label}
+              {t(variant.labelKey as never)}
             </Typography>
             <Typography variant="bodySmall" tone="muted">
-              {variant.description}
+              {t(variant.descriptionKey as never)}
             </Typography>
           </div>
         ))}

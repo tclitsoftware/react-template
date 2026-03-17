@@ -21,14 +21,14 @@ export const outlineColors: ButtonColor[] = [
 ];
 
 export const buttonSizes: Array<{
-  label: string;
+  labelKey: string;
   size: ButtonSize;
   detail: string;
 }> = [
-  { label: "Small", size: "small", detail: "text-xs · px-12 · py-7" },
-  { label: "Medium", size: "medium", detail: "text-sm · px-14 · py-8" },
-  { label: "Large", size: "large", detail: "text-sm · px-16 · py-12" },
-  { label: "XL", size: "xl", detail: "text-base bold · px-20 · py-13" },
-  { label: "2XL", size: "2xl", detail: "text-lg bold · px-24 · py-17.5" },
-  { label: "3XL", size: "3xl", detail: "text-xl bold · px-32 · py-20" },
+  { labelKey: "size-small", size: "small", detail: "text-xs · px-12 · py-7" },
+  { labelKey: "size-medium", size: "medium", detail: "text-sm · px-14 · py-8" },
+  { labelKey: "size-large", size: "large", detail: "text-sm · px-16 · py-12" },
+  { labelKey: "size-xl", size: "xl", detail: "text-base bold · px-20 · py-13" },
+  { labelKey: "size-2xl", size: "2xl", detail: "text-lg bold · px-24 · py-17.5" },
+  { labelKey: "size-3xl", size: "3xl", detail: "text-xl bold · px-32 · py-20" },
 ];

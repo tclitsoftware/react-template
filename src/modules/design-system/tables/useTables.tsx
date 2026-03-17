@@ -4,6 +4,7 @@ import Icon from "components/icon";
 import Input from "components/input";
 import { TableSortState, Columns } from "components/table";
 import { useEffect, useMemo, useState } from "react";
+import { useAppTranslation } from "locale/useAppTranslation";
 import { useAppDispatch } from "store";
 import { setGlobalComponent } from "store/global-components";
 
@@ -15,6 +16,7 @@ const statusClasses: Record<CustomerRow["status"], string> = {
 
 const useTables = () => {
   const dispatch = useAppDispatch();
+  const { t } = useAppTranslation("tables");
   const [selectedKeys, setSelectedKeys] = useState<Array<string | number>>([]);
   const [sortState, setSortState] = useState<TableSortState>(null);
   const [filterValues, setFilterValues] = useState<Record<string, string>>({});
@@ -29,26 +31,26 @@ const useTables = () => {
   const { data, isFetching, error } = useGetCustomerTableQuery(queryParams);
 
   useEffect(() => {
-    dispatch(setGlobalComponent({ title: "Data Tables", hasBackButton: false }));
-  }, []);
+    dispatch(setGlobalComponent({ title: t("page-title"), hasBackButton: false }));
+  }, [dispatch, t]);
 
   const columns: Columns<CustomerRow>[] = useMemo(
     () => [
       {
         id: "customer",
         fieldId: "customer",
-        label: "Customer",
+        label: t("column-customer"),
         sortable: true,
         filterable: true,
-        filterPlaceholder: "Search by",
+        filterPlaceholder: t("filter-search-by"),
       },
       {
         id: "quantity",
         fieldId: "quantity",
-        label: "Quantity",
+        label: t("column-quantity"),
         sortable: true,
         filterable: true,
-        filterPlaceholder: "Search by",
+        filterPlaceholder: t("filter-search-by"),
         render: (row) => (
           <div className="flex flex-col gap-1">
             <span className="text-[24px] leading-none text-text-secondary">
@@ -60,14 +62,14 @@ const useTables = () => {
       },
       {
         fieldId: "status",
-        label: "Status",
+        label: t("column-status"),
         sortable: true,
         filterable: true,
         filterOptions: [
-          { label: "All Data", value: "" },
-          { label: "Active", value: "active" },
-          { label: "Pending", value: "pending" },
-          { label: "Inactive", value: "inactive" },
+          { label: t("filter-all-data"), value: "" },
+          { label: t("status-active"), value: "active" },
+          { label: t("status-pending"), value: "pending" },
+          { label: t("status-inactive"), value: "inactive" },
         ],
         width: "260px",
         render: (row) => (
@@ -75,14 +77,14 @@ const useTables = () => {
             <span
               className={`h-3.5 w-3.5 rounded-full ${statusClasses[row.status]}`}
             />
-            <span className="capitalize">{row.status}</span>
+            <span>{t(`status-${row.status}` as never)}</span>
           </div>
         ),
       },
       {
         id: "action",
         fieldId: "id",
-        label: "Action",
+        label: t("column-action"),
         width: "260px",
         dragDisabled: true,
         renderFilter: ({ onChange }) => {
@@ -100,7 +102,7 @@ const useTables = () => {
               iconLeft={<Icon name="frame" size={14} />}
               className="min-w-[72px]"
             >
-              Edit
+              {t("action-edit")}
             </Button>
             <Button
               type="button"
@@ -110,13 +112,13 @@ const useTables = () => {
               iconLeft={<Icon name="frame" size={14} />}
               className="min-w-[72px]"
             >
-              Edit
+              {t("action-edit")}
             </Button>
           </div>
         ),
       },
     ],
-    [],
+    [t],
   );
 
   return {

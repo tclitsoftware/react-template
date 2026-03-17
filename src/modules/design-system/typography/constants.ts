@@ -2,49 +2,49 @@ import { TypographyVariant, TypographyWeight, TypographyTone, TypographyAlign } 
 
 export const variantDetails: Array<{
   variant: TypographyVariant;
-  label: string;
-  description: string;
+  labelKey: string;
+  descriptionKey: string;
 }> = [
-    { variant: "heading1", label: "Heading 1", description: "Use for hero or top-level page titles." },
-    { variant: "heading2", label: "Heading 2", description: "Section titles or cards that need emphasis." },
-    { variant: "heading3", label: "Heading 3", description: "Subsection headings." },
-    { variant: "heading4", label: "Heading 4", description: "Panel headers or wide-form context." },
-    { variant: "heading5", label: "Heading 5", description: "Mini titles and callouts." },
-    { variant: "heading6", label: "Heading 6", description: "Inline labels and tertiary captions." },
-    { variant: "body", label: "Body", description: "Default paragraph text for forms, lists, and cards." },
-    { variant: "bodyLarge", label: "Body Large", description: "Readable body copy with extra breathing room." },
-    { variant: "bodyMedium", label: "Body Medium", description: "Compact paragraphs or helper copy." },
-    { variant: "bodySmall", label: "Body Small", description: "Microcopy, chips, and inline instructions." },
-    { variant: "bodyExtraSmall", label: "Body Extra Small", description: "Ultra-fine labels or metadata." },
-    { variant: "bodyExtraSmallBold", label: "Body Extra Small Bold", description: "Caps or badges that need emphasis." },
-    { variant: "code", label: "Code", description: "Inline code snippets or terminal blocks." },
+    { variant: "heading1", labelKey: "variant-heading1-label", descriptionKey: "variant-heading1-description" },
+    { variant: "heading2", labelKey: "variant-heading2-label", descriptionKey: "variant-heading2-description" },
+    { variant: "heading3", labelKey: "variant-heading3-label", descriptionKey: "variant-heading3-description" },
+    { variant: "heading4", labelKey: "variant-heading4-label", descriptionKey: "variant-heading4-description" },
+    { variant: "heading5", labelKey: "variant-heading5-label", descriptionKey: "variant-heading5-description" },
+    { variant: "heading6", labelKey: "variant-heading6-label", descriptionKey: "variant-heading6-description" },
+    { variant: "body", labelKey: "variant-body-label", descriptionKey: "variant-body-description" },
+    { variant: "bodyLarge", labelKey: "variant-bodyLarge-label", descriptionKey: "variant-bodyLarge-description" },
+    { variant: "bodyMedium", labelKey: "variant-bodyMedium-label", descriptionKey: "variant-bodyMedium-description" },
+    { variant: "bodySmall", labelKey: "variant-bodySmall-label", descriptionKey: "variant-bodySmall-description" },
+    { variant: "bodyExtraSmall", labelKey: "variant-bodyExtraSmall-label", descriptionKey: "variant-bodyExtraSmall-description" },
+    { variant: "bodyExtraSmallBold", labelKey: "variant-bodyExtraSmallBold-label", descriptionKey: "variant-bodyExtraSmallBold-description" },
+    { variant: "code", labelKey: "variant-code-label", descriptionKey: "variant-code-description" },
   ];
 
-export const weightOptions: Array<{ weight: TypographyWeight; label: string }> = [
-  { weight: "thin", label: "Thin" },
-  { weight: "light", label: "Light" },
-  { weight: "normal", label: "Normal" },
-  { weight: "medium", label: "Medium" },
-  { weight: "semibold", label: "Semi bold" },
-  { weight: "bold", label: "Bold" },
-  { weight: "extrabold", label: "Extra bold" },
-  { weight: "black", label: "Black" },
+export const weightOptions: Array<{ weight: TypographyWeight; labelKey: string }> = [
+  { weight: "thin", labelKey: "weight-thin" },
+  { weight: "light", labelKey: "weight-light" },
+  { weight: "normal", labelKey: "weight-normal" },
+  { weight: "medium", labelKey: "weight-medium" },
+  { weight: "semibold", labelKey: "weight-semibold" },
+  { weight: "bold", labelKey: "weight-bold" },
+  { weight: "extrabold", labelKey: "weight-extrabold" },
+  { weight: "black", labelKey: "weight-black" },
 ];
 
-export const toneOptions: Array<{ tone: TypographyTone; label: string }> = [
-  { tone: "black", label: "Black" },
-  { tone: "primary", label: "Primary" },
-  { tone: "secondary", label: "Secondary" },
-  { tone: "muted", label: "Muted" },
-  { tone: "inverse", label: "Inverse" },
-  { tone: "info", label: "Info" },
-  { tone: "warning", label: "Warning" },
-  { tone: "error", label: "Error" },
+export const toneOptions: Array<{ tone: TypographyTone; labelKey: string }> = [
+  { tone: "black", labelKey: "tone-black" },
+  { tone: "primary", labelKey: "tone-primary" },
+  { tone: "secondary", labelKey: "tone-secondary" },
+  { tone: "muted", labelKey: "tone-muted" },
+  { tone: "inverse", labelKey: "tone-inverse" },
+  { tone: "info", labelKey: "tone-info" },
+  { tone: "warning", labelKey: "tone-warning" },
+  { tone: "error", labelKey: "tone-error" },
 ];
 
-export const alignOptions: Array<{ align: TypographyAlign; label: string }> = [
-  { align: "left", label: "Left" },
-  { align: "center", label: "Center" },
-  { align: "right", label: "Right" },
-  { align: "justify", label: "Justify" },
+export const alignOptions: Array<{ align: TypographyAlign; labelKey: string }> = [
+  { align: "left", labelKey: "align-left" },
+  { align: "center", labelKey: "align-center" },
+  { align: "right", labelKey: "align-right" },
+  { align: "justify", labelKey: "align-justify" },
 ];

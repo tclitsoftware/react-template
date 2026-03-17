@@ -1,4 +1,12 @@
 {
-  "test": "test"
+  "browser-title": "TMS MVP",
+  "components-section-label": "Components",
+  "nav-typography": "Typography",
+  "nav-colors": "Colors",
+  "nav-buttons": "Buttons",
+  "nav-form-field": "Form Fields",
+  "nav-icons": "Icons",
+  "nav-tables": "Tables",
+  "nav-translations": "Translations"
 }
  

@@ -1,12 +1,14 @@
 import { useCallback, useEffect, useState } from "react";
 import Typography from "components/typography";
 import Select from "components/select";
+import { useAppTranslation } from "locale/useAppTranslation";
 import {
   useCreateOptionMutation,
   useLazySearchOptionsQuery,
 } from "_services/modules/select-example";
 
 const SearchableSelectSection = () => {
+  const { t } = useAppTranslation("formField");
   const [trigger, { data, isFetching }] = useLazySearchOptionsQuery();
   const [createOption] = useCreateOptionMutation();
   const [selected, setSelected] = useState<string[]>([]);
@@ -34,28 +36,28 @@ const SearchableSelectSection = () => {
 
   return (
     <section className="border border-border rounded-xl bg-white p-6 space-y-4 shadow-sm">
-      <Typography variant="heading3">Searchable select</Typography>
+      <Typography variant="heading3">{t("searchable-title")}</Typography>
       <Typography variant="bodySmall" tone="muted">
-        Multiselect dropdown can fetch search results and create missing options via RTK Query.
+        {t("searchable-description")}
       </Typography>
       <Select
-        label="Team"
-        helperText="Type to search, and add a new option if no result is returned"
+        label={t("team-label")}
+        helperText={t("searchable-helper")}
         options={data ?? []}
         multiple
         searchable
         loading={isFetching}
         onSearch={handleSearch}
         onCreateOption={handleCreate}
-        createOptionLabel={(term) => `Add "${term}"`}
+        createOptionLabel={(term) => `${t("searchable-add-prefix")} "${term}"`}
         value={selected}
         onValueChange={(next) =>
           setSelected(Array.isArray(next) ? next : next ? [next] : [])
         }
-        noOptionsText="Try another keyword"
+        noOptionsText={t("searchable-empty")}
       />
       <Typography variant="body" tone="muted">
-        Selected: {selected.length ? selected.join(", ") : "none"}
+        {`${t("searchable-selected")}: ${selected.length ? selected.join(", ") : t("searchable-none")}`}
       </Typography>
     </section>
   );

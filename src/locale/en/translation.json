@@ -1,0 +1,15 @@
+{
+  "page-title": "Translation System",
+  "translation-section-title": "Translation system",
+  "translation-section-description": "Typed translation access keeps copy centralized and reduces runtime typos when teams scale the codebase.",
+  "translation-example-title": "Translation usage",
+  "translation-example-body": "Use the namespace-specific hook in React components and the translate helper in non-React modules.",
+  "language-switcher-title": "Language switcher",
+  "language-switcher-description": "Change the active language to verify that the same typed keys resolve to different resource files.",
+  "current-language-label": "Current language",
+  "general-namespace-label": "General namespace",
+  "menu-namespace-label": "Menu namespace",
+  "react-example-label": "React usage",
+  "helper-example-label": "Non React usage",
+  "helper-output-label": "Current helper output"
+}
