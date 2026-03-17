@@ -47,16 +47,24 @@ export const SelectedChip = ({
         </Typography>
       ) : null}
     </div>
-    <button
-      type="button"
+    <span
+      role="button"
+      tabIndex={0}
       onClick={(event) => {
         event.stopPropagation();
         onRemove();
       }}
+      onKeyDown={(event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          event.stopPropagation();
+          onRemove();
+        }
+      }}
       className="text-primary-500 focus:outline-none"
     >
       <Icon name="close-circle" size={12} />
-    </button>
+    </span>
   </span>
 );
 
@@ -83,7 +91,7 @@ export const OptionRow = ({
       .filter(Boolean)
       .join(" ")}
   >
-    {multiple ? <Checkbox checked={active} /> : null}
+    {multiple ? <Checkbox checked={active} readOnly /> : null}
     <div>
       <Typography variant="bodyMedium" className="text-greyScale-60">
         {option.label}

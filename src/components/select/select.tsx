@@ -145,15 +145,23 @@ const SelectInner = (
           )}
 
           {multiple && selectedValue.length > 0 ? (
-            <button
-              type="button"
+            <span
+              role="button"
+              tabIndex={0}
               onClick={(event) => {
                 event.stopPropagation();
                 handleRemoveAll();
               }}
+              onKeyDown={(event) => {
+                if (event.key === "Enter" || event.key === " ") {
+                  event.preventDefault();
+                  event.stopPropagation();
+                  handleRemoveAll();
+                }
+              }}
             >
               <Icon name="close-circle" size={15} />
-            </button>
+            </span>
           ) : (
             <Icon
               name="arrow-down-2"
