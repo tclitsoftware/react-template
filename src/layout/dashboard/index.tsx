@@ -20,8 +20,8 @@ const DashboardLayout: React.FC = (): JSX.Element => {
       </Helmet>
       <div className="flex">
         <Sidebar active={showSideBar!} />
-        <Container className={`${showSideBar ? "w-[80%]" : "w-full"}`}>
-          <Header className={`${showSideBar ? "w-[80%]" : "w-full"}`} />
+        <Container className={`${showSideBar ? "w-[80%]" : "w-full"} transition-all`}>
+          <Header className={`${showSideBar ? "w-[80%]" : "w-full"} transition-all`} />
           <Outlet />
         </Container>
       </div>
