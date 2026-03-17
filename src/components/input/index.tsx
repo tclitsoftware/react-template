@@ -21,6 +21,7 @@ type InputProps = Omit<
   leftIcon?: ReactNode;
   rightIcon?: ReactNode;
   overrideClassName?: string;
+  parentClassName?: string;
   reserveHelperSpace?: boolean;
   enableNumberFormat?: boolean;
   enableCurrencyFormat?: boolean;
@@ -183,6 +184,7 @@ const InputInner = (
     id,
     disabled,
     overrideClassName,
+    parentClassName,
     reserveHelperSpace = true,
     type,
     value,
@@ -335,7 +337,7 @@ const InputInner = (
   };
 
   return (
-    <div className="w-full flex flex-col gap-[7px]">
+    <div className={`w-full flex flex-col gap-[7px] ${parentClassName}`}>
       {label &&
         <label className="flex items-center gap-1 text-sm text-text-primary" htmlFor={inputId}>
           {label}

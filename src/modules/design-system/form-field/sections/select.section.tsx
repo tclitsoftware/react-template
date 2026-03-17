@@ -41,6 +41,14 @@ const SelectSection = () => (
           error={{ type: "required", message: "Phone number is required" }}
         />
       </div>
+      <div className="space-y-2">
+        <Typography variant="heading6">Multiple select</Typography>
+        <Select
+          label="Label"
+          options={selectOptions}
+          multiple
+        />
+      </div>
     </div>
   </section>
 );
