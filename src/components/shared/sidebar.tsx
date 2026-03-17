@@ -113,7 +113,7 @@ const Sidebar: React.FC<SidebarProps> = ({ active }) => {
 
   return (
     <aside
-      className={`z-[999] max-h-screen h-screen overflow-auto relative top-0 transition-all bg-white border-r border-border shadow-lg ${active ? "left-0 w-[20%]" : "-left-[20%] w-[0%]"
+      className={`z-[998] max-h-screen h-screen overflow-auto relative top-0 transition-all bg-white border-r border-border shadow-lg ${active ? "left-0 w-[20%]" : "-left-[20%] w-[0%]"
         }`}
     >
       <Navbar

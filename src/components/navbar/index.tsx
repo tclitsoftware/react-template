@@ -144,30 +144,11 @@ const Navbar: NavbarComponent = ({
   sections,
   activeItemId,
   onItemClick,
-  logo,
   className,
   children,
 }) => (
   <nav className={`w-full bg-white px-6 py-8 ${className ?? ""}`} aria-label="Sidebar navigation">
-    <div className="flex items-center gap-2.5">
-      {logo ?? (
-        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-white">
-          <svg
-            width="28"
-            height="28"
-            viewBox="0 0 28 28"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <circle cx="14" cy="14" r="13" stroke="currentColor" strokeWidth="2" />
-            <circle cx="14" cy="14" r="5" fill="currentColor" />
-          </svg>
-        </div>
-      )}
-      <span className="text-2xl font-semibold text-primary">CustomerHub</span>
-    </div>
-
-    <div className="space-y-8 mt-8">
+    <div className="space-y-8 mt-14">
       {sections.length > 0
         ? sections.map((section) => (
             <NavbarGroup key={section.id} title={section.title} badge={section.badge}>

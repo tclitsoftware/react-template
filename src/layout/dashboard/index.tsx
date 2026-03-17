@@ -19,9 +19,9 @@ const DashboardLayout: React.FC = (): JSX.Element => {
         <title>{t("Admin Portal")}</title>
       </Helmet>
       <div className="flex">
+        <Header className={`w-full transition-all`} />
         <Sidebar active={showSideBar!} />
         <Container className={`${showSideBar ? "w-[80%]" : "w-full"} transition-all`}>
-          <Header className={`${showSideBar ? "w-[80%]" : "w-full"} transition-all`} />
           <Outlet />
         </Container>
       </div>
