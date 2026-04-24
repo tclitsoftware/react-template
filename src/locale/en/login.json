@@ -1,0 +1,16 @@
+{
+  "page-title": "Login",
+  "form-title": "Welcome to Admin",
+  "form-subtitle": "Please login with your account",
+  "label-email": "Email",
+  "label-password": "Password",
+  "placeholder-email": "Input Email",
+  "placeholder-password": "Input Password",
+  "label-remember-me": "Remember me",
+  "btn-login": "Login",
+  "btn-logout": "Logout",
+  "label-language": "Language",
+  "error-email-required": "Email is required",
+  "error-email-invalid": "Email is invalid",
+  "error-password-required": "Password is required"
+}

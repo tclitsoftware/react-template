@@ -1,0 +1,18 @@
+{
+  "title": "HISTORY DATA",
+  "subtitle": "A record of changes and updates for this data",
+  "created-by": "Created by",
+  "last-update-by": "Last Update by",
+  "filter-all": "All Data",
+  "filter-create": "Create",
+  "filter-update": "Edit",
+  "filter-status-change": "Status Change",
+  "action-create": "Create",
+  "action-update": "Edit",
+  "action-status-change": "Status Change",
+  "fields-label": "Fields",
+  "change-description": "Change {{field}} from '{{oldValue}}' to '{{newValue}}'",
+  "data-created": "Data created",
+  "today": "Today",
+  "yesterday": "Yesterday"
+}

@@ -114,7 +114,12 @@ const NavbarItem: React.FC<NavbarItemProps> = ({
       {...elementProps}
       className={`${baseClasses} ${stateClasses} ${disabledClasses}`}
       aria-current={active ? "page" : undefined}
-      onClick={onClick}
+      onClick={(event: React.MouseEvent) => {
+        if (href && onClick) {
+          event.preventDefault();
+        }
+        onClick?.();
+      }}
     >
       <span className="flex h-6 w-6 items-center justify-center text-current">
         <Icon className="h-5 w-5 text-current" />

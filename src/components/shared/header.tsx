@@ -7,6 +7,8 @@ import Typography from "components/typography";
 import Icon from "components/icon";
 import TclLogo from "assets/images/tcl.png";
 import { toggleSideBar } from "store/global-components";
+import { useAppTranslation } from "locale/useAppTranslation";
+import { useLanguageSwitcher } from "locale/useLanguageSwitcher";
 
 interface HeaderProps {
   className?: string;
@@ -16,32 +18,44 @@ interface HeaderMenuProps {
   handleClickLogout: () => void;
 }
 
-// const HeaderMenu: React.FC<HeaderMenuProps> = ({
-//   handleClickLogout,
-// }): JSX.Element => {
-//   return (
-//     <Menu className="z-[999] fixed top-[60px] right-[20px] bg-white w-56">
-//       <Menu.Item>
-//         <Link
-//           to="#"
-//           className="flex items-center gap-2"
-//         >
-//           <FiSettings size={20} />
-//           <span className="font-bold">Settings</span>
-//         </Link>
-//       </Menu.Item>
-//       <Menu.Item>
-//         <div
-//           onClick={handleClickLogout}
-//           className="flex items-center gap-2"
-//         >
-//           <FiLogOut size={20} />
-//           <span className="font-bold">Logout</span>
-//         </div>
-//       </Menu.Item>
-//     </Menu>
-//   );
-// };
+const HeaderMenu: React.FC<HeaderMenuProps> = ({
+  handleClickLogout,
+}): JSX.Element => {
+  const { t } = useAppTranslation("login");
+  const { languages, setLanguage } = useLanguageSwitcher();
+
+  return (
+    <div className="z-[999] fixed top-[60px] right-[20px] bg-white w-56 shadow-lg border px-2 py-4 rounded-lg">
+      <div className="mb-3 pb-3 border-b">
+        <Typography variant="body" tone="muted" className="mb-2 text-xs font-semibold">
+          {t("label-language")}
+        </Typography>
+        <div className="flex flex-col gap-2">
+          {languages.map((lang) => (
+            <button
+              key={lang.value}
+              onClick={() => setLanguage(lang.value)}
+              className={`text-sm px-2 py-1.5 rounded-md transition-colors text-left ${
+                lang.active
+                  ? "bg-primary-100 text-primary-600 font-semibold"
+                  : "hover:bg-greyScale-90 text-greyScale-700"
+              }`}
+            >
+              {lang.label}
+            </button>
+          ))}
+        </div>
+      </div>
+      <div
+        onClick={handleClickLogout}
+        className="flex items-center gap-2 cursor-pointer hover:opacity-75 transition-opacity"
+      >
+        <Icon name="logout" />
+        <span className="font-bold">{t("btn-logout")}</span>
+      </div>
+    </div>
+  );
+};
 
 const Header: React.FC<HeaderProps> = ({
   className,
@@ -113,9 +127,9 @@ const Header: React.FC<HeaderProps> = ({
           </div>
         </div>
       </div>
-      {/* {toolbarMenuVisible && (
-          <HeaderMenu handleClickLogout={handleLogout} />
-        )} */}
+      {toolbarMenuVisible && (
+        <HeaderMenu handleClickLogout={handleLogout} />
+      )}
     </nav>
   );
 };

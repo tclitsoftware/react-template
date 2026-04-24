@@ -7,6 +7,8 @@ import formField from "./form-field.json";
 import icon from "./icon.json";
 import tables from "./tables.json";
 import typography from "./typography.json";
+import login from "./login.json";
+import historyPanel from "./history-panel.json";
 
 export const id = {
   button,
@@ -18,6 +20,8 @@ export const id = {
   tables,
   translation,
   typography,
+  login,
+  historyPanel,
 } as const;
 
 export default id;

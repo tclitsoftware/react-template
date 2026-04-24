@@ -1,9 +1,17 @@
-# How to build & push image
-# run script `yarn build:dev`
-# run script `docker build -f Dockerfile.dev --platform linux/amd64 -t registry.quadrakaryasantosa.com/drizy-admin:v0.1 .`
-# run script `docker push registry.quadrakaryasantosa.com/drizy-admin:v0.1`
+FROM node:20-alpine AS builder
+WORKDIR /app
 
-FROM nginx:alpine
+COPY package.json yarn.lock ./
+RUN yarn install --frozen-lockfile
+
+COPY . .
+RUN yarn build
+
+FROM nginx:1.27-alpine
 COPY nginx.conf /etc/nginx/conf.d/default.conf
-COPY /build /usr/share/nginx/html
-ENTRYPOINT ["nginx", "-g", "daemon off;"]
+COPY --from=builder /app/build /usr/share/nginx/html
+COPY docker-entrypoint.sh /docker-entrypoint.d/40-runtime-env.sh
+RUN chmod +x /docker-entrypoint.d/40-runtime-env.sh
+
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]

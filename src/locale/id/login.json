@@ -1,0 +1,16 @@
+{
+  "page-title": "Masuk",
+  "form-title": "Selamat Datang di Admin",
+  "form-subtitle": "Silakan masuk dengan akun Anda",
+  "label-email": "Email",
+  "label-password": "Kata Sandi",
+  "placeholder-email": "Masukkan Email",
+  "placeholder-password": "Masukkan Kata Sandi",
+  "label-remember-me": "Ingat saya",
+  "btn-login": "Masuk",
+  "btn-logout": "Keluar",
+  "label-language": "Bahasa",
+  "error-email-required": "Email wajib diisi",
+  "error-email-invalid": "Email tidak valid",
+  "error-password-required": "Kata Sandi wajib diisi"
+}

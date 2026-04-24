@@ -82,6 +82,7 @@ interface Props<T> {
   filterValues?: Record<string, string>;
   defaultFilterValues?: Record<string, string>;
   onFilterValuesChange?: (filters: Record<string, string>) => void;
+  filterDebounceMs?: number;
   onColumnOrderChange?: (columnIds: string[]) => void;
   enableColumnResize?: boolean;
   columnWidths?: Record<string, number>;
@@ -107,6 +108,24 @@ type HeaderCellProps = {
 
 function classNames(...classes: Array<string | false | null | undefined>) {
   return classes.filter(Boolean).join(" ");
+}
+
+function areFilterValuesEqual(
+  left: Record<string, string>,
+  right: Record<string, string>,
+) {
+  if (left === right) {
+    return true;
+  }
+
+  const leftKeys = Object.keys(left);
+  const rightKeys = Object.keys(right);
+
+  if (leftKeys.length !== rightKeys.length) {
+    return false;
+  }
+
+  return leftKeys.every((key) => left[key] === right[key]);
 }
 
 function getColumnId<T>(column: Columns<T>, index: number) {
@@ -139,7 +158,7 @@ function getDefaultCellValue<T>(
   limit: number,
 ) {
   if (column.fieldId === "index") {
-    return index + 1 + (currentPage - 1) * limit;
+    return index + 1 + ((currentPage - 1) * limit);
   }
 
   const primaryValue = (row as Record<string, React.ReactNode>)[
@@ -244,6 +263,7 @@ export function Table<T>({
   filterValues,
   defaultFilterValues = {},
   onFilterValuesChange,
+  filterDebounceMs = 300,
   onColumnOrderChange,
   enableColumnResize = true,
   columnWidths,
@@ -265,6 +285,7 @@ export function Table<T>({
     useState<Record<string, number>>(defaultColumnWidths);
   const [activeDragColumnId, setActiveDragColumnId] = useState<string | null>(null);
   const [dragOverColumnId, setDragOverColumnId] = useState<string | null>(null);
+  const filterDebounceTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const resizeStateRef = useRef<{
     columnId: string;
     startX: number;
@@ -296,6 +317,8 @@ export function Table<T>({
     selectedRowKeys !== undefined ? selectedRowKeys : internalSelectedRowKeys;
   const activeColumnWidths =
     columnWidths !== undefined ? columnWidths : internalColumnWidths;
+  const [draftFilterValues, setDraftFilterValues] =
+    useState<Record<string, string>>(activeFilterValues);
 
   const orderedColumns = useMemo(() => {
     const columnMap = new Map(
@@ -409,10 +432,51 @@ export function Table<T>({
   };
 
   const handleFilterChange = (columnId: string, nextValue: string) => {
-    commitFilterValues({
-      ...activeFilterValues,
-      [columnId]: nextValue,
+    setDraftFilterValues((currentFilters) => {
+      const nextFilters = {
+        ...currentFilters,
+        [columnId]: nextValue,
+      };
+
+      commitFilterValues(nextFilters);
+      return nextFilters;
     });
+  };
+
+  const handleFilterChangeDebounced = (columnId: string, nextValue: string) => {
+    setDraftFilterValues((currentFilters) => {
+      const nextFilters = {
+        ...currentFilters,
+        [columnId]: nextValue,
+      };
+
+      if (filterDebounceMs <= 0) {
+        commitFilterValues(nextFilters);
+        return nextFilters;
+      }
+
+      if (filterDebounceTimeoutRef.current) {
+        clearTimeout(filterDebounceTimeoutRef.current);
+      }
+
+      filterDebounceTimeoutRef.current = setTimeout(() => {
+        commitFilterValues(nextFilters);
+        filterDebounceTimeoutRef.current = null;
+      }, filterDebounceMs);
+
+      return nextFilters;
+    });
+  };
+
+  const flushDebouncedFilterChange = () => {
+    if (filterDebounceTimeoutRef.current) {
+      clearTimeout(filterDebounceTimeoutRef.current);
+      filterDebounceTimeoutRef.current = null;
+    }
+
+    if (!areFilterValuesEqual(draftFilterValues, activeFilterValues)) {
+      commitFilterValues(draftFilterValues);
+    }
   };
 
   const handleToggleAllRows = () => {
@@ -512,6 +576,28 @@ export function Table<T>({
     };
   }, [activeColumnWidths, minColumnWidth]);
 
+  useEffect(() => {
+    if (filterDebounceTimeoutRef.current) {
+      clearTimeout(filterDebounceTimeoutRef.current);
+      filterDebounceTimeoutRef.current = null;
+    }
+
+    setDraftFilterValues((currentFilters) =>
+      areFilterValuesEqual(currentFilters, activeFilterValues)
+        ? currentFilters
+        : activeFilterValues,
+    );
+  }, [activeFilterValues]);
+
+  useEffect(
+    () => () => {
+      if (filterDebounceTimeoutRef.current) {
+        clearTimeout(filterDebounceTimeoutRef.current);
+      }
+    },
+    [],
+  );
+
   const getColumnDragState = (columnId: string) => ({
     isDragSource: activeDragColumnId === columnId,
     isDragTarget:
@@ -565,7 +651,7 @@ export function Table<T>({
     if (column.renderFilter) {
       return column.renderFilter({
         columnId,
-        value: activeFilterValues[columnId] ?? "",
+        value: draftFilterValues[columnId] ?? "",
         onChange: (nextValue) => handleFilterChange(columnId, nextValue),
       });
     }
@@ -578,7 +664,7 @@ export function Table<T>({
       return (
         <Select
           options={column.filterOptions ?? []}
-          value={activeFilterValues[columnId] ?? ""}
+          value={draftFilterValues[columnId] ?? ""}
           onValueChange={(nextValue) =>
             handleFilterChange(
               columnId,
@@ -597,8 +683,11 @@ export function Table<T>({
     return (
       <Input
         placeholder={column.filterPlaceholder ?? "Search by"}
-        value={activeFilterValues[columnId] ?? ""}
-        onChange={(event) => handleFilterChange(columnId, event.target.value)}
+        value={draftFilterValues[columnId] ?? ""}
+        onChange={(event) =>
+          handleFilterChangeDebounced(columnId, event.target.value)
+        }
+        onBlur={flushDebouncedFilterChange}
         leftIcon={<Icon name="search" size={16} />}
         reserveHelperSpace={false}
         overrideClassName="min-h-[40px] rounded-[8px] border-border"

@@ -1,0 +1,18 @@
+{
+  "title": "DATA RIWAYAT",
+  "subtitle": "Catatan perubahan dan pembaruan untuk data ini",
+  "created-by": "Dibuat oleh",
+  "last-update-by": "Pembaruan terakhir oleh",
+  "filter-all": "Semua Data",
+  "filter-create": "Buat",
+  "filter-update": "Edit",
+  "filter-status-change": "Perubahan Status",
+  "action-create": "Buat",
+  "action-update": "Edit",
+  "action-status-change": "Perubahan Status",
+  "fields-label": "Field",
+  "change-description": "Mengubah {{field}} dari '{{oldValue}}' menjadi '{{newValue}}'",
+  "data-created": "Data dibuat",
+  "today": "Hari ini",
+  "yesterday": "Kemarin"
+}

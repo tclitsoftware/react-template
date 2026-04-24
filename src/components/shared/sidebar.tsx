@@ -14,86 +14,160 @@ import { formFieldPageRouteName } from "modules/design-system/form-field/index.p
 import { iconPageRouteName } from "modules/design-system/icon/index.page";
 import { tablesPageRouteName } from "modules/design-system/tables/index.page";
 import { translationPageRouteName } from "modules/design-system/translation/index.page";
+import { vehicleTypePageRouteName } from "modules/master-data/vehicle-type/list/index.page";
+import { vehicleModelPageRouteName } from "modules/master-data/vehicle-model/list/index.page";
+import { freezerModelPageRouteName } from "modules/master-data/freezer-model/list/index.page";
+import { vehicleAuxiliaryPageRouteName } from "modules/master-data/vehicle-auxiliary/list/index.page";
+import { fuelTypePageRouteName } from "modules/config/fuel-type/index.page";
+import { tripTypePageRouteName } from "modules/config/trip-type/index.page";
+import { distanceTypePageRouteName } from "modules/config/distance-type/index.page";
+import { tripDaysThresholdPageRouteName } from "modules/config/trip-days-threshold/index.page";
+import { waitingTimeRatePageRouteName } from "modules/config/waiting-time-rate/index.page";
+import { vehicleOperationConfigPageRouteName } from "modules/config/vehicle-operation-config/index.page";
+import { driverAllowancePageRouteName } from "modules/config/driver-allowance/index.page";
+import { driverTripCalculatorPageRouteName } from "modules/driver-trip-calculator/index.page";
 import { useAppTranslation } from "locale/useAppTranslation";
 
 interface SidebarProps {
   active: boolean;
 }
 
-const createItems = (
-  sectionId: string,
-  baseRoute: string,
-  count = 5,
-): NavbarItemDefinition[] =>
-  Array.from({ length: count }, (_, index) => ({
-    id: `${sectionId}-user-${index + 1}`,
-    title: "User Management",
-    path: `${baseRoute}/user-${index + 1}`,
-  }));
-
 const navSections: NavbarSectionDefinition[] = [
+  // {
+  //   id: "components",
+  //   title: "Components",
+  //   items: [
+  //     {
+  //       id: "typography",
+  //       title: "Typography",
+  //       path: typographyPageRouteName,
+  //     },
+  //     {
+  //       id: "colors",
+  //       title: "Colors",
+  //       path: colorsPageRouteName,
+  //     },
+  //     {
+  //       id: "buttons",
+  //       title: "Buttons",
+  //       path: buttonPageRouteName,
+  //     },
+  //     {
+  //       id: "form-fields",
+  //       title: "Form Fields",
+  //       path: formFieldPageRouteName,
+  //     },
+  //     {
+  //       id: "icons",
+  //       title: "Icons",
+  //       path: iconPageRouteName,
+  //     },
+  //     {
+  //       id: "translations",
+  //       title: "Translations",
+  //       path: translationPageRouteName,
+  //     },
+  //     {
+  //       id: "tables",
+  //       title: "Tables",
+  //       path: tablesPageRouteName,
+  //     },
+  //   ],
+  // },
+  // {
+  //   id: "main",
+  //   title: "MAIN",
+  //   items: [
+  //     {
+  //       id: `main-${listProfilePageRouteName}`,
+  //       title: "User Management",
+  //       path: listProfilePageRouteName,
+  //     },
+  //   ],
+  // },
   {
-    id: "components",
-    title: "Components",
+    id: "master-data",
+    title: "MASTER DATA",
     items: [
       {
-        id: `typography`,
-        title: 'Typography',
-        path: typographyPageRouteName,
+        id: "vehicle-type",
+        title: "Vehicle Type",
+        path: vehicleTypePageRouteName,
       },
       {
-        id: `colors`,
-        title: 'Colors',
-        path: colorsPageRouteName,
+        id: "vehicle-model",
+        title: "Vehicle Model",
+        path: vehicleModelPageRouteName,
       },
       {
-        id: `buttons`,
-        title: 'Buttons',
-        path: buttonPageRouteName,
+        id: "freezer-model",
+        title: "Freezer Model",
+        path: freezerModelPageRouteName,
       },
       {
-        id: `form-fields`,
-        title: 'Form Fiels',
-        path: formFieldPageRouteName,
-      },
-      {
-        id: `icons`,
-        title: 'Icons',
-        path: iconPageRouteName,
-      },
-      {
-        id: "translations",
-        title: "Translations",
-        path: translationPageRouteName,
-      },
-      {
-        id: `tables`,
-        title: "Tables",
-        path: tablesPageRouteName,
+        id: "vehicle-auxiliary",
+        title: "Vehicle Auxiliary",
+        path: vehicleAuxiliaryPageRouteName,
       },
     ],
   },
   {
-    id: "main",
-    title: "MAIN",
-    items:
-      [
-        {
-          id: `main-${listProfilePageRouteName}`,
-          title: "User Management",
-          path: listProfilePageRouteName,
-        }
-      ],
+    id: "data-configuration",
+    title: "DATA CONFIGURATION",
+    items: [
+      {
+        id: "fuel-type",
+        title: "Fuel Type",
+        path: fuelTypePageRouteName,
+      },
+      {
+        id: "trip-type",
+        title: "Trip Type",
+        path: tripTypePageRouteName,
+      },
+      {
+        id: "distance-type",
+        title: "Distance Type",
+        path: distanceTypePageRouteName,
+      },
+      {
+        id: "trip-days-threshold",
+        title: "Trip Days Threshold",
+        path: tripDaysThresholdPageRouteName,
+      },
+      {
+        id: "waiting-time-rate",
+        title: "Waiting Time Rate",
+        path: waitingTimeRatePageRouteName,
+      },
+    ],
   },
   {
-    id: "master-data",
-    title: "MASTER DATA",
-    items: createItems("master-data", "/master-data"),
+    id: "operation-configuration",
+    title: "OPERATION CONFIGURATION",
+    items: [
+      {
+        id: "vehicle-operation",
+        title: "Vehicle Operation",
+        path: vehicleOperationConfigPageRouteName,
+      },
+      {
+        id: "driver-allowance",
+        title: "Driver Allowance",
+        path: driverAllowancePageRouteName,
+      },
+    ],
   },
   {
-    id: "support",
-    title: "SUPPORT",
-    items: createItems("support", "/support"),
+    id: "menu-calculator",
+    title: "MENU CALCULATOR",
+    items: [
+      {
+        id: "driver-trip-calculator",
+        title: "Driver Trip Calculator",
+        path: driverTripCalculatorPageRouteName,
+      },
+    ],
   },
 ];
 
@@ -121,37 +195,18 @@ const Sidebar: React.FC<SidebarProps> = ({ active }) => {
 
   return (
     <aside
-      className={`z-[998] max-h-screen h-screen overflow-auto relative top-0 transition-all bg-white border-r border-border shadow-lg ${active ? "left-0 w-[20%]" : "-left-[20%] w-[0%]"
+      className={`z-[998] max-h-screen h-screen overflow-auto relative top-0 transition-all duration-300 bg-white border-r border-border shadow-lg ${active ? "left-0 w-[20%]" : "-left-[20%] w-[0%]"
         }`}
     >
       <Navbar
-        sections={navSections.map((section) =>
-          section.id === "components"
-            ? {
-                ...section,
-                title: t("components-section-label"),
-                items: section.items.map((item) => ({
-                  ...item,
-                  title:
-                    item.id === "typography"
-                      ? t("nav-typography")
-                      : item.id === "colors"
-                        ? t("nav-colors")
-                        : item.id === "buttons"
-                          ? t("nav-buttons")
-                          : item.id === "form-fields"
-                            ? t("nav-form-field")
-                            : item.id === "icons"
-                              ? t("nav-icons")
-                              : item.id === "tables"
-                                ? t("nav-tables")
-                                : item.id === "translations"
-                                  ? t("nav-translations")
-                                  : item.title,
-                })),
-              }
-            : section,
-        )}
+        sections={navSections.map((section) => ({
+          ...section,
+          title: t(`section-${section.id}` as any) || section.title,
+          items: section.items.map((item) => ({
+            ...item,
+            title: t(`nav-${item.id}` as any) || item.title,
+          })),
+        }))}
         activeItemId={activeItemId}
         onItemClick={handleItemClick}
         className="h-full"
