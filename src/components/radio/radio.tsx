@@ -1,5 +1,8 @@
 import React, { forwardRef, Ref } from "react";
 
+/**
+ * Props for the Radio component.
+ */
 export interface RadioProps
   extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "size" | "type"> { }
 
@@ -35,6 +38,13 @@ const RadioInner = (
   </label>
 );
 
+/**
+ * Standard radio button component.
+ * Usually used within a group for single-choice selection.
+ * 
+ * @example
+ * <Radio name="options" value="1" onChange={handleChange} />
+ */
 const Radio = forwardRef<HTMLInputElement, RadioProps>(RadioInner);
 Radio.displayName = "Radio";
 

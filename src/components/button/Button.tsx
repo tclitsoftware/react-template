@@ -15,13 +15,52 @@ export type ButtonColor =
   | "info";
 export type ButtonSize = "small" | "medium" | "large" | "xl" | "2xl" | "3xl";
 
+/**
+ * Props for the Button component.
+ * Extends standard HTML button attributes.
+ */
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  /**
+   * Visual style of the button.
+   * - `"fill"`: Solid background (default). Use for primary actions.
+   * - `"outline"`: Bordered with white background. Use for secondary actions.
+   * @default "fill"
+   */
   variant?: ButtonVariant;
+
+  /**
+   * Semantic color intent. Maps to theme color tokens.
+   * @default "primary"
+   */
   color?: ButtonColor;
+
+  /**
+   * Size of the button. Controls padding and font size.
+   * @default "medium"
+   */
   size?: ButtonSize;
+
+  /**
+   * Element to render inside the button on the left side of the label.
+   * Usually an `<Icon />` component.
+   */
   iconLeft?: ReactNode;
+
+  /**
+   * Element to render inside the button on the right side of the label.
+   * Usually an `<Icon />` component.
+   */
   iconRight?: ReactNode;
+
+  /**
+   * If `true`, the button will take up the full width of its container.
+   * @default false
+   */
   isFullSize?: boolean;
+
+  /**
+   * Button label or elements.
+   */
   children?: ReactNode;
 }
 
@@ -237,6 +276,20 @@ const variantClasses = (
 const baseClasses =
   "items-center justify-center rounded-[8px] border font-semibold transition-colors duration-150 focus-visible:outline-none focus-visible:ring-offset-2 disabled:opacity-70 disabled:cursor-not-allowed";
 
+/**
+ * Standard button component for all user actions.
+ * Supports multiple variants, sizes, and semantic colors.
+ * 
+ * @example
+ * <Button color="primary" size="medium" onClick={handleClick}>
+ *   Click Me
+ * </Button>
+ * 
+ * @example
+ * <Button variant="outline" color="error" iconLeft={<Icon name="trash" size={16} />}>
+ *   Delete Item
+ * </Button>
+ */
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   (
     {

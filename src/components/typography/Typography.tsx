@@ -137,15 +137,61 @@ const typographyVariants: Record<
   },
 };
 
+/**
+ * Props for the Typography component.
+ * Extends standard HTML attributes for the rendered element.
+ */
 export interface TypographyProps extends HTMLAttributes<HTMLElement> {
+  /**
+   * Predetermined typographic style.
+   * - `heading1-6`: Semantic heading levels.
+   * - `bodyLarge-Small`: Standard text sizes.
+   * - `code`: Monospaced font for snippets.
+   * @default "body"
+   */
   variant?: TypographyVariant;
+
+  /**
+   * Semantic color tone for the text.
+   * @default "black"
+   */
   tone?: TypographyTone;
+
+  /**
+   * Font weight. If not provided, uses the default weight for the selected variant.
+   */
   weight?: TypographyWeight;
+
+  /**
+   * Text alignment.
+   * @default "left"
+   */
   align?: TypographyAlign;
+
+  /**
+   * Override the default HTML tag for the variant.
+   * (e.g., render a "heading3" style as a `<span>`).
+   */
   as?: ElementType;
+
+  /**
+   * Text content or children elements.
+   */
   children?: ReactNode;
 }
 
+/**
+ * Centralized typography component to ensure consistent font usage across the app.
+ * Automatically selects the appropriate HTML tag for headings vs body text.
+ * 
+ * @example
+ * <Typography variant="heading1">Main Page Title</Typography>
+ * 
+ * @example
+ * <Typography variant="bodySmall" tone="muted">
+ *   This is a small greyed out helper text.
+ * </Typography>
+ */
 const Typography = forwardRef<HTMLElement, TypographyProps>(
   (
     {

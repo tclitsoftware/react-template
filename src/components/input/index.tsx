@@ -11,23 +11,89 @@ import React, {
 } from "react";
 import { FieldError } from "react-hook-form";
 
+/**
+ * Props for the Input component.
+ * Extends standard HTML input attributes.
+ */
 type InputProps = Omit<
   React.InputHTMLAttributes<HTMLInputElement>,
   "size" | "color"
 > & {
+  /**
+   * Field error object from react-hook-form. 
+   * If present, the input will show a red border and display the error message.
+   */
   error?: FieldError;
+
+  /**
+   * Optional helper text displayed below the input.
+   */
   helperText?: string;
+
+  /**
+   * Label displayed above the input.
+   */
   label?: string;
+
+  /**
+   * Element to render inside the input container on the left side.
+   */
   leftIcon?: ReactNode;
+
+  /**
+   * Element to render inside the input container on the right side.
+   */
   rightIcon?: ReactNode;
+
+  /**
+   * Custom CSS class for the input element itself.
+   */
   overrideClassName?: string;
+
+  /**
+   * Custom CSS class for the outer wrapper div.
+   */
   parentClassName?: string;
+
+  /**
+   * If `true`, reserves a consistent amount of vertical space for helper/error text 
+   * even when no text is present, to prevent layout shifts.
+   * @default true
+   */
   reserveHelperSpace?: boolean;
+
+  /**
+   * If `true`, formats the input value with thousands separators while typing.
+   * Requires `type="number"`.
+   */
   enableNumberFormat?: boolean;
+
+  /**
+   * If `true`, formats the input as a currency value (e.g., adding prefix like 'IDR').
+   * Requires `type="number"`.
+   */
   enableCurrencyFormat?: boolean;
+
+  /**
+   * Currency code for formatting (e.g., "IDR", "USD").
+   * @default "IDR"
+   */
   currency?: string;
+
+  /**
+   * Locale string for number formatting.
+   * @default "id-ID"
+   */
   locale?: string;
+
+  /**
+   * Minimum number of decimal places to show.
+   */
   minimumFractionDigits?: number;
+
+  /**
+   * Maximum number of decimal places to show.
+   */
   maximumFractionDigits?: number;
 };
 
@@ -382,6 +448,26 @@ const InputInner = (
   );
 };
 
+/**
+ * Flexible input component with support for labels, icons, field errors, 
+ * and advanced numeric/currency formatting.
+ * 
+ * @example
+ * <Input 
+ *   label="Full Name" 
+ *   placeholder="Enter your name" 
+ *   leftIcon={<Icon name="user" size={16} />} 
+ * />
+ * 
+ * @example
+ * // Numeric formatting with currency
+ * <Input 
+ *   type="number" 
+ *   label="Price" 
+ *   enableCurrencyFormat 
+ *   currency="USD"
+ * />
+ */
 const Input = forwardRef(InputInner) as (
   props: InputProps & { ref?: ForwardedRef<HTMLInputElement> },
 ) => ReturnType<typeof InputInner>;

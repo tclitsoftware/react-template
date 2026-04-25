@@ -40,55 +40,190 @@ type FilterRenderArgs = {
   onChange: (value: string) => void;
 };
 
+/**
+ * Definition for a single table column.
+ * @template T - The type of data in a single row.
+ */
 export interface Columns<T> {
+  /**
+   * Unique identifier for the column. 
+   * If not provided, defaults to `fieldId`.
+   */
   id?: string;
+
+  /**
+   * The key in the data object to display. 
+   * Use `"index"` to show a row number (e.g., 1, 2, 3...).
+   */
   fieldId: keyof T | "index";
+
+  /**
+   * Optional secondary field key to display below the primary field text.
+   */
   fieldId2?: string;
+
+  /**
+   * Optional tertiary field key to display below the secondary field text.
+   */
   fieldId3?: string;
+
+  /**
+   * Text label displayed in the column header.
+   */
   label: string;
+
+  /**
+   * Custom renderer for the cell content. 
+   * Receives the full row object as an argument.
+   */
   render?: (data: T) => React.ReactElement | string;
+
+  /**
+   * Custom renderer for the header cell.
+   */
   renderHeader?: () => React.ReactElement | string;
+
+  /**
+   * If `true`, the column can be sorted by clicking the header.
+   */
   sortable?: boolean;
+
+  /**
+   * If `true`, enables a filter input in the header for this column.
+   */
   filterable?: boolean;
+
+  /**
+   * Predefined options for the filter dropdown.
+   */
   filterOptions?: SelectOption[];
+
+  /**
+   * Placeholder text for the filter input.
+   */
   filterPlaceholder?: string;
+
+  /**
+   * If `true`, the filter dropdown will include a search box.
+   */
   filterSearchable?: boolean;
+
+  /**
+   * Async function to fetch filter options from an API.
+   */
   filterSearch?: (term: string) => Promise<SelectOption[]>;
+
+  /**
+   * Custom renderer for the filter cell.
+   */
   renderFilter?: (args: FilterRenderArgs) => React.ReactNode;
+
+  /**
+   * Horizontal alignment of cell content.
+   * @default "left"
+   */
   align?: Align;
+
+  /**
+   * Width of the column (e.g. "100px", "20%").
+   */
   width?: string;
+
+  /**
+   * If `true`, prevents this column from being moved via drag-and-drop.
+   */
   dragDisabled?: boolean;
 }
 
+/**
+ * Props for the Table component.
+ */
 interface Props<T> {
+  /** Array of data objects to display as rows. */
   data?: T[];
+
+  /** Array of column definitions. */
   columns: Columns<T>[];
+
+  /** If `true`, adds a specific styling for ranked lists. */
   ranked?: boolean;
+
+  /** If `true`, shows a loading overlay/spinner. */
   loading?: boolean | null;
+
+  /** Error message to display if data fetching fails. */
   error?: string;
+
+  /** Whether to show standard action buttons. */
   action?: boolean;
+
+  /** Current page index for pagination/index calculation. @default 1 */
   currentPage?: number;
+
+  /** Number of items per page. */
   limit?: number;
+
+  /** Callback triggered when a row is clicked. */
   onRowClick?: (item: T) => void;
+
+  /** Unique key for each row. Can be a property name or a function. */
   rowKey?: keyof T | ((item: T, index: number) => Primitive);
+
+  /** If `true`, enables row selection with checkboxes. */
   selectable?: boolean;
+
+  /** Array of currently selected row keys (controlled). */
   selectedRowKeys?: Primitive[];
+
+  /** Initial selected row keys. */
   defaultSelectedRowKeys?: Primitive[];
+
+  /** Callback triggered when selection changes. */
   onSelectedRowKeysChange?: (keys: Primitive[], rows: T[]) => void;
+
+  /** If `true`, columns can be reordered via drag-and-drop. @default true */
   enableColumnDrag?: boolean;
+
+  /** Current sort state (controlled). */
   sortState?: TableSortState;
+
+  /** Initial sort state. */
   defaultSortState?: TableSortState;
+
+  /** Callback triggered when sort direction or column changes. */
   onSortStateChange?: (sort: TableSortState) => void;
+
+  /** Current filter values (controlled). */
   filterValues?: Record<string, string>;
+
+  /** Initial filter values. */
   defaultFilterValues?: Record<string, string>;
+
+  /** Callback triggered when a filter value changes. */
   onFilterValuesChange?: (filters: Record<string, string>) => void;
+
+  /** Delay in milliseconds before triggering filter changes. @default 300 */
   filterDebounceMs?: number;
+
+  /** Callback triggered when column order changes. */
   onColumnOrderChange?: (columnIds: string[]) => void;
+
+  /** If `true`, columns can be resized. @default true */
   enableColumnResize?: boolean;
+
+  /** Current widths of columns (controlled). */
   columnWidths?: Record<string, number>;
+
+  /** Initial widths of columns. */
   defaultColumnWidths?: Record<string, number>;
+
+  /** Callback triggered when a column is resized. */
   onColumnWidthsChange?: (widths: Record<string, number>) => void;
+
+  /** Minimum width a column can be resized to. @default 140 */
   minColumnWidth?: number;
+
+  /** Label for the 'select all' checkbox header. @default "All" */
   selectableLabel?: string;
 }
 
@@ -241,6 +376,24 @@ const SortableHeaderCell = ({
   );
 };
 
+/**
+ * Feature-rich data table component.
+ * Supports sorting, filtering, selection, column drag-and-drop, and resizing.
+ * 
+ * @template T - The type of data in a single row.
+ * 
+ * @example
+ * <Table<User>
+ *   data={users}
+ *   columns={[
+ *     { fieldId: "name", label: "User Name", sortable: true },
+ *     { fieldId: "email", label: "Email Address" }
+ *   ]}
+ *   rowKey="id"
+ *   selectable
+ *   onSelectedRowKeysChange={(keys) => console.log(keys)}
+ * />
+ */
 export function Table<T>({
   data = [],
   columns = [],

@@ -9,6 +9,20 @@ import { SelectProps } from "./types";
 import { useSelect } from "./useSelect";
 import { assignRef } from "./utils";
 
+/**
+ * Highly customizable dropdown select component.
+ * Supports single/multiple selection, search, and async option creation.
+ * 
+ * @example
+ * <Select 
+ *   label="Pick a Fruit"
+ *   options={[
+ *     { label: "Apple", value: "apple" },
+ *     { label: "Banana", value: "banana" }
+ *   ]} 
+ *   onValueChange={(val) => console.log(val)}
+ * />
+ */
 const SelectInner = (
   props: SelectProps,
   forwardedRef: ForwardedRef<HTMLDivElement>,

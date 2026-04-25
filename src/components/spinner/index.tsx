@@ -1,3 +1,10 @@
+/**
+ * Standard loading spinner component.
+ * Use this to indicate background processing or data fetching.
+ * 
+ * @example
+ * if (isLoading) return <Spinner />;
+ */
 const Spinner: React.FC = (): JSX.Element => {
   return (
     <>

@@ -7,8 +7,15 @@ import React, {
   useRef,
 } from "react";
 
+/**
+ * Props for the Checkbox component.
+ */
 export interface CheckboxProps
   extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "size" | "type"> {
+  /**
+   * If `true`, the checkbox will show an 'indeterminate' (-) state 
+   * instead of a checkmark.
+   */
   indeterminate?: boolean;
 }
 
@@ -73,6 +80,12 @@ const CheckboxInner = (
   );
 };
 
+/**
+ * Standard checkbox component with support for indeterminate states.
+ * 
+ * @example
+ * <Checkbox label="Select Item" onChange={handleToggle} />
+ */
 const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(CheckboxInner);
 Checkbox.displayName = "Checkbox";
 

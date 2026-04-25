@@ -29,12 +29,34 @@ interface CommonAvatarProps {
   alt?: string;
 }
 
+/**
+ * Props for the Avatar component.
+ * Can be either an image avatar (with `src`) or an initials avatar.
+ */
 type AvatarProps =
-  | ({ src: string } & React.ImgHTMLAttributes<HTMLImageElement> &
+  | ({ 
+      /** Full URL path to the avatar image. */
+      src: string 
+    } & React.ImgHTMLAttributes<HTMLImageElement> &
       CommonAvatarProps)
-  | ({ src?: undefined } & React.HTMLAttributes<HTMLDivElement> &
+  | ({ 
+      /** If omitted, initials will be generated from the `name` prop. */
+      src?: undefined 
+    } & React.HTMLAttributes<HTMLDivElement> &
       CommonAvatarProps);
 
+/**
+ * Visual representation of a user or entity.
+ * Automatically generates initials from `name` if no `src` image is provided.
+ * 
+ * @example
+ * // Image avatar
+ * <Avatar name="John Doe" src="https://example.com/avatar.jpg" size="lg" />
+ * 
+ * @example
+ * // Initials avatar (will show "JD")
+ * <Avatar name="John Doe" size="md" color="circle" />
+ */
 const Avatar: React.FC<AvatarProps> = ({
   name,
   size = "md",
