@@ -24,7 +24,7 @@ const LoginState = () => {
     try {
       e.preventDefault();
       setIsloading(true);
-      const response = await fetch(`${process.env.REACT_APP_REST_HOST}/auth/admin/login`, {
+      const response = await fetch(`${import.meta.env.REACT_APP_REST_HOST}/auth/admin/login`, {
         method: "POST",
         body: JSON.stringify(payload),
         headers: {

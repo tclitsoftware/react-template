@@ -92,6 +92,7 @@
     "prettier": "^2.7.1",
     "ts-node": "^10.9.2",
     "vite": "^8.0.10",
+    "vite-plugin-svgr": "^5.2.0",
     "vite-tsconfig-paths": "^6.1.1"
   }
 }

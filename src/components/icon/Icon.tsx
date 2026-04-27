@@ -1,25 +1,27 @@
 import React from "react";
+// This needs refactoring for vite, require context is a webpack specific loader so we need to revactor it to use import.meta.glob instead
 
-type RequireContext = {
-  keys(): string[];
-  <T>(path: string): T;
-};
 
-const requireIcon = (require as any).context(
-  "!!@svgr/webpack?-svgo,+titleProp,+ref!../../assets/icons",
-  false,
-  /\.svg$/,
-) as RequireContext;
+interface SVGModules {
+  default : React.FC<React.SVGProps<SVGSVGElement>>;
+}
 
-type SvgComponent = React.FC<React.SVGProps<SVGSVGElement>>;
-type IconModule = { default: SvgComponent };
+const iconModules = import.meta.glob<SVGModules>("../../assets/icons/*.svg", {
+  eager: true,
+  query: "?react",
+})
 
-export const icons = requireIcon.keys().reduce<Record<string, SvgComponent>>((acc, path) => {
-  const name = path.replace(/^\.\//, "").replace(/\.svg$/, "");
-  const iconModule = requireIcon<IconModule>(path);
-  acc[name] = iconModule.default;
-  return acc;
-}, {});
+export const icons = Object.entries(iconModules).reduce<Record<string, React.FC<React.SVGProps<SVGSVGElement>>>>(
+  (acc, [path, module]) => {
+    // Extract name: "../../assets/icons/arrow-left.svg" -> "arrow-left"
+    const name = path.split('/').pop()?.replace('.svg', '') || '';
+    if (name) {
+      acc[name] = module.default;
+    }
+    return acc;
+  },
+  {}
+);
 
 export type IconName = keyof typeof icons;
 export const iconNames: IconName[] = Object.keys(icons) as IconName[];
