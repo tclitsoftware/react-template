@@ -1,154 +1,97 @@
+# TMS Admin Portal
 
-Certainly! Below is a basic structure for a Markdown document outlining a React.js project using TypeScript:
+A modern, high-performance Admin Portal built with React, TypeScript, and Vite. This project follows a strictly modular architecture and uses Redux Toolkit with RTK Query for state management and data fetching.
 
-```markdown
-# React.js TypeScript Project
+## Tech Stack
 
-This document provides an overview of the structure and setup of a React.js project using TypeScript.
+- **Build Tool**: [Vite 8](https://vitejs.dev/)
+- **Frontend**: [React 18+](https://reactjs.org/)
+- **Language**: [TypeScript](https://www.typescriptlang.org/)
+- **State Management**: [Redux Toolkit](https://redux-toolkit.js.org/)
+- **Data Fetching**: [RTK Query](https://redux-toolkit.js.org/rtk-query/overview)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
+- **Routing**: [React Router v7](https://reactrouter.com/)
+- **Icons**: Dynamic SVG system using `import.meta.glob`
+
+---
+
+## 🏗 Project Structure
+
+```text
+src/
+├── _helper/       # Shared utility functions
+├── _interfaces/   # Global TypeScript definitions
+├── _services/     # API definitions and RTK Query setup
+├── assets/        # Fonts, Icons, and Images
+├── components/    # Atomic UI components
+├── data/          # Static data and mock constants
+├── hooks/         # Shared, non-module specific hooks
+├── layout/        # Page layouts (Dashboard, Auth, etc.)
+├── locale/        # I18n translations (EN/ID)
+├── modules/       # Feature-based folders (The core of the app)
+│   └── [feature]/
+│       └── [page]/
+│           ├── index.page.tsx    # Page entry point
+│           ├── useCustomHooks.tsx # Page-specific logic
+│           └── sections/         # Sub-components for that page
+├── routes/        # Router configuration and registry
+└── store/         # Redux store and global slices
 ```
-## Project Structure
-```
-project-root/
-├── src/
-│   ├── _helper/
-│   │   ├── helper1.ts
-│   │   ├── helper2.ts
-│   │   └── ...
-│   ├── _interfaces/
-│   │   ├── interface-feature1.interfaces.ts
-│   │   ├── interface-feature2.interfaces.ts
-│   │   └── ...
-│   ├── assets/
-│   │   ├── images/
-│   │   │   └── image1.jpg
-│   │   └── ...
-│   ├── components/
-│   │   ├── Components1/
-│   │   │   └── index.tsx
-│   │   ├── Components2/
-│   │   │   └── index.tsx
-│   │   └── ...
-│   ├── data/
-│   │   ├── data1.tsx
-│   │   └── ...
-│   ├── hooks/
-│   │   ├── feature1/
-│   │   │   └── useHooks1.tsx
-│   │   ├── feature2/
-│   │   │   └── useHooks2.tsx
-│   │   └── ...
-│   ├── layout/
-│   │   ├── layout1/
-│   │   │   └── index.tsx
-│   │   ├── layout2/
-│   │   │   └── index.tsx
-│   │   └── ...
-│   ├── locale/
-│   │   ├── en/
-│   │   │   ├── page.json
-│   │   │   └── index.ts
-│   │   ├── id/
-│   │   │   ├── page.json
-│   │   │   └── index.tsx
-│   │   └── ...
-│   ├── modules/
-│   │   ├── module1/
-│   │   │   ├── page1/
-│   │   │   │		├── index.page.tsx
-│   │   │   │		├── useCustomHooks.tsx
-│   │   │   │		└── sections/
-│   │   │   └── page2/
-│   │   │   		├── index.page.tsx
-│   │   │   		├── useCustomHooks.tsx
-│   │   │   		└── sections/
-│   │   ├── module2/
-│   │   │   ├── page1/
-│   │   │   │		├── index.page.tsx
-│   │   │   │		├── useCustomHooks.tsx
-│   │   │   │		└── sections/
-│   │   │   └── page2/
-│   │   │   		├── index.page.tsx
-│   │   │   		├── useCustomHooks.tsx
-│   │   │   		└── sections/
-│   │   └── ...
-│   ├── routes/
-│   │   ├── index.tsx
-│   │   ├── routes.tsx
-│   │   └── ...
-│   ├── services/
-│   │   ├── modules/
-│   │   │   ├── module1
-│   │   │   │   └── service.tsx
-│   │   │   ├── module2
-│   │   │   │   └── service.tsx
-│   │   ├── api.ts
-│   │   ├── errorHandler.ts
-│   │   └── ...
-│   ├── store/
-│   │   ├── store1/
-│   │   │   └── index.ts
-│   │   ├── store2/
-│   │   │   └── index.ts
-│   │   ├── cookieStore.js
-│   │   ├── index.ts
-│   │   └── ...
-│   ├── App.tsx
-│   ├── index.tsx
-│   ├── index.ss
-│   └── ...
-├── public/
-│   ├── index.html
-│   └── ...
-├── package.json
-├── tsconfig.json
-└── ...
-```
-FAQ:
-- How to fetch data:
-	1. Create service inside `/src/services/modules/[modulesName]/index.tsx`
-	2. Use RTK Query that already wrapped `/src/services/api.ts`
-	3. Use build.mutation for DELETE, POST, PATCH, PUT
-	4. Use build.query for GET
-	5. Call wrapped mutation or query from page level like you call hooks
-	6. **You don't need to re-setup authorization token inside service module!**
-	7. Read the documentation https://redux-toolkit.js.org/rtk-query/overview
-- What should I do if i need to store data
-	1. **Important! Don't store all data**
-	2. **Just store if you need to re-use the data from other modules OR multiple components OR you don't need to refetch**
-	3. Create store `/src/store/[modulesName]/index.tsx`
-	4. Register store that you create inside combine reducer `/src/store/index.ts`
-	5. Read the documentation https://redux-toolkit.js.org/api/createslice
 
-## Project Setup
+---
 
-### 1. Initialize project
+## Getting Started
 
+### 1. Installation
+Install the dependencies using Yarn:
 ```bash
-yarn
+yarn install
 ```
 
-### 2. Start the development server
+### 2. Environment Setup
+Copy the example environment file:
+```bash
+cp .env.dev.example .env.dev
+```
+*Note: Vite is configured to support variables prefixed with `REACT_APP_` for backward compatibility.*
 
+### 3. Development
+Start the development server:
 ```bash
 yarn start:dev
 ```
 
-## Dependencies
+### 4. Production Build
+Build the project for production (output goes to `/build`):
+```bash
+yarn build
+```
 
-The primary dependencies for this project are:
+---
 
-- **React**: JavaScript library for building user interfaces.
-- **TypeScript**: A typed superset of JavaScript that compiles to plain JavaScript.
-- **react-scripts**: Toolchain for creating React applications with no configuration.
+## Key Development Patterns
 
-## Getting Started
+### Data Fetching (RTK Query)
+1. Define your endpoint in `src/_services/modules/[moduleName].ts`.
+2. Inject it into the base API in `src/_services/api.ts`.
+3. Use the generated hooks (e.g., `useGetVehiclesQuery`) in your page hooks.
+4. **Auth tokens are handled automatically** by the base API interceptors.
 
-1. **Component Development**: Develop your components inside the `src/components` directory.
-2. **Entry Point**: The entry point of your application is `src/index.tsx`.
-3. **Feature Development**: You should group pages in modules.
-4. **Clean Codes**: You have to separate UI and logic, store logic inside custom hooks.
-5. **Separate Sections**: If the page is too big, so you have to separate sections and place it at `/sections` folder
-6. **Run the Project**: Start the development server using `yarn start:[env]`.
-7. **Build**: Build your project for production using `yarn build:[env]`.
+### Module Architecture
+- **Keep index.page.tsx clean**: Only handle the layout and top-level component composition.
+- **Move logic to hooks**: All state, effects, and API calls should live in a specific hook file (e.g., `useVehicleList.tsx`).
+- **Sectioning**: If a page exceeds 200 lines, break it into smaller components inside a `sections/` folder.
+
+### Dynamic Icons
+To use an icon, simply use the `<Icon name="icon-name" />` component. All icons inside `src/assets/icons` are automatically detected and available via Type-Safe autocomplete.
+
+---
+
+## Deployment
+The project includes a multi-stage `Dockerfile` and optimized `nginx.conf`. 
+- **Production Build**: Compiles to static files.
+- **Runtime Injection**: Environment variables are injected at runtime via `env-config.js`, allowing the same image to be used across different environments (Staging/Production) without rebuilding.
+
+---
 
 Happy coding!
