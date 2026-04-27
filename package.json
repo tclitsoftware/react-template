@@ -58,6 +58,7 @@
     "serve:production": "serve -s build-production",
     "generate-exampleApi": "npx @rtk-query/codegen-openapi ./src/_services/configs/example/example.ts",
     "generate-vehicleTypeApi": "npx @rtk-query/codegen-openapi ./src/_services/configs/vehicle-type/vehicleType.ts",
+    "generate-vehicleTypeWrapperApi": "npx @rtk-query/codegen-openapi ./src/_services/configs/vehicle-type-wrapper/vehicleTypeWrapper.ts",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
