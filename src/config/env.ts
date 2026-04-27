@@ -4,8 +4,8 @@ type RuntimeConfig = {
   REACT_APP_GOOGLE_MAPS_API_KEY?: string;
 };
 
-const runtimeConfig: RuntimeConfig =
-  typeof window !== "undefined" ? window.__RUNTIME_CONFIG__ ?? {} : {};
+const runtimeConfig: any =
+  typeof window !== "undefined" ? (window as any).__RUNTIME_CONFIG__ ?? {} : {};
 
 const getNonEmpty = (value?: string): string | undefined => {
   if (typeof value !== "string") {
@@ -15,8 +15,9 @@ const getNonEmpty = (value?: string): string | undefined => {
   return value.trim() === "" ? undefined : value;
 };
 
-const readEnv = (key: keyof RuntimeConfig): string => {
-  return getNonEmpty(runtimeConfig[key]) ?? getNonEmpty(process.env[key]) ?? "";
+const readEnv = (key: string): string => {
+  // Try window config first, then Vite's import.meta.env
+  return getNonEmpty(runtimeConfig[key]) ?? getNonEmpty((import.meta.env as any)[key]) ?? "";
 };
 
 export const env = {
