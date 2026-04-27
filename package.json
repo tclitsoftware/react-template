@@ -8,6 +8,7 @@
     "@dnd-kit/sortable": "^10.0.0",
     "@dnd-kit/utilities": "^3.2.2",
     "@hookform/resolvers": "^2.9.7",
+    "@react-google-maps/api": "^2.20.8",
     "@reduxjs/toolkit": "^2.2.1",
     "@tailwindcss/typography": "^0.5.13",
     "@testing-library/jest-dom": "^5.16.4",
@@ -38,9 +39,6 @@
     "web-vitals": "^2.1.4",
     "yup": "^0.32.11"
   },
-  "resolutions": {
-    "strip-ansi": "6.0.0"
-  },
   "scripts": {
     "start": "vite",
     "start:dev": "vite --mode dev",
@@ -70,6 +68,7 @@
   },
   "devDependencies": {
     "@rtk-query/codegen-openapi": "^2.2.0",
+    "@types/google.maps": "^3.64.0",
     "@types/jest": "^27.5.2",
     "@types/mixpanel-browser": "^2.47.0",
     "@types/node": "^16.11.38",
