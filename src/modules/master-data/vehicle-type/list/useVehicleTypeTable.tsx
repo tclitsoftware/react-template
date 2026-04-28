@@ -27,13 +27,22 @@ const useVehicleTypeTable = () => {
   const [selectedKeys, setSelectedKeys] = useState<Array<string | number>>([]);
   const [sortState, setSortState] = useState<TableSortState>(null);
   const [filterValues, setFilterValues] = useState<Record<string, string>>({});
+  const [page, setPage] = useState(1);
+  const limit = 10;
+
+  useEffect(() => {
+    setPage(1); // Reset to first page when filters change
+  }, [filterValues, sortState]);
+
   const queryParams = useMemo(
     () => ({
+      page: page,
+      size: limit,
       sortBy: sortState?.columnId ?? undefined,
       sortOrder: sortState?.direction ?? undefined,
       ...filterValues,
     }),
-    [filterValues, sortState],
+    [filterValues, sortState, page],
   );
   const { data, isFetching, error } = useMegaWrapperServiceV1ListVehicleTypesQuery(queryParams);
 
@@ -124,6 +133,10 @@ const useVehicleTypeTable = () => {
   );
 
   return {
+    page,
+    setPage,
+    limit,
+    totalPage: data?.metadata?.total_page ?? 1,
     columns,
     sortState,
     filterValues,

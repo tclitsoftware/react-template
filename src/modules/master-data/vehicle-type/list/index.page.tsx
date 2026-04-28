@@ -4,6 +4,7 @@ import Typography from "components/typography";
 import useVehicleTypeTable from "./useVehicleTypeTable";
 import { MegaWrapperWrapperVehicleTypeRes as VehicleTypeRow } from "_services/modules/vehicleTypeWrapper";
 import SelectionActionBar from "./SelectionActionBar";
+import { Pagination } from "components/table";
 
 export const vehicleTypePageRouteName = "/master-data/vehicle-type";
 
@@ -14,6 +15,9 @@ const VehicleTypePage = () => {
     data,
     isFetching,
     error,
+    page,
+    setPage,
+    totalPage,
     sortState,
     queryParams,
     setSortState,
@@ -71,6 +75,9 @@ const VehicleTypePage = () => {
           error={error ? t("error-load") : ""}
           selectableLabel={"Select"}
         />
+        <div className="mt-6 flex justify-end">
+          <Pagination currentPage={page} totalPages={totalPage} onPageChange={setPage}></Pagination>
+        </div>
       </section>
     </div>
   );

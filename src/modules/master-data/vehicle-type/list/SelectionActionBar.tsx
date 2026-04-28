@@ -37,14 +37,12 @@ const SelectionActionBar = ({
             <Icon name={isSelectionMode ? "check" : "settings"} size={20} />
           </div>
           <div className="flex flex-col">
-            <Typography
-              variant="bodyExtraSmall"
-              tone="muted"
-              className="uppercase tracking-[0.24em]"
-            >
-              {isSelectionMode ? "Selection Mode" : "Management"}
+            <Typography variant="body" tone="muted" className="uppercase tracking-[0.24em]">
+              {isSelectionMode ? "Selection Mode" : "Vehicle Types"}
             </Typography>
-            <Typography variant="bodySmall" className="font-semibold text-text-primary">
+            <Typography variant="body" className="font-semibold text-text-primary">
+              {" "}
+              {/* should be using i8n but well let's think about it later */}
               {isSelectionMode
                 ? `${selectedCount} items selected`
                 : "Manage your vehicle type catalog"}
