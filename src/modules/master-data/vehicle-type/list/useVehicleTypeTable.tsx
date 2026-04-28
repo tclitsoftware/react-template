@@ -13,6 +13,7 @@ import { setGlobalComponent } from "store/global-components";
 import {
   useMegaVehicleTypeServiceV1ActivateVehicleTypesMutation,
   useMegaVehicleTypeServiceV1DeactivateVehicleTypesMutation,
+  useMegaVehicleTypeServiceV1ListVehicleTypeCategoriesQuery,
 } from "_services/modules/vehicleTypeApi";
 
 const statusClasses: Record<NonNullable<VehicleTypeRow["status"]>, string> = {
@@ -29,6 +30,16 @@ const useVehicleTypeTable = () => {
   const [filterValues, setFilterValues] = useState<Record<string, string>>({});
   const [page, setPage] = useState(1);
   const limit = 10;
+
+  const { data: categoryData } = useMegaVehicleTypeServiceV1ListVehicleTypeCategoriesQuery();
+
+  const categoryOptions = useMemo(() => {
+    const options = (categoryData?.vehicle_type_categories ?? []).map((cat) => ({
+      label: cat.category_name ?? "--",
+      value: cat.category_name ?? "", // Sending name because API expects 'vehicleCategoryName' string
+    }));
+    return [{ label: t("filter-all" as never), value: "" }, ...options];
+  }, [categoryData, t]);
 
   useEffect(() => {
     setPage(1); // Reset to first page when filters change
@@ -95,12 +106,13 @@ const useVehicleTypeTable = () => {
         filterable: true,
       },
       {
-        id: "category",
+        id: "vehicleCategoryName",
         fieldId: "category_name",
         label: t("column-category" as never),
         sortable: true,
         filterable: true,
         filterId: "vehicleCategoryName",
+        filterOptions: categoryOptions,
       },
       {
         id: "temp-type",
