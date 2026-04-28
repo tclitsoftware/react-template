@@ -4,27 +4,55 @@ import NotFoundPage, { notFoundRouteName } from "modules/not-found/index.page";
 import ListProfilePage, { listProfilePageRouteName } from "modules/list-profile/index.page";
 import ProfilePage, { profilePageRouteName } from "modules/profile/features/create/index.page";
 import ColorsPage, { colorsPageRouteName } from "modules/design-system/colors/index.page";
-import TypographyPage, { typographyPageRouteName } from "modules/design-system/typography/index.page";
+import TypographyPage, {
+  typographyPageRouteName,
+} from "modules/design-system/typography/index.page";
 import ButtonPage, { buttonPageRouteName } from "modules/design-system/button/index.page";
 import FormFieldPage, { formFieldPageRouteName } from "modules/design-system/form-field/index.page";
 import IconPage, { iconPageRouteName } from "modules/design-system/icon/index.page";
 import TablesPage, { tablesPageRouteName } from "modules/design-system/tables/index.page";
-import TranslationPage, { translationPageRouteName } from "modules/design-system/translation/index.page";
+import TranslationPage, {
+  translationPageRouteName,
+} from "modules/design-system/translation/index.page";
 
-import VehicleTypePage, { vehicleTypePageRouteName } from "modules/master-data/vehicle-type/list/index.page";
-import VehicleModelPage, { vehicleModelPageRouteName } from "modules/master-data/vehicle-model/list/index.page";
-import FreezerModelPage, { freezerModelPageRouteName } from "modules/master-data/freezer-model/list/index.page";
-import VehicleAuxiliaryPage, { vehicleAuxiliaryPageRouteName } from "modules/master-data/vehicle-auxiliary/list/index.page";
+import VehicleTypePage, {
+  vehicleTypePageRouteName,
+} from "modules/master-data/vehicle-type/list/index.page";
+import VehicleTypeCreatePage, {
+  vehicleTypeCreatePageRouteName,
+} from "modules/master-data/vehicle-type/create/index.page";
+
+import VehicleModelPage, {
+  vehicleModelPageRouteName,
+} from "modules/master-data/vehicle-model/list/index.page";
+import FreezerModelPage, {
+  freezerModelPageRouteName,
+} from "modules/master-data/freezer-model/list/index.page";
+import VehicleAuxiliaryPage, {
+  vehicleAuxiliaryPageRouteName,
+} from "modules/master-data/vehicle-auxiliary/list/index.page";
 
 import FuelTypePage, { fuelTypePageRouteName } from "modules/config/fuel-type/index.page";
 import TripTypePage, { tripTypePageRouteName } from "modules/config/trip-type/index.page";
-import DistanceTypePage, { distanceTypePageRouteName } from "modules/config/distance-type/index.page";
-import TripDaysThresholdPage, { tripDaysThresholdPageRouteName } from "modules/config/trip-days-threshold/index.page";
-import WaitingTimeRatePage, { waitingTimeRatePageRouteName } from "modules/config/waiting-time-rate/index.page";
-import VehicleOperationConfigPage, { vehicleOperationConfigPageRouteName } from "modules/config/vehicle-operation-config/index.page";
-import DriverAllowancePage, { driverAllowancePageRouteName } from "modules/config/driver-allowance/index.page";
+import DistanceTypePage, {
+  distanceTypePageRouteName,
+} from "modules/config/distance-type/index.page";
+import TripDaysThresholdPage, {
+  tripDaysThresholdPageRouteName,
+} from "modules/config/trip-days-threshold/index.page";
+import WaitingTimeRatePage, {
+  waitingTimeRatePageRouteName,
+} from "modules/config/waiting-time-rate/index.page";
+import VehicleOperationConfigPage, {
+  vehicleOperationConfigPageRouteName,
+} from "modules/config/vehicle-operation-config/index.page";
+import DriverAllowancePage, {
+  driverAllowancePageRouteName,
+} from "modules/config/driver-allowance/index.page";
 
-import DriverTripCalculatorPage, { driverTripCalculatorPageRouteName } from "modules/driver-trip-calculator/index.page";
+import DriverTripCalculatorPage, {
+  driverTripCalculatorPageRouteName,
+} from "modules/driver-trip-calculator/index.page";
 
 const publicRoutes: Array<RouteObject> = [
   {
@@ -46,6 +74,7 @@ const publicRoutes: Array<RouteObject> = [
         ],
       },
       { path: vehicleTypePageRouteName, element: <VehicleTypePage /> },
+      { path: vehicleTypeCreatePageRouteName, element: <VehicleTypeCreatePage /> },
       { path: vehicleModelPageRouteName, element: <VehicleModelPage /> },
       { path: freezerModelPageRouteName, element: <FreezerModelPage /> },
       { path: vehicleAuxiliaryPageRouteName, element: <VehicleAuxiliaryPage /> },
@@ -61,6 +90,6 @@ const publicRoutes: Array<RouteObject> = [
       { path: "*", element: <Navigate to={notFoundRouteName} /> },
     ],
   },
-]
+];
 
 export { publicRoutes };

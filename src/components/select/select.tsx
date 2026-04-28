@@ -98,9 +98,9 @@ const SelectInner = (
     value,
   });
 
-  const wrapperClasses = "flex w-full flex-col gap-1";
+  const wrapperClasses = "flex w-full flex-col gap-[7px]";
   const buttonClasses = [
-    "flex min-h-[38px] w-full items-center justify-between rounded border bg-white px-4 text-sm text-text-primary transition transition-all focus-visible:outline-none focus-visible:ring-offset-1",
+    "flex min-h-[40px] w-full items-center justify-between rounded border bg-white px-3 py-2 text-sm text-text-primary transition transition-all focus-visible:outline-none focus-visible:ring-offset-1",
     error
       ? "border-error focus-visible:border-error focus-visible:ring-error shadow-[0_0_0_3px] shadow-error-500/15"
       : "border-border focus-within:border-primary-500 focus-within:ring-2 focus-within:ring-primary-200",

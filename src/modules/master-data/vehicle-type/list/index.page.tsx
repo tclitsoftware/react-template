@@ -5,10 +5,13 @@ import useVehicleTypeTable from "./useVehicleTypeTable";
 import { MegaWrapperWrapperVehicleTypeRes as VehicleTypeRow } from "_services/modules/vehicleTypeWrapper";
 import SelectionActionBar from "./SelectionActionBar";
 import { Pagination } from "components/table";
+import { useNavigate } from "react-router-dom";
+import { vehicleTypeCreatePageRouteName } from "../create/index.page";
 
 export const vehicleTypePageRouteName = "/master-data/vehicle-type";
 
 const VehicleTypePage = () => {
+  const navigate = useNavigate();
   const { t } = useAppTranslation("tables");
   const {
     columns,
@@ -55,7 +58,7 @@ const VehicleTypePage = () => {
         onActivate={onBulkActivate}
         onDeactivate={onBulkDeactivate}
         isProcessing={isBulkProcessing}
-        onAdd={() => console.log("create button pressed")}
+        onAdd={() => navigate(vehicleTypeCreatePageRouteName)}
       />
 
       <section className="rounded-2xl border border-border bg-white p-6 shadow-sm">
