@@ -14,5 +14,8 @@
   "status-pending": "Pending",
   "status-inactive": "Inactive",
   "action-edit": "Edit",
-  "select-all": "All"
+  "select-all": "All",
+  "pagination-go-to": "Go to page",
+  "pagination-next": "Next",
+  "pagination-previous": "Previous"
 }

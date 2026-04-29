@@ -1,5 +1,6 @@
 import Icon from "components/icon";
 import { useEffect, useState } from "react";
+import { useAppTranslation } from "locale/useAppTranslation";
 
 interface PaginationProps {
   currentPage: number;
@@ -9,6 +10,8 @@ interface PaginationProps {
 
 const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPageChange }) => {
   const [inputPage, setInputPage] = useState<string>(String(currentPage));
+
+  const { t } = useAppTranslation("tables");
 
   useEffect(() => {
     setInputPage(String(currentPage));
@@ -114,7 +117,9 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
 
       {/* Go to page */}
       <div className="flex items-center gap-2">
-        <span className="text-xs text-text-tertiary whitespace-nowrap">Go to page</span>
+        <span className="text-xs text-text-tertiary whitespace-nowrap">
+          {t("pagination-go-to")}
+        </span>
         <input
           type="text"
           value={inputPage}

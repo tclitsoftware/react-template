@@ -14,5 +14,8 @@
   "status-pending": "Menunggu",
   "status-inactive": "Tidak aktif",
   "action-edit": "Edit",
-  "select-all": "Semua"
+  "select-all": "Semua",
+  "pagination-go-to": "Pergi ke halaman:",
+  "pagination-next": "Selanjutnya",
+  "pagination-previous": "Sebelumnya"
 }
