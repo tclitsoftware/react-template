@@ -10,6 +10,12 @@ import FormFieldPage, { formFieldPageRouteName } from "modules/design-system/for
 import IconPage, { iconPageRouteName } from "modules/design-system/icon/index.page";
 import TablesPage, { tablesPageRouteName } from "modules/design-system/tables/index.page";
 import TranslationPage, { translationPageRouteName } from "modules/design-system/translation/index.page";
+import VehicleAuxiliaryListPage, {
+  vehicleAuxiliaryPageRouteName,
+} from "modules/master-data/vehicle-auxiliary/list/index.page";
+import VehicleAuxiliaryEditPage, {
+  vehicleAuxiliaryEditPageRouteName,
+} from "modules/master-data/vehicle-auxiliary/edit/index.page";
 
 const publicRoutes: Array<RouteObject> = [
   {
@@ -19,6 +25,12 @@ const publicRoutes: Array<RouteObject> = [
       { path: listProfilePageRouteName, element: <ListProfilePage /> },
       { path: profilePageRouteName, element: <ProfilePage /> },
       { path: tablesPageRouteName, element: <TablesPage /> },
+
+      {
+        path: vehicleAuxiliaryPageRouteName,
+        element: <VehicleAuxiliaryListPage />,
+      },
+
       {
         path: "/components",
         children: [
@@ -29,6 +41,10 @@ const publicRoutes: Array<RouteObject> = [
           { path: iconPageRouteName, element: <IconPage /> },
           { path: translationPageRouteName, element: <TranslationPage /> },
         ],
+      },
+      {
+        path: vehicleAuxiliaryEditPageRouteName,
+        element: <VehicleAuxiliaryEditPage />,
       },
       { path: notFoundRouteName, element: <NotFoundPage /> },
       { path: "*", element: <Navigate to={notFoundRouteName} /> },

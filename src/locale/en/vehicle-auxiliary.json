@@ -1,0 +1,55 @@
+{
+  "title": "Vehicle Auxiliary",
+  "masterData": "Master Data",
+  "listDescription": "Data from kresna-wrapper using gRPC to kresna-master-data.",
+  "queryParams": "Query Params",
+
+  "createTitle": "Create Vehicle Auxiliary",
+  "createDescription": "Submit create request through kresna-wrapper and RabbitMQ.",
+
+  "editTitle": "Edit Vehicle Auxiliary",
+  "editDescription": "Update vehicle auxiliary directly to kresna-master-data.",
+  "loadingDetail": "Loading vehicle auxiliary detail...",
+
+  "auxiliaryName": "Auxiliary Name",
+  "categoryId": "Category ID",
+  "status": "Status",
+  "createdAt": "Created At",
+  "action": "Action",
+
+  "allData": "All Data",
+  "active": "Active",
+  "inactive": "Inactive",
+
+  "edit": "Edit",
+  "create": "Create",
+  "update": "Update",
+  "cancel": "Cancel",
+  "saving": "Saving...",
+  "updating": "Updating...",
+
+  "activateSelected": "Activate Selected",
+  "deactivateSelected": "Deactivate Selected",
+  "activating": "Activating...",
+  "deactivating": "Deactivating...",
+
+  "searchByAuxiliaryName": "Search by auxiliary name",
+  "inputAuxiliaryName": "Input auxiliary name",
+
+  "selectAtLeastOne": "Please select at least one data",
+  "createPublishSuccess": "Vehicle auxiliary create request published successfully",
+  "createFailed": "Failed to create vehicle auxiliary",
+  "updateSuccess": "Vehicle auxiliary updated successfully",
+  "updateFailed": "Failed to update vehicle auxiliary",
+  "activateSuccess": "Vehicle auxiliary activated successfully",
+  "deactivateSuccess": "Vehicle auxiliary deactivated successfully",
+  "bulkActionFailed": "Failed to update vehicle auxiliary status",
+
+  "failedLoadData": "Failed to load vehicle auxiliary data",
+  "selectAll": "Select all",
+  "showingPage": "Showing page {{currentPage}} of {{totalPage}} · Total {{totalItem}} items",
+
+  "validationCategoryRequired": "Category ID is required",
+  "validationAuxiliaryNameRequired": "Auxiliary Name is required",
+  "validationStatusRequired": "Status is required"
+}

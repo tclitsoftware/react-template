@@ -1,0 +1,55 @@
+{
+  "title": "Vehicle Auxiliary",
+  "masterData": "Master Data",
+  "listDescription": "Data dari kresna-wrapper menggunakan gRPC ke kresna-master-data.",
+  "queryParams": "Parameter Query",
+
+  "createTitle": "Tambah Vehicle Auxiliary",
+  "createDescription": "Mengirim request create melalui kresna-wrapper dan RabbitMQ.",
+
+  "editTitle": "Ubah Vehicle Auxiliary",
+  "editDescription": "Perbarui vehicle auxiliary langsung ke kresna-master-data.",
+  "loadingDetail": "Memuat detail vehicle auxiliary...",
+
+  "auxiliaryName": "Nama Auxiliary",
+  "categoryId": "ID Kategori",
+  "status": "Status",
+  "createdAt": "Dibuat Pada",
+  "action": "Aksi",
+
+  "allData": "Semua Data",
+  "active": "Aktif",
+  "inactive": "Tidak Aktif",
+
+  "edit": "Ubah",
+  "create": "Tambah",
+  "update": "Simpan Perubahan",
+  "cancel": "Batal",
+  "saving": "Menyimpan...",
+  "updating": "Menyimpan...",
+
+  "activateSelected": "Aktifkan Data Terpilih",
+  "deactivateSelected": "Nonaktifkan Data Terpilih",
+  "activating": "Mengaktifkan...",
+  "deactivating": "Menonaktifkan...",
+
+  "searchByAuxiliaryName": "Cari berdasarkan nama auxiliary",
+  "inputAuxiliaryName": "Masukkan nama auxiliary",
+
+  "selectAtLeastOne": "Pilih minimal satu data",
+  "createPublishSuccess": "Request tambah vehicle auxiliary berhasil dikirim",
+  "createFailed": "Gagal menambahkan vehicle auxiliary",
+  "updateSuccess": "Vehicle auxiliary berhasil diperbarui",
+  "updateFailed": "Gagal memperbarui vehicle auxiliary",
+  "activateSuccess": "Vehicle auxiliary berhasil diaktifkan",
+  "deactivateSuccess": "Vehicle auxiliary berhasil dinonaktifkan",
+  "bulkActionFailed": "Gagal mengubah status vehicle auxiliary",
+
+  "failedLoadData": "Gagal memuat data vehicle auxiliary",
+  "selectAll": "Pilih semua",
+  "showingPage": "Menampilkan halaman {{currentPage}} dari {{totalPage}} · Total {{totalItem}} data",
+
+  "validationCategoryRequired": "ID kategori wajib diisi",
+  "validationAuxiliaryNameRequired": "Nama auxiliary wajib diisi",
+  "validationStatusRequired": "Status wajib diisi"
+}

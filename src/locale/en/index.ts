@@ -9,11 +9,13 @@ import tables from "./tables.json";
 import typography from "./typography.json";
 import login from "./login.json";
 import historyPanel from "./history-panel.json";
+import vehicleAuxiliary from "./vehicle-auxiliary.json";
 
 export const en = {
   button,
   colors,
   formField,
+  vehicleAuxiliary,
   general,
   icon,
   menu,
