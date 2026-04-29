@@ -47,6 +47,26 @@ const store = configureStore({
 
 const persistor = persistStore(store);
 
+// this is why you shouldn't split one business domain to multiple services
+// this is due to the wrapper service and vehicletype service being two different service
+// so one cache being invalidated doesn't invalidate the other
+Api.enhanceEndpoints({
+  endpoints: {
+    megaVehicleTypeServiceV1CreateVehicleTypes: {
+      invalidatesTags: ["MegaWrapperServiceV1"],
+    },
+    megaVehicleTypeServiceV1ActivateVehicleTypes: {
+      invalidatesTags: ["MegaWrapperServiceV1"],
+    },
+    megaVehicleTypeServiceV1DeactivateVehicleTypes: {
+      invalidatesTags: ["MegaWrapperServiceV1"],
+    },
+    megaVehicleTypeServiceV1UpdateVehicleType: {
+      invalidatesTags: ["MegaWrapperServiceV1"],
+    },
+  },
+});
+
 setupListeners(store.dispatch);
 export type RootState = ReturnType<typeof reducers>;
 export const useAppDispatch = () => useDispatch<any>();

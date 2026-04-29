@@ -1,81 +1,93 @@
 import { Api as api } from "../api";
-const injectedRtkApi = api.injectEndpoints({
-  endpoints: (build) => ({
-    megaVehicleTypeServiceV1ListVehicleTypeCategories: build.query<
-      MegaVehicleTypeServiceV1ListVehicleTypeCategoriesApiResponse,
-      MegaVehicleTypeServiceV1ListVehicleTypeCategoriesApiArg
-    >({
-      query: () => ({ url: `/v1/vehicle-type-categories` }),
-    }),
-    megaVehicleTypeServiceV1ListVehicleTypes: build.query<
-      MegaVehicleTypeServiceV1ListVehicleTypesApiResponse,
-      MegaVehicleTypeServiceV1ListVehicleTypesApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/v1/vehicle-types`,
-        params: {
-          page: queryArg.page,
-          size: queryArg.size,
-          sort_by: queryArg.sortBy,
-          sort_order: queryArg.sortOrder,
-          status: queryArg.status,
-          temp_type_id: queryArg.tempTypeId,
-          vehicle_type_name: queryArg.vehicleTypeName,
-          vehicle_category_name: queryArg.vehicleCategoryName,
-          created_by: queryArg.createdBy,
-          updated_by: queryArg.updatedBy,
-        },
+export const addTagTypes = ["MegaVehicleTypeServiceV1"] as const;
+const injectedRtkApi = api
+  .enhanceEndpoints({
+    addTagTypes,
+  })
+  .injectEndpoints({
+    endpoints: (build) => ({
+      megaVehicleTypeServiceV1ListVehicleTypeCategories: build.query<
+        MegaVehicleTypeServiceV1ListVehicleTypeCategoriesApiResponse,
+        MegaVehicleTypeServiceV1ListVehicleTypeCategoriesApiArg
+      >({
+        query: () => ({ url: `/v1/vehicle-type-categories` }),
+        providesTags: ["MegaVehicleTypeServiceV1"],
+      }),
+      megaVehicleTypeServiceV1ListVehicleTypes: build.query<
+        MegaVehicleTypeServiceV1ListVehicleTypesApiResponse,
+        MegaVehicleTypeServiceV1ListVehicleTypesApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/v1/vehicle-types`,
+          params: {
+            page: queryArg.page,
+            size: queryArg.size,
+            sort_by: queryArg.sortBy,
+            sort_order: queryArg.sortOrder,
+            status: queryArg.status,
+            temp_type_id: queryArg.tempTypeId,
+            vehicle_type_name: queryArg.vehicleTypeName,
+            vehicle_category_name: queryArg.vehicleCategoryName,
+            created_by: queryArg.createdBy,
+            updated_by: queryArg.updatedBy,
+          },
+        }),
+        providesTags: ["MegaVehicleTypeServiceV1"],
+      }),
+      megaVehicleTypeServiceV1CreateVehicleTypes: build.mutation<
+        MegaVehicleTypeServiceV1CreateVehicleTypesApiResponse,
+        MegaVehicleTypeServiceV1CreateVehicleTypesApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/v1/vehicle-types`,
+          method: "POST",
+          body: queryArg.megaVehicleTypeV1MegaCreateVehicleTypesReq,
+        }),
+        invalidatesTags: ["MegaVehicleTypeServiceV1"],
+      }),
+      megaVehicleTypeServiceV1ActivateVehicleTypes: build.mutation<
+        MegaVehicleTypeServiceV1ActivateVehicleTypesApiResponse,
+        MegaVehicleTypeServiceV1ActivateVehicleTypesApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/v1/vehicle-types/activate`,
+          method: "PATCH",
+          body: queryArg.megaVehicleTypeV1MegaVehicleTypeBulkStatusChangeReq,
+        }),
+        invalidatesTags: ["MegaVehicleTypeServiceV1"],
+      }),
+      megaVehicleTypeServiceV1DeactivateVehicleTypes: build.mutation<
+        MegaVehicleTypeServiceV1DeactivateVehicleTypesApiResponse,
+        MegaVehicleTypeServiceV1DeactivateVehicleTypesApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/v1/vehicle-types/deactivate`,
+          method: "PATCH",
+          body: queryArg.megaVehicleTypeV1MegaVehicleTypeBulkStatusChangeReq,
+        }),
+        invalidatesTags: ["MegaVehicleTypeServiceV1"],
+      }),
+      megaVehicleTypeServiceV1GetVehicleType: build.query<
+        MegaVehicleTypeServiceV1GetVehicleTypeApiResponse,
+        MegaVehicleTypeServiceV1GetVehicleTypeApiArg
+      >({
+        query: (queryArg) => ({ url: `/v1/vehicle-types/${queryArg.id}` }),
+        providesTags: ["MegaVehicleTypeServiceV1"],
+      }),
+      megaVehicleTypeServiceV1UpdateVehicleType: build.mutation<
+        MegaVehicleTypeServiceV1UpdateVehicleTypeApiResponse,
+        MegaVehicleTypeServiceV1UpdateVehicleTypeApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/v1/vehicle-types/${queryArg.id}`,
+          method: "PUT",
+          body: queryArg.megaVehicleTypeServiceV1UpdateVehicleTypeBody,
+        }),
+        invalidatesTags: ["MegaVehicleTypeServiceV1"],
       }),
     }),
-    megaVehicleTypeServiceV1CreateVehicleTypes: build.mutation<
-      MegaVehicleTypeServiceV1CreateVehicleTypesApiResponse,
-      MegaVehicleTypeServiceV1CreateVehicleTypesApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/v1/vehicle-types`,
-        method: "POST",
-        body: queryArg.megaVehicleTypeV1MegaCreateVehicleTypesReq,
-      }),
-    }),
-    megaVehicleTypeServiceV1ActivateVehicleTypes: build.mutation<
-      MegaVehicleTypeServiceV1ActivateVehicleTypesApiResponse,
-      MegaVehicleTypeServiceV1ActivateVehicleTypesApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/v1/vehicle-types/activate`,
-        method: "PATCH",
-        body: queryArg.megaVehicleTypeV1MegaVehicleTypeBulkStatusChangeReq,
-      }),
-    }),
-    megaVehicleTypeServiceV1DeactivateVehicleTypes: build.mutation<
-      MegaVehicleTypeServiceV1DeactivateVehicleTypesApiResponse,
-      MegaVehicleTypeServiceV1DeactivateVehicleTypesApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/v1/vehicle-types/deactivate`,
-        method: "PATCH",
-        body: queryArg.megaVehicleTypeV1MegaVehicleTypeBulkStatusChangeReq,
-      }),
-    }),
-    megaVehicleTypeServiceV1GetVehicleType: build.query<
-      MegaVehicleTypeServiceV1GetVehicleTypeApiResponse,
-      MegaVehicleTypeServiceV1GetVehicleTypeApiArg
-    >({
-      query: (queryArg) => ({ url: `/v1/vehicle-types/${queryArg.id}` }),
-    }),
-    megaVehicleTypeServiceV1UpdateVehicleType: build.mutation<
-      MegaVehicleTypeServiceV1UpdateVehicleTypeApiResponse,
-      MegaVehicleTypeServiceV1UpdateVehicleTypeApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/v1/vehicle-types/${queryArg.id}`,
-        method: "PUT",
-        body: queryArg.megaVehicleTypeServiceV1UpdateVehicleTypeBody,
-      }),
-    }),
-  }),
-  overrideExisting: false,
-});
+    overrideExisting: false,
+  });
 export { injectedRtkApi as vehicleTypeApi };
 export type MegaVehicleTypeServiceV1ListVehicleTypeCategoriesApiResponse =
   /** status 200 A successful response. */ MegaVehicleTypeV1MegaListVehicleTypeCategoriesRes;

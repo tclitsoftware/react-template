@@ -1,50 +1,58 @@
 import { Api as api } from "../api";
-const injectedRtkApi = api.injectEndpoints({
-  endpoints: (build) => ({
-    megaWrapperServiceV1HealthCheck: build.query<
-      MegaWrapperServiceV1HealthCheckApiResponse,
-      MegaWrapperServiceV1HealthCheckApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/v1/health`,
-        params: {
-          source: queryArg.source,
-        },
+export const addTagTypes = ["MegaWrapperServiceV1"] as const;
+const injectedRtkApi = api
+  .enhanceEndpoints({
+    addTagTypes,
+  })
+  .injectEndpoints({
+    endpoints: (build) => ({
+      megaWrapperServiceV1HealthCheck: build.query<
+        MegaWrapperServiceV1HealthCheckApiResponse,
+        MegaWrapperServiceV1HealthCheckApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/v1/health`,
+          params: {
+            source: queryArg.source,
+          },
+        }),
+        providesTags: ["MegaWrapperServiceV1"],
+      }),
+      megaWrapperServiceV1AsyncBatchCreateVehicleType: build.mutation<
+        MegaWrapperServiceV1AsyncBatchCreateVehicleTypeApiResponse,
+        MegaWrapperServiceV1AsyncBatchCreateVehicleTypeApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/v1/vehicle-type`,
+          method: "POST",
+          body: queryArg.megaWrapperAsyncBatchCreateVehicleTypeReq,
+        }),
+        invalidatesTags: ["MegaWrapperServiceV1"],
+      }),
+      megaWrapperServiceV1ListVehicleTypes: build.query<
+        MegaWrapperServiceV1ListVehicleTypesApiResponse,
+        MegaWrapperServiceV1ListVehicleTypesApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/v1/vehicle-types`,
+          params: {
+            page: queryArg.page,
+            size: queryArg.size,
+            sort_by: queryArg.sortBy,
+            sort_order: queryArg.sortOrder,
+            status: queryArg.status,
+            temp_type_id: queryArg.tempTypeId,
+            vehicle_type_name: queryArg.vehicleTypeName,
+            vehicle_category_name: queryArg.vehicleCategoryName,
+            created_by: queryArg.createdBy,
+            updated_by: queryArg.updatedBy,
+          },
+        }),
+        providesTags: ["MegaWrapperServiceV1"],
       }),
     }),
-    megaWrapperServiceV1AsyncBatchCreateVehicleType: build.mutation<
-      MegaWrapperServiceV1AsyncBatchCreateVehicleTypeApiResponse,
-      MegaWrapperServiceV1AsyncBatchCreateVehicleTypeApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/v1/vehicle-type`,
-        method: "POST",
-        body: queryArg.megaWrapperAsyncBatchCreateVehicleTypeReq,
-      }),
-    }),
-    megaWrapperServiceV1ListVehicleTypes: build.query<
-      MegaWrapperServiceV1ListVehicleTypesApiResponse,
-      MegaWrapperServiceV1ListVehicleTypesApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/v1/vehicle-types`,
-        params: {
-          page: queryArg.page,
-          size: queryArg.size,
-          sort_by: queryArg.sortBy,
-          sort_order: queryArg.sortOrder,
-          status: queryArg.status,
-          temp_type_id: queryArg.tempTypeId,
-          vehicle_type_name: queryArg.vehicleTypeName,
-          vehicle_category_name: queryArg.vehicleCategoryName,
-          created_by: queryArg.createdBy,
-          updated_by: queryArg.updatedBy,
-        },
-      }),
-    }),
-  }),
-  overrideExisting: false,
-});
+    overrideExisting: false,
+  });
 export { injectedRtkApi as vehicleTypeApi };
 export type MegaWrapperServiceV1HealthCheckApiResponse =
   /** status 200 A successful response. */ MegaWrapperWrapperHealthCheckResponse;

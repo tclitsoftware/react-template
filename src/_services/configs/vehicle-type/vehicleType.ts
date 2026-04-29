@@ -8,6 +8,7 @@ const config: ConfigFile = {
   outputFile: "../../modules/vehicleTypeApi.ts",
   exportName: "vehicleTypeApi",
   hooks: true,
+  tag: true,
 };
 
 export default config;

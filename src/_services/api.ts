@@ -1,13 +1,13 @@
-import { RootState } from 'store';
+import { RootState } from "store";
 import {
   BaseQueryFn,
   FetchArgs,
   createApi,
   fetchBaseQuery,
   FetchBaseQueryError,
-} from '@reduxjs/toolkit/query/react';
-import { toast } from 'react-toastify';
-import { deleteTokenAuth } from 'store/auth';
+} from "@reduxjs/toolkit/query/react";
+import { toast } from "react-toastify";
+import { deleteTokenAuth } from "store/auth";
 
 export interface ApiResponseI<T> {
   data: T;
@@ -23,10 +23,10 @@ export const baseQuery = fetchBaseQuery({
   prepareHeaders: (headers, { getState, endpoint }) => {
     const token = (getState() as RootState).auth.accessToken;
 
-    if (token && endpoint !== 'refresh') {
-      headers.set('Authorization', `Bearer ${token}`);
+    if (token && endpoint !== "refresh") {
+      headers.set("Authorization", `Bearer ${token}`);
     }
-    headers.set('Content-Type', 'application/json');
+    headers.set("Content-Type", "application/json");
     return headers;
   },
 });
@@ -37,18 +37,18 @@ const baseQueryWithInterceptor: BaseQueryFn<
   FetchBaseQueryError
 > = async (args, api, extraOptions) => {
   if (process.env.NODE_ENV === "development") {
-    console.info('[RTK Api fetch]:', args);
+    console.info("[RTK Api fetch]:", args);
   }
   let result = await baseQuery(args, api, extraOptions);
   if (result.error) {
     if (result.error.status === 401) {
-      toast('Please re-login for continue process');
+      toast("Please re-login for continue process");
       api.dispatch(deleteTokenAuth());
     }
     // showToast((result.error.data as ApiErrorResponseI).message || 'Unknown Error');
   }
   if (process.env.NODE_ENV === "development") {
-    console.info('[RTK Api result]:', result);
+    console.info("[RTK Api result]:", result);
   }
   return result;
 };
@@ -57,4 +57,5 @@ export const Api = createApi({
   baseQuery: baseQueryWithInterceptor,
   reducerPath: "api",
   endpoints: () => ({}),
+  tagTypes: ["MegaVehicleTypeServiceV1", "MegaWrapperServiceV1"],
 });
