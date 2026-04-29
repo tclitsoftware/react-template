@@ -1,9 +1,22 @@
 import { forwardRef } from "react";
 
+/**
+ * Props for the Switch component.
+ */
 export interface SwitchProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  /**
+   * Label text to display beside the switch
+   */
   label?: string;
 }
 
+/**
+ * This is a switch that is basicallya checkbox in disguise.
+ * should support all standard HTML input attributes and works seamlessly with React Hook Form.
+ *
+ * @example
+ * <Switch label="Activate Feature" checked={isActive} onChange={setIsActive} />
+ */
 const Switch = forwardRef<HTMLInputElement, SwitchProps>(
   ({ className, label, disabled, ...props }, ref) => {
     return (
