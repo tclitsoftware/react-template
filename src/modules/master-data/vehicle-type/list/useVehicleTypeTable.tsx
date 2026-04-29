@@ -116,7 +116,7 @@ const useVehicleTypeTable = () => {
         filterOptions: categoryOptions,
       },
       {
-        id: "temp-type",
+        id: "tempTypeId",
         fieldId: "temp_type_name",
         label: tv("field-temp-type"),
         sortable: true,
