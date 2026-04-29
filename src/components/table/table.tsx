@@ -46,13 +46,13 @@ type FilterRenderArgs = {
  */
 export interface Columns<T> {
   /**
-   * Unique identifier for the column. 
+   * Unique identifier for the column.
    * If not provided, defaults to `fieldId`.
    */
   id?: string;
 
   /**
-   * The key in the data object to display. 
+   * The key in the data object to display.
    * Use `"index"` to show a row number (e.g., 1, 2, 3...).
    */
   fieldId: keyof T | "index";
@@ -73,7 +73,7 @@ export interface Columns<T> {
   label: string;
 
   /**
-   * Custom renderer for the cell content. 
+   * Custom renderer for the cell content.
    * Receives the full row object as an argument.
    */
   render?: (data: T) => React.ReactElement | string;
@@ -225,6 +225,9 @@ interface Props<T> {
 
   /** Label for the 'select all' checkbox header. @default "All" */
   selectableLabel?: string;
+
+  /** Determine how many skeleton rows in loading state. @default 10 */
+  skeletonRowsCount?: number;
 }
 
 type HeaderCellProps = {
@@ -245,10 +248,7 @@ function classNames(...classes: Array<string | false | null | undefined>) {
   return classes.filter(Boolean).join(" ");
 }
 
-function areFilterValuesEqual(
-  left: Record<string, string>,
-  right: Record<string, string>,
-) {
+function areFilterValuesEqual(left: Record<string, string>, right: Record<string, string>) {
   if (left === right) {
     return true;
   }
@@ -293,12 +293,10 @@ function getDefaultCellValue<T>(
   limit: number,
 ) {
   if (column.fieldId === "index") {
-    return index + 1 + ((currentPage - 1) * limit);
+    return index + 1 + (currentPage - 1) * limit;
   }
 
-  const primaryValue = (row as Record<string, React.ReactNode>)[
-    String(column.fieldId)
-  ];
+  const primaryValue = (row as Record<string, React.ReactNode>)[String(column.fieldId)];
   const secondaryValue = column.fieldId2
     ? (row as Record<string, React.ReactNode>)[column.fieldId2]
     : undefined;
@@ -316,9 +314,7 @@ function getDefaultCellValue<T>(
       {secondaryValue ? (
         <span className="text-xs text-text-secondary">{secondaryValue}</span>
       ) : null}
-      {tertiaryValue ? (
-        <span className="text-xs text-text-secondary">{tertiaryValue}</span>
-      ) : null}
+      {tertiaryValue ? <span className="text-xs text-text-secondary">{tertiaryValue}</span> : null}
     </div>
   );
 }
@@ -332,21 +328,8 @@ function parseColumnWidth(width?: string) {
   return Number.isFinite(numericWidth) ? numericWidth : undefined;
 }
 
-const SortableHeaderCell = ({
-  id,
-  disabled,
-  children,
-  className,
-  style,
-}: HeaderCellProps) => {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({
+const SortableHeaderCell = ({ id, disabled, children, className, style }: HeaderCellProps) => {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id,
     disabled,
   });
@@ -379,9 +362,9 @@ const SortableHeaderCell = ({
 /**
  * Feature-rich data table component.
  * Supports sorting, filtering, selection, column drag-and-drop, and resizing.
- * 
+ *
  * @template T - The type of data in a single row.
- * 
+ *
  * @example
  * <Table<User>
  *   data={users}
@@ -428,8 +411,7 @@ export function Table<T>({
   const [columnOrder, setColumnOrder] = useState(() =>
     columns.map((column, index) => getColumnId(column, index)),
   );
-  const [internalSortState, setInternalSortState] =
-    useState<TableSortState>(defaultSortState);
+  const [internalSortState, setInternalSortState] = useState<TableSortState>(defaultSortState);
   const [internalFilterValues, setInternalFilterValues] =
     useState<Record<string, string>>(defaultFilterValues);
   const [internalSelectedRowKeys, setInternalSelectedRowKeys] =
@@ -462,21 +444,16 @@ export function Table<T>({
     });
   }, [columns]);
 
-  const activeSortState =
-    sortState !== undefined ? sortState : internalSortState;
-  const activeFilterValues =
-    filterValues !== undefined ? filterValues : internalFilterValues;
+  const activeSortState = sortState !== undefined ? sortState : internalSortState;
+  const activeFilterValues = filterValues !== undefined ? filterValues : internalFilterValues;
   const activeSelectedKeys =
     selectedRowKeys !== undefined ? selectedRowKeys : internalSelectedRowKeys;
-  const activeColumnWidths =
-    columnWidths !== undefined ? columnWidths : internalColumnWidths;
+  const activeColumnWidths = columnWidths !== undefined ? columnWidths : internalColumnWidths;
   const [draftFilterValues, setDraftFilterValues] =
     useState<Record<string, string>>(activeFilterValues);
 
   const orderedColumns = useMemo(() => {
-    const columnMap = new Map(
-      columns.map((column, index) => [getColumnId(column, index), column]),
-    );
+    const columnMap = new Map(columns.map((column, index) => [getColumnId(column, index), column]));
 
     return columnOrder
       .map((columnId) => columnMap.get(columnId))
@@ -508,9 +485,8 @@ export function Table<T>({
 
   const activeColumn = useMemo(
     () =>
-      orderedColumns.find(
-        (column, index) => getColumnId(column, index) === activeDragColumnId,
-      ) ?? null,
+      orderedColumns.find((column, index) => getColumnId(column, index) === activeDragColumnId) ??
+      null,
     [activeDragColumnId, orderedColumns],
   );
 
@@ -524,11 +500,9 @@ export function Table<T>({
   );
 
   const allVisibleRowsSelected =
-    rowsWithKeys.length > 0 &&
-    rowsWithKeys.every(({ key }) => activeSelectedKeys.includes(key));
+    rowsWithKeys.length > 0 && rowsWithKeys.every(({ key }) => activeSelectedKeys.includes(key));
   const someVisibleRowsSelected =
-    rowsWithKeys.some(({ key }) => activeSelectedKeys.includes(key)) &&
-    !allVisibleRowsSelected;
+    rowsWithKeys.some(({ key }) => activeSelectedKeys.includes(key)) && !allVisibleRowsSelected;
 
   const commitFilterValues = (nextFilters: Record<string, string>) => {
     if (filterValues === undefined) {
@@ -551,9 +525,7 @@ export function Table<T>({
       setInternalSelectedRowKeys(nextKeys);
     }
 
-    const nextRows = rowsWithKeys
-      .filter(({ key }) => nextKeys.includes(key))
-      .map(({ row }) => row);
+    const nextRows = rowsWithKeys.filter(({ key }) => nextKeys.includes(key)).map(({ row }) => row);
 
     onSelectedRowKeysChange?.(nextKeys, nextRows);
   };
@@ -632,12 +604,12 @@ export function Table<T>({
     }
   };
 
+  const SkeletonCell = () => <div className="h-5 w-full animate-pulse rounded bg-greyScale-80" />;
+
   const handleToggleAllRows = () => {
     if (allVisibleRowsSelected) {
       const visibleKeys = rowsWithKeys.map(({ key }) => key);
-      commitSelectedKeys(
-        activeSelectedKeys.filter((key) => !visibleKeys.includes(key)),
-      );
+      commitSelectedKeys(activeSelectedKeys.filter((key) => !visibleKeys.includes(key)));
       return;
     }
 
@@ -753,8 +725,7 @@ export function Table<T>({
 
   const getColumnDragState = (columnId: string) => ({
     isDragSource: activeDragColumnId === columnId,
-    isDragTarget:
-      dragOverColumnId === columnId && activeDragColumnId !== columnId,
+    isDragTarget: dragOverColumnId === columnId && activeDragColumnId !== columnId,
   });
 
   const getColumnStyle = (column: Columns<T>, columnId: string) => {
@@ -777,10 +748,7 @@ export function Table<T>({
     return undefined;
   };
 
-  const handleResizeStart = (
-    event: React.MouseEvent<HTMLButtonElement>,
-    columnId: string,
-  ) => {
+  const handleResizeStart = (event: React.MouseEvent<HTMLButtonElement>, columnId: string) => {
     event.preventDefault();
     event.stopPropagation();
 
@@ -819,10 +787,7 @@ export function Table<T>({
           options={column.filterOptions ?? []}
           value={draftFilterValues[columnId] ?? ""}
           onValueChange={(nextValue) =>
-            handleFilterChange(
-              columnId,
-              Array.isArray(nextValue) ? nextValue[0] ?? "" : nextValue,
-            )
+            handleFilterChange(columnId, Array.isArray(nextValue) ? nextValue[0] ?? "" : nextValue)
           }
           searchable={column.filterSearchable}
           onSearch={column.filterSearch}
@@ -837,9 +802,7 @@ export function Table<T>({
       <Input
         placeholder={column.filterPlaceholder ?? "Search by"}
         value={draftFilterValues[columnId] ?? ""}
-        onChange={(event) =>
-          handleFilterChangeDebounced(columnId, event.target.value)
-        }
+        onChange={(event) => handleFilterChangeDebounced(columnId, event.target.value)}
         onBlur={flushDebouncedFilterChange}
         leftIcon={<Icon name="search" size={16} />}
         reserveHelperSpace={false}
@@ -881,16 +844,13 @@ export function Table<T>({
                   </th>
                 ) : null}
                 <SortableContext
-                  items={orderedColumns.map((column, index) =>
-                    getColumnId(column, index),
-                  )}
+                  items={orderedColumns.map((column, index) => getColumnId(column, index))}
                   strategy={horizontalListSortingStrategy}
                 >
                   {orderedColumns.map((column, index) => {
                     const columnId = getColumnId(column, index);
                     const isSorted = activeSortState?.columnId === columnId;
-                    const { isDragSource, isDragTarget } =
-                      getColumnDragState(columnId);
+                    const { isDragSource, isDragTarget } = getColumnDragState(columnId);
 
                     return (
                       <SortableHeaderCell
@@ -902,8 +862,12 @@ export function Table<T>({
                           "relative border-b border-dashed border-divider px-4 py-5 text-left transition-colors duration-150",
                           column.align === "center" ? "text-center" : "",
                           column.align === "right" ? "text-right" : "text-left",
-                          isDragSource ? "bg-primary-100/70 shadow-[inset_0_0_0_1px_rgba(34,74,138,0.24)]" : "",
-                          isDragTarget ? "bg-secondary-100/70 shadow-[inset_0_0_0_1px_rgba(0,153,156,0.24)]" : "",
+                          isDragSource
+                            ? "bg-primary-100/70 shadow-[inset_0_0_0_1px_rgba(34,74,138,0.24)]"
+                            : "",
+                          isDragTarget
+                            ? "bg-secondary-100/70 shadow-[inset_0_0_0_1px_rgba(0,153,156,0.24)]"
+                            : "",
                         )}
                       >
                         {({ dragHandleProps }) => (
@@ -927,11 +891,7 @@ export function Table<T>({
                                     {...dragHandleProps?.attributes}
                                     {...dragHandleProps?.listeners}
                                   >
-                                    <Icon
-                                      name="drag"
-                                      size={14}
-                                      className="text-primary-500"
-                                    />
+                                    <Icon name="drag" size={14} className="text-primary-500" />
                                   </button>
                                 ) : null}
                                 <span className="text-base font-semibold text-primary-600">
@@ -963,9 +923,7 @@ export function Table<T>({
                               <button
                                 type="button"
                                 aria-label={`Resize ${column.label}`}
-                                onMouseDown={(event) =>
-                                  handleResizeStart(event, columnId)
-                                }
+                                onMouseDown={(event) => handleResizeStart(event, columnId)}
                                 className="absolute right-0 top-0 h-full w-3 cursor-col-resize touch-none"
                               >
                                 <span className="absolute right-1 top-1/2 h-10 w-px -translate-y-1/2 bg-divider transition-colors group-hover:bg-primary-300" />
@@ -984,8 +942,7 @@ export function Table<T>({
                 ) : null}
                 {orderedColumns.map((column, index) => {
                   const columnId = getColumnId(column, index);
-                  const { isDragSource, isDragTarget } =
-                    getColumnDragState(columnId);
+                  const { isDragSource, isDragTarget } = getColumnDragState(columnId);
 
                   return (
                     <th
@@ -1006,89 +963,83 @@ export function Table<T>({
             <tbody className="bg-white">
               {!loading && isEmpty(error) && hasRows
                 ? rowsWithKeys.map(({ row, key }, index) => (
-                  <tr
-                    key={String(key)}
-                    className={classNames(
-                      ranked
-                        ? index === 0
-                          ? "bg-success-100/40"
-                          : index === 1
-                            ? "bg-primary-50"
-                            : index === 2
-                              ? "bg-warning-100/50"
-                              : ""
-                        : "",
-                      onRowClick ? "cursor-pointer hover:bg-whiteScale-90" : "",
-                    )}
-                    onClick={() => onRowClick?.(row)}
-                    role={action ? "button" : undefined}
-                  >
-                    {selectable ? (
-                      <td className="border-b border-dashed border-divider px-3 py-4">
-                        <div
-                          className="flex items-center justify-center"
-                          onClick={(event) => event.stopPropagation()}
-                        >
-                          <Checkbox
-                            checked={activeSelectedKeys.includes(key)}
-                            onChange={() => handleToggleRow(key)}
-                            aria-label={`Select row ${index + 1}`}
-                          />
-                        </div>
-                      </td>
-                    ) : null}
-                    {orderedColumns.map((column, columnIndex) => {
-                      const columnId = getColumnId(column, columnIndex);
-                      const { isDragSource, isDragTarget } =
-                        getColumnDragState(columnId);
-
-                      return (
-                        <td
-                          key={columnId}
-                          style={getColumnStyle(column, columnId)}
-                          className={classNames(
-                            "border-b border-dashed border-divider px-4 py-4 text-sm text-text-primary transition-colors duration-150",
-                            column.align === "center" ? "text-center" : "",
-                            column.align === "right" ? "text-right" : "text-left",
-                            isDragSource ? "bg-primary-50/70" : "",
-                            isDragTarget ? "bg-secondary-50/70" : "",
-                          )}
-                        >
-                          {column.render
-                            ? column.render(row)
-                            : getDefaultCellValue(
-                              row,
-                              column,
-                              index,
-                              currentPage,
-                              limit,
-                            )}
+                    <tr
+                      key={String(key)}
+                      className={classNames(
+                        ranked
+                          ? index === 0
+                            ? "bg-success-100/40"
+                            : index === 1
+                              ? "bg-primary-50"
+                              : index === 2
+                                ? "bg-warning-100/50"
+                                : ""
+                          : "",
+                        onRowClick ? "cursor-pointer hover:bg-whiteScale-90" : "",
+                      )}
+                      onClick={() => onRowClick?.(row)}
+                      role={action ? "button" : undefined}
+                    >
+                      {selectable ? (
+                        <td className="border-b border-dashed border-divider px-3 py-4">
+                          <div
+                            className="flex items-center justify-center"
+                            onClick={(event) => event.stopPropagation()}
+                          >
+                            <Checkbox
+                              checked={activeSelectedKeys.includes(key)}
+                              onChange={() => handleToggleRow(key)}
+                              aria-label={`Select row ${index + 1}`}
+                            />
+                          </div>
                         </td>
-                      );
-                    })}
-                  </tr>
-                ))
+                      ) : null}
+                      {orderedColumns.map((column, columnIndex) => {
+                        const columnId = getColumnId(column, columnIndex);
+                        const { isDragSource, isDragTarget } = getColumnDragState(columnId);
+
+                        return (
+                          <td
+                            key={columnId}
+                            style={getColumnStyle(column, columnId)}
+                            className={classNames(
+                              "border-b border-dashed border-divider px-4 py-4 text-sm text-text-primary transition-colors duration-150",
+                              column.align === "center" ? "text-center" : "",
+                              column.align === "right" ? "text-right" : "text-left",
+                              isDragSource ? "bg-primary-50/70" : "",
+                              isDragTarget ? "bg-secondary-50/70" : "",
+                            )}
+                          >
+                            {column.render
+                              ? column.render(row)
+                              : getDefaultCellValue(row, column, index, currentPage, limit)}
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  ))
                 : null}
-              {loading ? (
-                <tr>
-                  <td
-                    colSpan={totalColumnCount}
-                    className="px-4 py-12 text-center text-sm text-text-secondary"
-                  >
-                    Loading...
-                  </td>
-                </tr>
-              ) : null}
-              {!loading && !isEmpty(error) ? (
-                <tr>
-                  <td
-                    colSpan={totalColumnCount}
-                    className="px-4 py-12 text-center text-sm text-error"
-                  >
-                    {error}
-                  </td>
-                </tr>
-              ) : null}
+              {loading
+                ? Array.from({ length: skeletonRowsCount }).map((_, rowIndex) => (
+                    <tr key={`skeleton-row-${rowIndex}`}>
+                      {selectable ? (
+                        <td className="border-b border-dashed border-divider px-3 py-4">
+                          <div className="flex items-center justify-center">
+                            <div className="h-4 w-4 animate-pulse rounded bg-greyScale-80" />
+                          </div>
+                        </td>
+                      ) : null}
+                      {orderedColumns.map((column, columnIndex) => (
+                        <td
+                          key={`skeleton-col-${columnIndex}`}
+                          className="border-b border-dashed border-divider px-4 py-4"
+                        >
+                          <SkeletonCell />
+                        </td>
+                      ))}
+                    </tr>
+                  ))
+                : null}
               {!loading && isEmpty(error) && !hasRows ? (
                 <tr>
                   <td colSpan={totalColumnCount} className="px-4 py-12 text-center">
@@ -1105,9 +1056,7 @@ export function Table<T>({
                         height={100}
                         width={100}
                       />
-                      <span className="text-sm text-text-secondary">
-                        No data found
-                      </span>
+                      <span className="text-sm text-text-secondary">No data found</span>
                     </div>
                   </td>
                 </tr>
@@ -1120,10 +1069,7 @@ export function Table<T>({
         {activeColumn ? (
           <div
             className="min-w-[220px] overflow-hidden rounded-xl border border-primary-200 bg-white shadow-[0_18px_40px_rgba(15,23,42,0.18)]"
-            style={getColumnStyle(
-              activeColumn,
-              activeDragColumnId ?? getColumnId(activeColumn, 0),
-            )}
+            style={getColumnStyle(activeColumn, activeDragColumnId ?? getColumnId(activeColumn, 0))}
           >
             <div className="border-b border-dashed border-divider bg-tertiary-100 px-4 py-5">
               <div className="flex items-center justify-between gap-3">
@@ -1157,13 +1103,7 @@ export function Table<T>({
                 >
                   {activeColumn.render
                     ? activeColumn.render(row)
-                    : getDefaultCellValue(
-                      row,
-                      activeColumn,
-                      index,
-                      currentPage,
-                      limit,
-                    )}
+                    : getDefaultCellValue(row, activeColumn, index, currentPage, limit)}
                 </div>
               ))}
             </div>
