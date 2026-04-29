@@ -122,6 +122,18 @@ const useVehicleTypeTable = () => {
         sortable: true,
         filterable: true,
         filterId: "tempTypeId",
+        filterOptions: [
+          { label: t("select-all"), value: "" },
+          { label: tv("temp-type-frozen"), value: "d1ca3738-2db7-403a-994a-dc83feac7580" },
+          { label: tv("temp-type-dry"), value: "efe0c577-5abf-4010-8289-52bb3205d00d" },
+        ],
+        render: (row) => {
+          if (row.temp_type_id === "d1ca3738-2db7-403a-994a-dc83feac7580")
+            return tv("temp-type-frozen");
+          if (row.temp_type_id === "efe0c577-5abf-4010-8289-52bb3205d00d")
+            return tv("temp-type-dry");
+          return row.temp_type_name ?? "---";
+        },
       },
       {
         id: "status",
