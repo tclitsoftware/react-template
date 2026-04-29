@@ -12,12 +12,6 @@ export const vehicleTypePageRouteName = "/master-data/vehicle-type";
 
 const VehicleTypePage = () => {
   const navigate = useNavigate();
-
-  const onBatchEdit = () => {
-    const selectedData = data?.vehicle_types?.filter((item) => selectedKeys.includes(item.id!));
-    navigate("/master-data/vehicle-type/edit", { state: { items: selectedData } });
-  };
-
   const { t } = useAppTranslation("tables");
   const {
     columns,
@@ -38,6 +32,13 @@ const VehicleTypePage = () => {
     onBulkDeactivate,
     isBulkProcessing,
   } = useVehicleTypeTable();
+
+  const onBatchEdit = () => {
+    const selectedData = data?.vehicle_types?.filter((item: VehicleTypeRow) =>
+      selectedKeys.includes(item.id!),
+    );
+    navigate("/master-data/vehicle-type/edit", { state: { items: selectedData } });
+  };
 
   return (
     <div className="flex flex-col gap-6">
