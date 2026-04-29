@@ -7,11 +7,7 @@ interface PaginationProps {
   onPageChange: (page: number) => void;
 }
 
-const Pagination: React.FC<PaginationProps> = ({
-  currentPage,
-  totalPages,
-  onPageChange,
-}) => {
+const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPageChange }) => {
   const [inputPage, setInputPage] = useState<string>(String(currentPage));
 
   useEffect(() => {
@@ -80,14 +76,14 @@ const Pagination: React.FC<PaginationProps> = ({
           onClick={(e) => handlePageButtonClick(e, i)}
         >
           {i}
-        </button>
+        </button>,
       );
     }
 
     return buttons;
   };
 
-  if (totalPages <= 1) {
+  if (totalPages < 1) {
     return null;
   }
 
@@ -118,9 +114,7 @@ const Pagination: React.FC<PaginationProps> = ({
 
       {/* Go to page */}
       <div className="flex items-center gap-2">
-        <span className="text-xs text-text-tertiary whitespace-nowrap">
-          Go to page
-        </span>
+        <span className="text-xs text-text-tertiary whitespace-nowrap">Go to page</span>
         <input
           type="text"
           value={inputPage}
