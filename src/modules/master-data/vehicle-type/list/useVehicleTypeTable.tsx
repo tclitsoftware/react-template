@@ -25,6 +25,7 @@ const statusClasses: Record<NonNullable<VehicleTypeRow["status"]>, string> = {
 const useVehicleTypeTable = () => {
   const dispatch = useAppDispatch();
   const { t } = useAppTranslation("tables");
+  const { t: tv } = useAppTranslation("vehicleType");
   const [selectedKeys, setSelectedKeys] = useState<Array<string | number>>([]);
   const [sortState, setSortState] = useState<TableSortState>(null);
   const [filterValues, setFilterValues] = useState<Record<string, string>>({});
@@ -38,7 +39,7 @@ const useVehicleTypeTable = () => {
       label: cat.category_name ?? "--",
       value: cat.category_name ?? "", // Sending name because API expects 'vehicleCategoryName' string
     }));
-    return [{ label: t("filter-all" as never), value: "" }, ...options];
+    return [{ label: t("select-all"), value: "" }, ...options];
   }, [categoryData, t]);
 
   useEffect(() => {
@@ -101,14 +102,14 @@ const useVehicleTypeTable = () => {
       {
         id: "vehicle-type",
         fieldId: "vehicle_type",
-        label: t("vehicle-type" as never), // as never so it doesn't halt compilation
+        label: tv("field-name"),
         sortable: true,
         filterable: true,
       },
       {
         id: "vehicleCategoryName",
         fieldId: "category_name",
-        label: t("column-category" as never),
+        label: tv("field-category"),
         sortable: true,
         filterable: true,
         filterId: "vehicleCategoryName",
@@ -117,7 +118,7 @@ const useVehicleTypeTable = () => {
       {
         id: "temp-type",
         fieldId: "temp_type_name",
-        label: t("column-temp-type" as never),
+        label: tv("field-temp-type"),
         sortable: true,
         filterable: true,
         filterId: "tempTypeId",
@@ -125,18 +126,20 @@ const useVehicleTypeTable = () => {
       {
         id: "status",
         fieldId: "status",
-        label: t("column-status" as never),
+        label: t("column-status"),
         sortable: true,
         filterable: true,
         filterOptions: [
-          { label: t("filter-all" as never), value: "" },
-          { label: t("status-active" as never), value: "active" },
-          { label: t("status-inactive" as never), value: "inactive" },
+          { label: t("select-all"), value: "" },
+          { label: t("status-active"), value: "active" },
+          { label: t("status-inactive"), value: "inactive" },
         ],
         render: (row) => (
           <div className="inline-flex items-center gap-2">
             <span className={`h-2 w-2 rounded-full ${statusClasses[row.status ?? "unknown"]}`} />
-            <span className="capitalize">{row.status}</span>
+            <span className="capitalize">
+              {row.status === "active" ? t("status-active") : t("status-inactive")}
+            </span>
           </div>
         ),
       },

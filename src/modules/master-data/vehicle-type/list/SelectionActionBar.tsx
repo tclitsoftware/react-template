@@ -2,6 +2,7 @@ import { isAction } from "@reduxjs/toolkit";
 import Button from "components/button";
 import Icon from "components/icon";
 import Typography from "components/typography";
+import { useAppTranslation } from "locale/useAppTranslation";
 
 interface SelectionActionBarProps {
   selectedCount: number;
@@ -22,12 +23,13 @@ const SelectionActionBar = ({
   onAdd,
   onBatchEdit,
 }: SelectionActionBarProps) => {
+  const { t } = useAppTranslation("vehicleType");
   const isSelectionMode = selectedCount > 0;
 
   return (
     <section className="rounded-2xl border border-border bg-white p-6 shadow-sm min-h-[100px] flex items-center">
       <div className="flex w-full items-center justify-between">
-        {/* Left Side: Dynamic Info */}
+        {/** left side here */}
         <div className="flex items-center gap-4">
           <div
             className={`flex h-12 w-12 items-center justify-center rounded-full transition-colors duration-300 ${
@@ -36,22 +38,21 @@ const SelectionActionBar = ({
                 : "bg-greyScale-90 text-greyScale-500"
             }`}
           >
-            <Icon name={isSelectionMode ? "check" : "settings"} size={20} />
+            <Icon name={isSelectionMode ? "check" : "truck"} size={20} />
           </div>
           <div className="flex flex-col">
-            <Typography variant="body" tone="muted" className="uppercase tracking-[0.24em]">
-              {isSelectionMode ? "Selection Mode" : "Vehicle Types"}
+            <Typography variant="heading3" className="">
+              {isSelectionMode ? t("selection-mode") : t("list-title")}
             </Typography>
-            <Typography variant="body" className="font-semibold text-text-primary">
+            <Typography variant="body" tone="muted" className="font-semibold  text-text-primary">
               {" "}
-              {/* should be using i8n but well let's think about it later */}
               {isSelectionMode
-                ? `${selectedCount} items selected`
-                : "Manage your vehicle type catalog"}
+                ? `${t("items-selected", { count: selectedCount })}`
+                : t("list-description")}
             </Typography>
           </div>
         </div>
-        {/* Right Side: Dynamic Buttons */}
+        {/**right side here? */}
         <div className="flex items-center gap-3">
           {isSelectionMode ? (
             <>
@@ -63,7 +64,7 @@ const SelectionActionBar = ({
                 disabled={isProcessing}
                 iconLeft={<Icon name="check" size={16} />}
               >
-                Activate
+                {t("action-activate")}
               </Button>
               <Button
                 variant="outline"
@@ -73,7 +74,7 @@ const SelectionActionBar = ({
                 disabled={isProcessing}
                 iconLeft={<Icon name="close" size={16} />}
               >
-                Deactivate
+                {t("action-deactivate")}
               </Button>
               <Button
                 variant="outline"
@@ -82,7 +83,7 @@ const SelectionActionBar = ({
                 onClick={onBatchEdit} // we'll pass this in
                 iconLeft={<Icon name="edit-2" size={18} />}
               >
-                Batch Edit
+                {t("action-batch-edit")}
               </Button>
             </>
           ) : (
@@ -93,7 +94,7 @@ const SelectionActionBar = ({
               onClick={onAdd}
               iconLeft={<Icon name="plus" size={16} />}
             >
-              Add New Vehicle Type
+              {t("action-add-another")}
             </Button>
           )}
         </div>

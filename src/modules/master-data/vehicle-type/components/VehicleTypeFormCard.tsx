@@ -7,6 +7,7 @@ import Icon from "components/icon";
 import Typography from "components/typography";
 import { BatchFormValue } from "../types";
 import { useMegaVehicleTypeServiceV1ListVehicleTypeCategoriesQuery } from "_services/modules/vehicleTypeApi";
+import { useAppTranslation } from "locale/useAppTranslation";
 
 interface VehicleTypeFormCardProps {
   index: number;
@@ -16,18 +17,20 @@ interface VehicleTypeFormCardProps {
   isEdit?: boolean;
 }
 
-// I knowwww this is as bas as it gets but well...
-const tempTypeOptions = [
-  { label: "Frozen", value: "d1ca3738-2db7-403a-994a-dc83feac7580" },
-  { label: "Dry", value: "efe0c577-5abf-4010-8289-52bb3205d00d" },
-];
-
-const VehicleTypeFormCard = ({ index, form, onRemove, showRemove, isEdit }: VehicleTypeFormCardProps) => {
+const VehicleTypeFormCard = ({
+  index,
+  form,
+  onRemove,
+  showRemove,
+  isEdit,
+}: VehicleTypeFormCardProps) => {
   const {
     register,
     control,
     formState: { errors, isSubmitting },
   } = form;
+
+  const { t } = useAppTranslation("vehicleType");
 
   const { data: categoryData } = useMegaVehicleTypeServiceV1ListVehicleTypeCategoriesQuery();
   const categoryOptions = (categoryData?.vehicle_type_categories ?? []).map((cat) => ({
@@ -36,6 +39,12 @@ const VehicleTypeFormCard = ({ index, form, onRemove, showRemove, isEdit }: Vehi
   }));
 
   const fieldPath = `items.${index}` as const;
+
+  // I knowwww this is as bas as it gets but well...
+  const tempTypeOptions = [
+    { label: t("temp-type-frozen"), value: "d1ca3738-2db7-403a-994a-dc83feac7580" },
+    { label: t("temp-type-dry"), value: "efe0c577-5abf-4010-8289-52bb3205d00d" },
+  ];
 
   return (
     <section className="relative rounded-xl border border-border bg-white p-6 shadow-sm transition-all hover:shadow-md">
@@ -46,8 +55,7 @@ const VehicleTypeFormCard = ({ index, form, onRemove, showRemove, isEdit }: Vehi
             {index + 1}
           </div>
           <Typography variant="body" className="font-semibold">
-            {" "}
-            Vehicle Type Details
+            {t("form-card-title")}
           </Typography>
         </div>
 
@@ -59,14 +67,14 @@ const VehicleTypeFormCard = ({ index, form, onRemove, showRemove, isEdit }: Vehi
             onClick={onRemove}
             iconLeft={<Icon name="trash" size={14} />}
           >
-            Remove Entry
+            {t("form-remove-entry")}
           </Button>
         )}
       </div>
       <div className="grid grid-cols-1 gap-4">
         <Input
-          label="Vehicle Type Name"
-          placeholder="e.g. Truck High Box"
+          label={t("field-name")}
+          placeholder={t("field-name-placeholder")}
           {...register(`${fieldPath}.vehicle_type`)}
           error={errors.items?.[index]?.vehicle_type}
           required
@@ -78,8 +86,8 @@ const VehicleTypeFormCard = ({ index, form, onRemove, showRemove, isEdit }: Vehi
               control={control}
               render={({ field }) => (
                 <Select
-                  label="Category"
-                  placeholder="Select category"
+                  label={t("field-category")}
+                  placeholder={t("field-category-placeholder")}
                   options={categoryOptions}
                   value={field.value}
                   onValueChange={field.onChange}
@@ -93,8 +101,8 @@ const VehicleTypeFormCard = ({ index, form, onRemove, showRemove, isEdit }: Vehi
               control={control}
               render={({ field }) => (
                 <Select
-                  label="Temperature Type"
-                  placeholder="Select temperature type"
+                  label={t("field-temp-type")}
+                  placeholder={t("field-temp-type-placeholder")}
                   options={tempTypeOptions}
                   value={field.value}
                   onValueChange={field.onChange}
@@ -111,7 +119,7 @@ const VehicleTypeFormCard = ({ index, form, onRemove, showRemove, isEdit }: Vehi
             render={({ field }) => (
               <div className="flex items-center gap-1">
                 <Checkbox checked={field.value} onChange={field.onChange} disabled={isSubmitting} />
-                <Typography variant="body">Is Active</Typography>
+                <Typography variant="body">{t("field-is-active")}</Typography>
               </div>
             )}
           />
@@ -122,8 +130,12 @@ const VehicleTypeFormCard = ({ index, form, onRemove, showRemove, isEdit }: Vehi
                 control={control}
                 render={({ field }) => (
                   <div className="flex items-center gap-1">
-                    <Checkbox checked={field.value} onChange={field.onChange} disabled={isSubmitting} />
-                    <Typography variant="body">Is Chassis</Typography>
+                    <Checkbox
+                      checked={field.value}
+                      onChange={field.onChange}
+                      disabled={isSubmitting}
+                    />
+                    <Typography variant="body">{t("field-is-chassis")}</Typography>
                   </div>
                 )}
               />
@@ -132,8 +144,12 @@ const VehicleTypeFormCard = ({ index, form, onRemove, showRemove, isEdit }: Vehi
                 control={control}
                 render={({ field }) => (
                   <div className="flex items-center gap-1">
-                    <Checkbox checked={field.value} onChange={field.onChange} disabled={isSubmitting} />
-                    <Typography variant="body">Is Container</Typography>
+                    <Checkbox
+                      checked={field.value}
+                      onChange={field.onChange}
+                      disabled={isSubmitting}
+                    />
+                    <Typography variant="body">{t("field-is-container")}</Typography>
                   </div>
                 )}
               />

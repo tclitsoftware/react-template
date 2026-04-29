@@ -4,10 +4,12 @@ import Icon from "components/icon";
 import Typography from "components/typography";
 import { useVehicleTypeCreate } from "./useVehicleTypeCreate";
 import VehicleTypeFormCard from "../components/VehicleTypeFormCard";
+import { useAppTranslation } from "locale/useAppTranslation";
 
 export const vehicleTypeCreatePageRouteName = "/master-data/vehicle-type/create";
 
 const VehicleTypeCreatePage = () => {
+  const { t } = useAppTranslation("vehicleType");
   const navigate = useNavigate();
   const { form, fields, append, remove, onSave, isSaving } = useVehicleTypeCreate();
 
@@ -17,29 +19,16 @@ const VehicleTypeCreatePage = () => {
       <section className="rounded-2xl border border-border bg-white p-6 shadow-sm">
         <div className="flex items-end justify-between">
           <div className="flex flex-col gap-4">
-            <button
-              type="button"
-              onClick={() => navigate(-1)}
-              className="group flex w-fit items-center gap-2 text-primary-600 transition-all hover:text-primary-700"
-            >
-              <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary-50 transition-colors group-hover:bg-primary-100">
-                <Icon name="arrow-left" size={12} />
-              </div>
-              <Typography variant="bodySmall" className="font-bold uppercase tracking-widest">
-                Back to List
-              </Typography>
-            </button>
-
             <div className="flex items-center gap-4">
               <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary-50 text-primary-600">
                 <Icon name="add-square" size={24} />
               </div>
               <div className="flex flex-col justify-center">
                 <Typography variant="heading3" className="leading-none">
-                  Add more data
+                  {t("create-title")}
                 </Typography>
-                <Typography variant="bodySmall" tone="muted">
-                  Configure multiple vehicle types and save them all at once.
+                <Typography variant="body" tone="muted">
+                  {t("create-description")}
                 </Typography>
               </div>
             </div>
@@ -52,7 +41,7 @@ const VehicleTypeCreatePage = () => {
               onClick={() => navigate(-1)}
               disabled={isSaving}
             >
-              Cancel
+              {t("action-cancel")}
             </Button>
             <Button
               variant="fill"
@@ -67,7 +56,7 @@ const VehicleTypeCreatePage = () => {
                 )
               }
             >
-              Save All ({fields.length})
+              {t("action-save-all", { count: fields.length })}
             </Button>
           </div>
         </div>
@@ -109,10 +98,10 @@ const VehicleTypeCreatePage = () => {
                 variant="body"
                 className="font-bold text-greyScale-500 group-hover:text-primary-600"
               >
-                Add Another
+                {t("action-add-another")}
               </Typography>
               <Typography variant="body" tone="secondary">
-                Click to add a new vehicle type entry
+                {t("add-another-description")}
               </Typography>
             </div>
           </button>
