@@ -12,6 +12,12 @@ export const vehicleTypePageRouteName = "/master-data/vehicle-type";
 
 const VehicleTypePage = () => {
   const navigate = useNavigate();
+
+  const onBatchEdit = () => {
+    const selectedData = data?.vehicle_types?.filter((item) => selectedKeys.includes(item.id!));
+    navigate("/master-data/vehicle-type/edit", { state: { items: selectedData } });
+  };
+
   const { t } = useAppTranslation("tables");
   const {
     columns,
@@ -59,6 +65,7 @@ const VehicleTypePage = () => {
         onDeactivate={onBulkDeactivate}
         isProcessing={isBulkProcessing}
         onAdd={() => navigate(vehicleTypeCreatePageRouteName)}
+        onBatchEdit={onBatchEdit}
       />
 
       <section className="rounded-2xl border border-border bg-white p-6 shadow-sm">

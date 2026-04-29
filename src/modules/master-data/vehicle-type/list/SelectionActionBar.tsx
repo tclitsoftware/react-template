@@ -9,6 +9,7 @@ interface SelectionActionBarProps {
   onDeactivate: () => void;
   onAdd: () => void;
   isProcessing: boolean;
+  onBatchEdit: () => void;
 }
 
 // the react cheatseet (https://react-typescript-cheatsheet.netlify.app/docs/basic/getting-started/function_components/)
@@ -19,6 +20,7 @@ const SelectionActionBar = ({
   onDeactivate,
   isProcessing,
   onAdd,
+  onBatchEdit,
 }: SelectionActionBarProps) => {
   const isSelectionMode = selectedCount > 0;
 
@@ -72,6 +74,15 @@ const SelectionActionBar = ({
                 iconLeft={<Icon name="close" size={16} />}
               >
                 Deactivate
+              </Button>
+              <Button
+                variant="outline"
+                color="primary"
+                disabled={selectedCount === 0}
+                onClick={onBatchEdit} // we'll pass this in
+                iconLeft={<Icon name="edit-2" size={18} />}
+              >
+                Batch Edit
               </Button>
             </>
           ) : (

@@ -3,21 +3,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useMegaVehicleTypeServiceV1CreateVehicleTypesMutation } from "_services/modules/vehicleTypeApi";
 import { useNavigate } from "react-router-dom";
-
-const itemSchema = yup.object({
-  category_id: yup.string().required("Category required"),
-  vehicle_type: yup.string().required("type name is required"),
-  temp_type_id: yup.string(),
-  is_chassis: yup.boolean().default(false),
-  is_container: yup.boolean().default(false),
-  is_active: yup.boolean().default(false),
-});
-
-const schema = yup.object({
-  items: yup.array().of(itemSchema).min(1).required(),
-});
-
-export type BatchFormValue = yup.InferType<typeof schema>;
+import { vehicleTypeBatchSchema as schema, BatchFormValue } from "../types";
 
 export const useVehicleTypeCreate = () => {
   const navigate = useNavigate();

@@ -21,7 +21,9 @@ import VehicleTypePage, {
 import VehicleTypeCreatePage, {
   vehicleTypeCreatePageRouteName,
 } from "modules/master-data/vehicle-type/create/index.page";
-
+import VehicleTypeBatchEditPage, {
+  vehicleTypeEditPageRouteName,
+} from "modules/master-data/vehicle-type/edit/index.page";
 import VehicleModelPage, {
   vehicleModelPageRouteName,
 } from "modules/master-data/vehicle-model/list/index.page";
@@ -49,7 +51,6 @@ import VehicleOperationConfigPage, {
 import DriverAllowancePage, {
   driverAllowancePageRouteName,
 } from "modules/config/driver-allowance/index.page";
-
 import DriverTripCalculatorPage, {
   driverTripCalculatorPageRouteName,
 } from "modules/driver-trip-calculator/index.page";
@@ -74,6 +75,7 @@ const publicRoutes: Array<RouteObject> = [
         ],
       },
       { path: vehicleTypePageRouteName, element: <VehicleTypePage /> },
+      { path: vehicleTypeEditPageRouteName, element: <VehicleTypeBatchEditPage /> },
       { path: vehicleTypeCreatePageRouteName, element: <VehicleTypeCreatePage /> },
       { path: vehicleModelPageRouteName, element: <VehicleModelPage /> },
       { path: freezerModelPageRouteName, element: <FreezerModelPage /> },

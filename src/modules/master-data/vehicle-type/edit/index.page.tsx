@@ -2,14 +2,14 @@ import { useNavigate } from "react-router-dom";
 import Button from "components/button";
 import Icon from "components/icon";
 import Typography from "components/typography";
-import { useVehicleTypeCreate } from "./useVehicleTypeCreate";
+import { useVehicleTypeBatchEdit } from "./useVehicleTypeBatchEdit";
 import VehicleTypeFormCard from "../components/VehicleTypeFormCard";
 
-export const vehicleTypeCreatePageRouteName = "/master-data/vehicle-type/create";
+export const vehicleTypeEditPageRouteName = "/master-data/vehicle-type/edit";
 
-const VehicleTypeCreatePage = () => {
+const VehicleTypeBatchEdit = () => {
   const navigate = useNavigate();
-  const { form, fields, append, remove, onSave, isSaving } = useVehicleTypeCreate();
+  const { form, fields, remove, onSave, isSaving } = useVehicleTypeBatchEdit();
 
   return (
     <div className="flex flex-col gap-6">
@@ -32,14 +32,14 @@ const VehicleTypeCreatePage = () => {
 
             <div className="flex items-center gap-4">
               <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary-50 text-primary-600">
-                <Icon name="add-square" size={24} />
+                <Icon name="edit-2" size={24} />
               </div>
               <div className="flex flex-col justify-center">
                 <Typography variant="heading3" className="leading-none">
-                  Add more data
+                  Batch Edit Vehicles
                 </Typography>
                 <Typography variant="bodySmall" tone="muted">
-                  Configure multiple vehicle types and save them all at once.
+                  Modify details for {fields.length} selected vehicle types.
                 </Typography>
               </div>
             </div>
@@ -67,7 +67,7 @@ const VehicleTypeCreatePage = () => {
                 )
               }
             >
-              Save All ({fields.length})
+              Update All ({fields.length})
             </Button>
           </div>
         </div>
@@ -83,43 +83,13 @@ const VehicleTypeCreatePage = () => {
               form={form}
               onRemove={() => remove(index)}
               showRemove={fields.length > 1}
+              isEdit
             />
           ))}
-
-          <button
-            type="button"
-            onClick={() =>
-              append({
-                id: "",
-                vehicle_type: "",
-                category_id: "",
-                is_chassis: false,
-                is_container: false,
-                temp_type_id: "",
-                is_active: false,
-              })
-            }
-            className="flex min-h-[300px] flex-col items-center justify-center gap-4 rounded-xl border-2 border-dashed border-greyScale-200 bg-greyScale-50/30 transition-all hover:border-primary-400 hover:bg-primary-50 group"
-          >
-            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-greyScale-100 text-greyScale-400 transition-colors group-hover:bg-primary-100 group-hover:text-primary-600">
-              <Icon name="plus" size={32} />
-            </div>
-            <div className="flex flex-col items-center gap-2">
-              <Typography
-                variant="body"
-                className="font-bold text-greyScale-500 group-hover:text-primary-600"
-              >
-                Add Another
-              </Typography>
-              <Typography variant="body" tone="secondary">
-                Click to add a new vehicle type entry
-              </Typography>
-            </div>
-          </button>
         </div>
       </section>
     </div>
   );
 };
 
-export default VehicleTypeCreatePage;
+export default VehicleTypeBatchEdit;

@@ -5,7 +5,7 @@ import Checkbox from "components/checkbox";
 import Button from "components/button";
 import Icon from "components/icon";
 import Typography from "components/typography";
-import { BatchFormValue } from "./useVehicleTypeCreate";
+import { BatchFormValue } from "../types";
 import { useMegaVehicleTypeServiceV1ListVehicleTypeCategoriesQuery } from "_services/modules/vehicleTypeApi";
 
 interface VehicleTypeFormCardProps {
@@ -13,6 +13,7 @@ interface VehicleTypeFormCardProps {
   form: UseFormReturn<BatchFormValue>;
   onRemove: () => void;
   showRemove: boolean;
+  isEdit?: boolean;
 }
 
 // I knowwww this is as bas as it gets but well...
@@ -21,7 +22,7 @@ const tempTypeOptions = [
   { label: "Dry", value: "efe0c577-5abf-4010-8289-52bb3205d00d" },
 ];
 
-const VehicleTypeFormCard = ({ index, form, onRemove, showRemove }: VehicleTypeFormCardProps) => {
+const VehicleTypeFormCard = ({ index, form, onRemove, showRemove, isEdit }: VehicleTypeFormCardProps) => {
   const {
     register,
     control,
@@ -70,51 +71,40 @@ const VehicleTypeFormCard = ({ index, form, onRemove, showRemove }: VehicleTypeF
           error={errors.items?.[index]?.vehicle_type}
           required
         />
-        <Controller
-          name={`${fieldPath}.category_id`}
-          control={control}
-          render={({ field }) => (
-            <Select
-              label="Category"
-              placeholder="Select category"
-              options={categoryOptions}
-              value={field.value} // the component handles the finding logic internally usually
-              onValueChange={field.onChange} // field.onChange will now receive the string value directly
-              error={errors.items?.[index]?.category_id}
-              required
-            />
-          )}
-        />
-        <Controller
-          name={`${fieldPath}.temp_type_id`}
-          control={control}
-          render={({ field }) => (
-            <Select
-              label="Temperature Type"
-              placeholder="Select temperature type"
-              options={tempTypeOptions}
-              value={field.value}
-              onValueChange={field.onChange}
-              error={errors.items?.[index]?.temp_type_id}
-            />
-          )}
-        />
-        <div className="grid grid-cols-3 pb-10">
-          <Controller
-            name={`${fieldPath}.is_chassis`}
-            control={control}
-            render={({ field }) => (
-              // wrap in a label div manually
-              <div className="flex items-center gap-1">
-                <Checkbox
-                  checked={field.value}
-                  onChange={field.onChange} // Use standard onChange
-                  disabled={isSubmitting}
+        {!isEdit && (
+          <>
+            <Controller
+              name={`${fieldPath}.category_id`}
+              control={control}
+              render={({ field }) => (
+                <Select
+                  label="Category"
+                  placeholder="Select category"
+                  options={categoryOptions}
+                  value={field.value}
+                  onValueChange={field.onChange}
+                  error={errors.items?.[index]?.category_id}
+                  required
                 />
-                <Typography variant="body">Is Chassis</Typography>
-              </div>
-            )}
-          />
+              )}
+            />
+            <Controller
+              name={`${fieldPath}.temp_type_id`}
+              control={control}
+              render={({ field }) => (
+                <Select
+                  label="Temperature Type"
+                  placeholder="Select temperature type"
+                  options={tempTypeOptions}
+                  value={field.value}
+                  onValueChange={field.onChange}
+                  error={errors.items?.[index]?.temp_type_id}
+                />
+              )}
+            />
+          </>
+        )}
+        <div className="grid grid-cols-3 pb-10">
           <Controller
             name={`${fieldPath}.is_active`}
             control={control}
@@ -125,16 +115,30 @@ const VehicleTypeFormCard = ({ index, form, onRemove, showRemove }: VehicleTypeF
               </div>
             )}
           />
-          <Controller
-            name={`${fieldPath}.is_container`}
-            control={control}
-            render={({ field }) => (
-              <div className="flex items-center gap-1">
-                <Checkbox checked={field.value} onChange={field.onChange} disabled={isSubmitting} />
-                <Typography variant="body">Is Container</Typography>
-              </div>
-            )}
-          />
+          {!isEdit && (
+            <>
+              <Controller
+                name={`${fieldPath}.is_chassis`}
+                control={control}
+                render={({ field }) => (
+                  <div className="flex items-center gap-1">
+                    <Checkbox checked={field.value} onChange={field.onChange} disabled={isSubmitting} />
+                    <Typography variant="body">Is Chassis</Typography>
+                  </div>
+                )}
+              />
+              <Controller
+                name={`${fieldPath}.is_container`}
+                control={control}
+                render={({ field }) => (
+                  <div className="flex items-center gap-1">
+                    <Checkbox checked={field.value} onChange={field.onChange} disabled={isSubmitting} />
+                    <Typography variant="body">Is Container</Typography>
+                  </div>
+                )}
+              />
+            </>
+          )}
         </div>
       </div>
     </section>
