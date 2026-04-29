@@ -2,6 +2,7 @@ import { UseFormReturn, Controller } from "react-hook-form";
 import Input from "components/input";
 import Select from "components/select";
 import Checkbox from "components/checkbox";
+import Switch from "components/switch";
 import Button from "components/button";
 import Icon from "components/icon";
 import Typography from "components/typography";
@@ -118,7 +119,7 @@ const VehicleTypeFormCard = ({
             control={control}
             render={({ field }) => (
               <div className="flex items-center gap-1">
-                <Checkbox checked={field.value} onChange={field.onChange} disabled={isSubmitting} />
+                <Switch checked={field.value} onChange={field.onChange} disabled={isSubmitting} />
                 <Typography variant="body">{t("field-is-active")}</Typography>
               </div>
             )}
@@ -130,7 +131,7 @@ const VehicleTypeFormCard = ({
                 control={control}
                 render={({ field }) => (
                   <div className="flex items-center gap-1">
-                    <Checkbox
+                    <Switch
                       checked={field.value}
                       onChange={field.onChange}
                       disabled={isSubmitting}
@@ -144,7 +145,7 @@ const VehicleTypeFormCard = ({
                 control={control}
                 render={({ field }) => (
                   <div className="flex items-center gap-1">
-                    <Checkbox
+                    <Switch
                       checked={field.value}
                       onChange={field.onChange}
                       disabled={isSubmitting}
