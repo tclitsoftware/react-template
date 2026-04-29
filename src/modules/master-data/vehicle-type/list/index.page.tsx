@@ -1,6 +1,5 @@
 import { useAppTranslation } from "locale/useAppTranslation";
 import { Table } from "components/table";
-import Typography from "components/typography";
 import useVehicleTypeTable from "./useVehicleTypeTable";
 import { MegaWrapperWrapperVehicleTypeRes as VehicleTypeRow } from "_services/modules/vehicleTypeWrapper";
 import SelectionActionBar from "./SelectionActionBar";
