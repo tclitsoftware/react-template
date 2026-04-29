@@ -94,7 +94,7 @@ const SelectionActionBar = ({
               onClick={onAdd}
               iconLeft={<Icon name="plus" size={16} />}
             >
-              {t("action-add-another")}
+              {t("action-add")}
             </Button>
           )}
         </div>
