@@ -85,6 +85,7 @@ const VehicleTypePage = () => {
           loading={isFetching}
           error={error ? t("error-load") : ""}
           selectableLabel={t("select-all")}
+          skeletonRowsCount={10}
         />
         <div className="mt-6 flex justify-end">
           <Pagination currentPage={page} totalPages={totalPage} onPageChange={setPage}></Pagination>

@@ -407,6 +407,7 @@ export function Table<T>({
   onColumnWidthsChange,
   minColumnWidth = 140,
   selectableLabel = "All",
+  skeletonRowsCount = 10,
 }: Props<T>): React.ReactElement {
   const [columnOrder, setColumnOrder] = useState(() =>
     columns.map((column, index) => getColumnId(column, index)),
