@@ -9,6 +9,7 @@ import tables from "./tables.json";
 import typography from "./typography.json";
 import login from "./login.json";
 import historyPanel from "./history-panel.json";
+import vehicleType from "./vehicle-type.json";
 
 export const en = {
   button,
@@ -22,6 +23,7 @@ export const en = {
   typography,
   login,
   historyPanel,
+  vehicleType,
 } as const;
 
 export default en;
