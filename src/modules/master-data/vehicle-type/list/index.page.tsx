@@ -2,11 +2,11 @@ import { useAppTranslation } from "locale/useAppTranslation";
 import { Table } from "components/table";
 import useVehicleTypeTable from "./useVehicleTypeTable";
 import { MegaWrapperWrapperVehicleTypeRes as VehicleTypeRow } from "_services/modules/vehicleTypeWrapper";
-import SelectionActionBar from "./SelectionActionBar";
+import { SelectionActionBar } from "./SelectionActionBar";
 import { Pagination } from "components/table";
 import { useNavigate } from "react-router-dom";
 import { vehicleTypeCreatePageRouteName } from "../create/index.page";
-
+import { vehicleTypeBatchCreatePageRouteName } from "../create-batch/index.page";
 export const vehicleTypePageRouteName = "/master-data/vehicle-type";
 
 const VehicleTypePage = () => {
@@ -48,6 +48,7 @@ const VehicleTypePage = () => {
         isProcessing={isBulkProcessing}
         onAdd={() => navigate(vehicleTypeCreatePageRouteName)}
         onBatchEdit={onBatchEdit}
+        onBatchAdd={() => navigate(vehicleTypeBatchCreatePageRouteName)}
       />
 
       <section className="rounded-2xl border border-border bg-white p-6 shadow-sm">
