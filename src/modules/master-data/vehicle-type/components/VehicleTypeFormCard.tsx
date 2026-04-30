@@ -7,9 +7,11 @@ import Button from "components/button";
 import Icon from "components/icon";
 import Typography from "components/typography";
 import { BatchFormValue } from "../types";
-import { useMegaVehicleTypeServiceV1ListVehicleTypeCategoriesQuery } from "_services/modules/vehicleTypeApi";
+import {
+  useMegaVehicleTypeServiceV1ListVehicleTypeCategoriesQuery,
+  useMegaVehicleTypeServiceV1ListVehicleTypeTempTypesQuery,
+} from "_services/modules/vehicleTypeApi";
 import { useAppTranslation } from "locale/useAppTranslation";
-import { useListVehicleTypeTempTypesQuery } from "_services/vehicleTypeTempApi";
 
 interface VehicleTypeFormCardProps {
   index: number;
@@ -43,7 +45,7 @@ const VehicleTypeFormCard = ({
   const fieldPath = `items.${index}` as const;
 
   // We know have an endpoint here
-  const { data: tempTypeData } = useListVehicleTypeTempTypesQuery();
+  const { data: tempTypeData } = useMegaVehicleTypeServiceV1ListVehicleTypeTempTypesQuery();
   const tempTypeOptions = (tempTypeData?.temp_types ?? []).map((temp) => ({
     label: temp.name
       ? t(`temp-type-${temp.name.toLowerCase()}` as any, { defaultValue: temp.name }) // this should be a helper function that's able to be called from everywhere

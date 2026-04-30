@@ -14,8 +14,8 @@ import {
   useMegaVehicleTypeServiceV1ActivateVehicleTypesMutation,
   useMegaVehicleTypeServiceV1DeactivateVehicleTypesMutation,
   useMegaVehicleTypeServiceV1ListVehicleTypeCategoriesQuery,
+  useMegaVehicleTypeServiceV1ListVehicleTypeTempTypesQuery,
 } from "_services/modules/vehicleTypeApi";
-import { useListVehicleTypeTempTypesQuery } from "_services/vehicleTypeTempApi";
 
 const statusClasses: Record<NonNullable<VehicleTypeRow["status"]>, string> = {
   active: "bg-primary-600 border-2 border-primary-100",
@@ -34,7 +34,7 @@ const useVehicleTypeTable = () => {
   const limit = 10;
 
   const { data: categoryData } = useMegaVehicleTypeServiceV1ListVehicleTypeCategoriesQuery();
-  const { data: tempTypeData } = useListVehicleTypeTempTypesQuery();
+  const { data: tempTypeData } = useMegaVehicleTypeServiceV1ListVehicleTypeTempTypesQuery();
 
   const categoryOptions = useMemo(() => {
     const options = (categoryData?.vehicle_type_categories ?? []).map((cat) => ({
@@ -47,8 +47,8 @@ const useVehicleTypeTable = () => {
   const tempTypeOptions = useMemo(() => {
     const options = (tempTypeData?.temp_types ?? []).map((type) => ({
       // Convert "Frozen" -> "temp-type-frozen"
-      label: tv(`temp-type-${type.name.toLowerCase()}` as any),
-      value: type.id,
+      label: tv(`temp-type-${(type.name ?? "").toLowerCase()}` as any),
+      value: type.id ?? "",
     }));
     return [{ label: t("select-all"), value: "" }, ...options];
   }, [tempTypeData, t, tv]);
@@ -151,17 +151,22 @@ const useVehicleTypeTable = () => {
           { label: t("status-active"), value: "active" },
           { label: t("status-inactive"), value: "inactive" },
         ],
-        render: (row) => (
-          <div className="inline-flex items-center gap-2">
-            <span className={`h-2 w-2 rounded-full ${statusClasses[row.status ?? "unknown"]}`} />
-            <span className="capitalize">
-              {row.status === "active" ? t("status-active") : t("status-inactive")}
-            </span>
-          </div>
-        ),
+        render: (row) => {
+          const statusKey = (row.status ?? "unknown") as keyof typeof statusClasses; // this is bad, should be separating all these into smaller renderer functions up there so it is easier to look at
+          const dotClass = statusClasses[statusKey] ?? statusClasses.unknown;
+
+          return (
+            <div className="inline-flex items-center gap-2">
+              <span className={`h-2 w-2 rounded-full ${dotClass}`} />
+              <span className="capitalize">
+                {row.status === "active" ? t("status-active") : t("status-inactive")}
+              </span>
+            </div>
+          );
+        },
       },
     ],
-    [t],
+    [t, tv, categoryOptions, tempTypeOptions],
   );
 
   return {

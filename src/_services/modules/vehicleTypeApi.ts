@@ -13,6 +13,13 @@ const injectedRtkApi = api
         query: () => ({ url: `/v1/vehicle-type-categories` }),
         providesTags: ["MegaVehicleTypeServiceV1"],
       }),
+      megaVehicleTypeServiceV1ListVehicleTypeTempTypes: build.query<
+        MegaVehicleTypeServiceV1ListVehicleTypeTempTypesApiResponse,
+        MegaVehicleTypeServiceV1ListVehicleTypeTempTypesApiArg
+      >({
+        query: () => ({ url: `/v1/vehicle-type-temp-types` }),
+        providesTags: ["MegaVehicleTypeServiceV1"],
+      }),
       megaVehicleTypeServiceV1ListVehicleTypes: build.query<
         MegaVehicleTypeServiceV1ListVehicleTypesApiResponse,
         MegaVehicleTypeServiceV1ListVehicleTypesApiArg
@@ -92,6 +99,9 @@ export { injectedRtkApi as vehicleTypeApi };
 export type MegaVehicleTypeServiceV1ListVehicleTypeCategoriesApiResponse =
   /** status 200 A successful response. */ MegaVehicleTypeV1MegaListVehicleTypeCategoriesRes;
 export type MegaVehicleTypeServiceV1ListVehicleTypeCategoriesApiArg = void;
+export type MegaVehicleTypeServiceV1ListVehicleTypeTempTypesApiResponse =
+  /** status 200 A successful response. */ MegaVehicleTypeV1MegaListVehicleTypeTempTypesRes;
+export type MegaVehicleTypeServiceV1ListVehicleTypeTempTypesApiArg = void;
 export type MegaVehicleTypeServiceV1ListVehicleTypesApiResponse =
   /** status 200 A successful response. */ MegaVehicleTypeV1MegaListVehicleTypesRes;
 export type MegaVehicleTypeServiceV1ListVehicleTypesApiArg = {
@@ -150,6 +160,13 @@ export type RpcStatus = {
   code?: number;
   message?: string;
   details?: ProtobufAny[];
+};
+export type MegaVehicleTypeV1MegaVehicleTypeTempTypeRes = {
+  id?: string;
+  name?: string;
+};
+export type MegaVehicleTypeV1MegaListVehicleTypeTempTypesRes = {
+  temp_types?: MegaVehicleTypeV1MegaVehicleTypeTempTypeRes[];
 };
 export type MegaVehicleTypeV1MegaVehicleTypeRes = {
   id?: string;
@@ -223,6 +240,7 @@ export type MegaVehicleTypeServiceV1UpdateVehicleTypeBody = {
 };
 export const {
   useMegaVehicleTypeServiceV1ListVehicleTypeCategoriesQuery,
+  useMegaVehicleTypeServiceV1ListVehicleTypeTempTypesQuery,
   useMegaVehicleTypeServiceV1ListVehicleTypesQuery,
   useMegaVehicleTypeServiceV1CreateVehicleTypesMutation,
   useMegaVehicleTypeServiceV1ActivateVehicleTypesMutation,

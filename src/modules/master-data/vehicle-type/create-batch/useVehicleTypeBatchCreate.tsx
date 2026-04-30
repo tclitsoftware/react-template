@@ -2,8 +2,10 @@ import { useForm, useFieldArray } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useMemo } from "react";
 import { useMegaWrapperServiceV1AsyncBatchCreateVehicleTypeMutation } from "_services/modules/vehicleTypeWrapper";
-import { useMegaVehicleTypeServiceV1ListVehicleTypeCategoriesQuery } from "_services/modules/vehicleTypeApi";
-import { useListVehicleTypeTempTypesQuery } from "_services/vehicleTypeTempApi";
+import {
+  useMegaVehicleTypeServiceV1ListVehicleTypeCategoriesQuery,
+  useMegaVehicleTypeServiceV1ListVehicleTypeTempTypesQuery,
+} from "_services/modules/vehicleTypeApi";
 import { useNavigate } from "react-router-dom";
 import { vehicleTypeBatchSchema as schema, BatchFormValue } from "../types";
 import { mapExcelToVehicleType, ExcelRow } from "./importMapper";
@@ -18,13 +20,13 @@ export const useVehicleTypeBatchCreate = () => {
   const [createAsync, { isLoading: isSaving }] =
     useMegaWrapperServiceV1AsyncBatchCreateVehicleTypeMutation();
   const { data: categoryData } = useMegaVehicleTypeServiceV1ListVehicleTypeCategoriesQuery();
-  const { data: tempTypeData } = useListVehicleTypeTempTypesQuery();
+  const { data: tempTypeData } = useMegaVehicleTypeServiceV1ListVehicleTypeTempTypesQuery();
 
   const categoryOptions = useMemo(
     () =>
       (categoryData?.vehicle_type_categories ?? []).map((c) => ({
-        label: c.category_name!,
-        value: c.id!,
+        label: c.category_name ?? "--",
+        value: c.id ?? "",
       })),
     [categoryData],
   );
@@ -32,8 +34,8 @@ export const useVehicleTypeBatchCreate = () => {
   const tempTypeOptions = useMemo(
     () =>
       (tempTypeData?.temp_types ?? []).map((t) => ({
-        label: t.name,
-        value: t.id!,
+        label: t.name ?? "--",
+        value: t.id ?? "",
       })),
     [tempTypeData],
   );
@@ -74,7 +76,10 @@ export const useVehicleTypeBatchCreate = () => {
           id: c.id!,
           name: c.category_name!,
         })),
-        tempTypeData?.temp_types ?? [],
+        (tempTypeData?.temp_types ?? []).map((t) => ({
+          id: t.id!,
+          name: t.name!,
+        })),
       );
 
       // if the first item is empty, remove it before appending
