@@ -982,7 +982,7 @@ export function Table<T>({
                       role={action ? "button" : undefined}
                     >
                       {selectable ? (
-                        <td className="border-b border-dashed border-divider px-3 py-4">
+                        <td className="border-b border-dashed border-divider px-3 py-4 align-middle">
                           <div
                             className="flex items-center justify-center"
                             onClick={(event) => event.stopPropagation()}
@@ -1004,7 +1004,7 @@ export function Table<T>({
                             key={columnId}
                             style={getColumnStyle(column, columnId)}
                             className={classNames(
-                              "border-b border-dashed border-divider px-4 py-4 text-sm text-text-primary transition-colors duration-150",
+                              "border-b border-dashed border-divider px-4 py-4 text-sm text-text-primary transition-colors duration-150 align-middle",
                               column.align === "center" ? "text-center" : "",
                               column.align === "right" ? "text-right" : "text-left",
                               isDragSource ? "bg-primary-50/70" : "",
