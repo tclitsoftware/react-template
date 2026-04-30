@@ -15,6 +15,7 @@ import {
   useMegaVehicleTypeServiceV1DeactivateVehicleTypesMutation,
   useMegaVehicleTypeServiceV1ListVehicleTypeCategoriesQuery,
 } from "_services/modules/vehicleTypeApi";
+import { useListVehicleTypeTempTypesQuery } from "_services/vehicleTypeTempApi";
 
 const statusClasses: Record<NonNullable<VehicleTypeRow["status"]>, string> = {
   active: "bg-primary-600 border-2 border-primary-100",
@@ -33,6 +34,7 @@ const useVehicleTypeTable = () => {
   const limit = 10;
 
   const { data: categoryData } = useMegaVehicleTypeServiceV1ListVehicleTypeCategoriesQuery();
+  const { data: tempTypeData } = useListVehicleTypeTempTypesQuery();
 
   const categoryOptions = useMemo(() => {
     const options = (categoryData?.vehicle_type_categories ?? []).map((cat) => ({
@@ -41,6 +43,15 @@ const useVehicleTypeTable = () => {
     }));
     return [{ label: t("select-all"), value: "" }, ...options];
   }, [categoryData, t]);
+
+  const tempTypeOptions = useMemo(() => {
+    const options = (tempTypeData?.temp_types ?? []).map((type) => ({
+      // Convert "Frozen" -> "temp-type-frozen"
+      label: tv(`temp-type-${type.name.toLowerCase()}` as any),
+      value: type.id,
+    }));
+    return [{ label: t("select-all"), value: "" }, ...options];
+  }, [tempTypeData, t, tv]);
 
   useEffect(() => {
     setPage(1); // Reset to first page when filters change
@@ -122,16 +133,10 @@ const useVehicleTypeTable = () => {
         sortable: true,
         filterable: true,
         filterId: "tempTypeId",
-        filterOptions: [
-          { label: t("select-all"), value: "" },
-          { label: tv("temp-type-frozen"), value: "d1ca3738-2db7-403a-994a-dc83feac7580" },
-          { label: tv("temp-type-dry"), value: "efe0c577-5abf-4010-8289-52bb3205d00d" },
-        ],
+        filterOptions: tempTypeOptions,
         render: (row) => {
-          if (row.temp_type_id === "d1ca3738-2db7-403a-994a-dc83feac7580")
-            return tv("temp-type-frozen");
-          if (row.temp_type_id === "efe0c577-5abf-4010-8289-52bb3205d00d")
-            return tv("temp-type-dry");
+          if (row.temp_type_name === "Frozen") return tv("temp-type-frozen"); // this could be simpler by offloading all the rows translation to a global useMemo hook
+          if (row.temp_type_name === "Dry") return tv("temp-type-dry");
           return row.temp_type_name ?? "---";
         },
       },

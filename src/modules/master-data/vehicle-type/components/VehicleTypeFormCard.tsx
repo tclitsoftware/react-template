@@ -9,6 +9,7 @@ import Typography from "components/typography";
 import { BatchFormValue } from "../types";
 import { useMegaVehicleTypeServiceV1ListVehicleTypeCategoriesQuery } from "_services/modules/vehicleTypeApi";
 import { useAppTranslation } from "locale/useAppTranslation";
+import { useListVehicleTypeTempTypesQuery } from "_services/vehicleTypeTempApi";
 
 interface VehicleTypeFormCardProps {
   index: number;
@@ -41,11 +42,14 @@ const VehicleTypeFormCard = ({
 
   const fieldPath = `items.${index}` as const;
 
-  // I knowwww this is as bas as it gets but well...
-  const tempTypeOptions = [
-    { label: t("temp-type-frozen"), value: "d1ca3738-2db7-403a-994a-dc83feac7580" },
-    { label: t("temp-type-dry"), value: "efe0c577-5abf-4010-8289-52bb3205d00d" },
-  ];
+  // We know have an endpoint here
+  const { data: tempTypeData } = useListVehicleTypeTempTypesQuery();
+  const tempTypeOptions = (tempTypeData?.temp_types ?? []).map((temp) => ({
+    label: temp.name
+      ? t(`temp-type-${temp.name.toLowerCase()}` as any, { defaultValue: temp.name }) // this should be a helper function that's able to be called from everywhere
+      : "---",
+    value: temp.id ?? "",
+  }));
 
   return (
     <section className="relative rounded-xl border border-border bg-white p-6 shadow-sm transition-all hover:shadow-md">
