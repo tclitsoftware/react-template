@@ -80,33 +80,61 @@ const useVehicleTypeTable = () => {
     try {
       await activate({
         megaVehicleTypeV1MegaVehicleTypeBulkStatusChangeReq: {
-          ids: selectedKeys.map(String), // let's do this for now, next we'll try yup
+          ids: selectedKeys.map(String),
         },
       }).unwrap();
       setSelectedKeys([]); // clear selection
     } catch (err) {
-      console.error("Bulk activation fail", err); // this is not good but it should be okay for now
+      console.error("Bulk activation fail", err);
     }
   };
 
-  // the deactivate function, should be similar, what's different should be their payload only
+  // the deactivate function
   const onBulkDeactivate = async () => {
     if (selectedKeys.length === 0) return;
     try {
       await deactivate({
         megaVehicleTypeV1MegaVehicleTypeBulkStatusChangeReq: {
-          ids: selectedKeys.map(String), // let's do this for now, next we'll try yup
+          ids: selectedKeys.map(String),
         },
       }).unwrap();
       setSelectedKeys([]); // clear selection
     } catch (err) {
-      console.error("Bulk deactivation fail", err); // this is not good but it should be okay for now
+      console.error("Bulk deactivation fail", err);
     }
   };
 
   useEffect(() => {
     dispatch(setGlobalComponent({ title: t("page-title"), hasBackButton: false }));
   }, [dispatch, t]);
+
+  /**
+   * Renders the Temperature Type cell with translations.
+   */
+  const renderTempType = (row: VehicleTypeRow) => {
+    const name = row.temp_type_name?.toLowerCase();
+    if (name === "frozen" || name === "dry") {
+      return tv(`temp-type-${name}` as any);
+    }
+    return row.temp_type_name ?? "---";
+  };
+
+  /**
+   * Renders the Status cell with a colored dot and label.
+   */
+  const renderStatus = (row: VehicleTypeRow) => {
+    const statusKey = (row.status ?? "unknown") as keyof typeof statusClasses;
+    const dotClass = statusClasses[statusKey] ?? statusClasses.unknown;
+
+    return (
+      <div className="inline-flex items-center gap-2">
+        <span className={`h-2 w-2 rounded-full ${dotClass}`} />
+        <span className="capitalize">
+          {row.status === "active" ? t("status-active") : t("status-inactive")}
+        </span>
+      </div>
+    );
+  };
 
   const columns: Columns<VehicleTypeRow>[] = useMemo(
     () => [
@@ -134,11 +162,7 @@ const useVehicleTypeTable = () => {
         filterable: true,
         filterId: "tempTypeId",
         filterOptions: tempTypeOptions,
-        render: (row) => {
-          if (row.temp_type_name === "Frozen") return tv("temp-type-frozen"); // this could be simpler by offloading all the rows translation to a global useMemo hook
-          if (row.temp_type_name === "Dry") return tv("temp-type-dry");
-          return row.temp_type_name ?? "---";
-        },
+        render: renderTempType,
       },
       {
         id: "status",
@@ -151,19 +175,7 @@ const useVehicleTypeTable = () => {
           { label: t("status-active"), value: "active" },
           { label: t("status-inactive"), value: "inactive" },
         ],
-        render: (row) => {
-          const statusKey = (row.status ?? "unknown") as keyof typeof statusClasses; // this is bad, should be separating all these into smaller renderer functions up there so it is easier to look at
-          const dotClass = statusClasses[statusKey] ?? statusClasses.unknown;
-
-          return (
-            <div className="inline-flex items-center gap-2">
-              <span className={`h-2 w-2 rounded-full ${dotClass}`} />
-              <span className="capitalize">
-                {row.status === "active" ? t("status-active") : t("status-inactive")}
-              </span>
-            </div>
-          );
-        },
+        render: renderStatus,
       },
     ],
     [t, tv, categoryOptions, tempTypeOptions],
