@@ -1,4 +1,4 @@
-import { Api as api } from "../api";
+import { WrapperApi as api } from "../wrapperApi";
 export const addTagTypes = ["MegaWrapperServiceV1"] as const;
 const injectedRtkApi = api
   .enhanceEndpoints({
