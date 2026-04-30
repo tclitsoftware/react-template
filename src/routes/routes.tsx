@@ -21,6 +21,9 @@ import VehicleTypePage, {
 import VehicleTypeCreatePage, {
   vehicleTypeCreatePageRouteName,
 } from "modules/master-data/vehicle-type/create/index.page";
+import VehicleTypeBatchCreatePage, {
+  vehicleTypeBatchCreatePageRouteName,
+} from "modules/master-data/vehicle-type/create-batch/index.page";
 import VehicleTypeBatchEditPage, {
   vehicleTypeEditPageRouteName,
 } from "modules/master-data/vehicle-type/edit/index.page";
@@ -77,6 +80,7 @@ const publicRoutes: Array<RouteObject> = [
       { path: vehicleTypePageRouteName, element: <VehicleTypePage /> },
       { path: vehicleTypeEditPageRouteName, element: <VehicleTypeBatchEditPage /> },
       { path: vehicleTypeCreatePageRouteName, element: <VehicleTypeCreatePage /> },
+      { path: vehicleTypeBatchCreatePageRouteName, element: <VehicleTypeBatchCreatePage /> },
       { path: vehicleModelPageRouteName, element: <VehicleModelPage /> },
       { path: freezerModelPageRouteName, element: <FreezerModelPage /> },
       { path: vehicleAuxiliaryPageRouteName, element: <VehicleAuxiliaryPage /> },
