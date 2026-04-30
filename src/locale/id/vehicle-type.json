@@ -29,5 +29,11 @@
   "field-is-chassis": "Chassis",
   "field-is-container": "Kontainer",
   "temp-type-frozen": "Beku",
-  "temp-type-dry": "Kering"
+  "temp-type-dry": "Kering",
+  "button-import-excel": "Impor data dari spreadsheet",
+  "button-add-item": "Tambahkan item",
+  "button-save-all": "Simpan Semua",
+  "action-batch-add": "Tambah Tipe Kendaraan Baru (Excel)",
+  "batch-add-title": "Tambah Tipe Kendaraan",
+  "batch-add-description": "Impor Tipe Kendaraan Lewat Excel"
 }

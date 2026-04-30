@@ -29,5 +29,11 @@
   "field-is-chassis": "Is Chassis",
   "field-is-container": "Is Container",
   "temp-type-frozen": "Frozen",
-  "temp-type-dry": "Dry"
+  "temp-type-dry": "Dry",
+  "button-import-excel": "Import from spreadsheet",
+  "button-add-item": "Add Item",
+  "button-save-all": "Save All",
+  "action-batch-add": "Add New Vehicle Type (Excel)",
+  "batch-add-title": "Add Vehicle Types",
+  "batch-add-description": "Import vehicle types through excel"
 }
