@@ -1,7 +1,8 @@
 import Icon from "components/icon";
 import Input from "components/input";
 import Typography from "components/typography";
-import React, { ForwardedRef, forwardRef } from "react";
+import React, { ForwardedRef, forwardRef, useLayoutEffect, useState, useCallback } from "react";
+import { createPortal } from "react-dom";
 
 import { SEARCH_PLACEHOLDER } from "./constants";
 import { OptionRow, SelectedChip, SelectFooter, SelectLabel } from "./select-parts";
@@ -11,7 +12,13 @@ import { assignRef } from "./utils";
 
 /**
  * Highly customizable dropdown select component.
- * Supports single/multiple selection, search, and async option creation.
+ * 
+ * Features:
+ * - Single and multiple selection modes.
+ * - Searchable options (local or async).
+ * - Custom option creation.
+ * - Portal support via `menuPortalTarget` to prevent clipping in scrollable containers (e.g., tables).
+ * - Automatic "drop-up" logic when space below is insufficient.
  * 
  * @example
  * <Select 
@@ -21,6 +28,13 @@ import { assignRef } from "./utils";
  *     { label: "Banana", value: "banana" }
  *   ]} 
  *   onValueChange={(val) => console.log(val)}
+ * />
+ * 
+ * @example
+ * // Usage inside a table to prevent clipping
+ * <Select 
+ *   options={options}
+ *   menuPortalTarget={document.body}
  * />
  */
 const SelectInner = (
@@ -48,6 +62,7 @@ const SelectInner = (
     placeholder,
     onCreateOption,
     createOptionLabel,
+    menuPortalTarget,
     ...rest
   } = props;
 
@@ -98,6 +113,39 @@ const SelectInner = (
     value,
   });
 
+  const [portalStyles, setPortalStyles] = useState<React.CSSProperties>({});
+
+  const updatePortalPosition = useCallback(() => {
+    if (menuPortalTarget && open && wrapperRef.current) {
+      const rect = wrapperRef.current.getBoundingClientRect();
+      const dropdownHeight = 280; // approximate max-h-72
+      const spaceBelow = window.innerHeight - rect.bottom;
+      const spaceAbove = rect.top;
+      const shouldDropUp = spaceBelow < dropdownHeight && spaceAbove > dropdownHeight;
+
+      setPortalStyles({
+        position: "fixed",
+        top: shouldDropUp ? rect.top - 8 : rect.bottom + 8,
+        left: rect.left,
+        width: rect.width,
+        transform: shouldDropUp ? "translateY(-100%)" : "none",
+        zIndex: 9999,
+      });
+    }
+  }, [menuPortalTarget, open, wrapperRef]);
+
+  useLayoutEffect(() => {
+    updatePortalPosition();
+    if (open && menuPortalTarget) {
+      window.addEventListener("scroll", updatePortalPosition, true);
+      window.addEventListener("resize", updatePortalPosition);
+      return () => {
+        window.removeEventListener("scroll", updatePortalPosition, true);
+        window.removeEventListener("resize", updatePortalPosition);
+      };
+    }
+  }, [open, menuPortalTarget, updatePortalPosition]);
+
   const wrapperClasses = "flex w-full flex-col gap-[7px]";
   const buttonClasses = [
     "flex min-h-[40px] w-full items-center justify-between rounded border bg-white px-3 py-2 text-sm text-text-primary transition transition-all focus-visible:outline-none focus-visible:ring-offset-1",
@@ -111,12 +159,97 @@ const SelectInner = (
     .join(" ");
 
   const listClasses = [
-    "absolute left-0 right-0 z-20 max-h-72 overflow-auto rounded-md border border-border bg-white shadow-lg",
-    dropUp ? "bottom-full mb-2" : "top-full mt-2",
+    menuPortalTarget ? "" : "absolute left-0 right-0 z-20 max-h-72 overflow-auto rounded-md border border-border bg-white shadow-lg",
+    !menuPortalTarget && (dropUp ? "bottom-full mb-2" : "top-full mt-2"),
     open ? "block" : "hidden",
   ]
     .filter(Boolean)
     .join(" ");
+
+  const menuContent = (
+    <div 
+      className={listClasses} 
+      style={menuPortalTarget ? { ...portalStyles, maxHeight: "288px", overflow: "auto", borderRadius: "8px", border: "1px solid var(--border)", backgroundColor: "white", boxShadow: "0 10px 15px -3px rgb(0 0 0 / 0.1)" } : {}}
+      onMouseDown={(e) => e.stopPropagation()}
+    >
+      <div className="relative flex flex-col gap-1">
+        {searchable ? (
+          <Input
+            type="text"
+            value={searchTerm}
+            disabled={disabled}
+            onChange={(event) => handleSearch(event.target.value)}
+            placeholder={SEARCH_PLACEHOLDER}
+            reserveHelperSpace={false}
+            leftIcon={<Icon name="search" size={14} />}
+            parentClassName="sticky top-0 z-10 p-1"
+          />
+        ) : null}
+
+        {loadingText ? (
+          <div className="px-4 py-2">
+            <Typography className="text-xs" tone="muted">
+              {loadingText}
+            </Typography>
+          </div>
+        ) : null}
+
+        {!loadingText && filteredOptions.length === 0 ? (
+          <div className="px-4 py-3">
+            <Typography className="text-xs" tone="muted">
+              {noResultsText}
+            </Typography>
+            {canCreateOption && searchTerm.trim() ? (
+              <button
+                type="button"
+                onClick={() => {
+                  setAdditionTerm(searchTerm.trim());
+                  setAdditionMode(true);
+                }}
+                className="mt-2 flex flex-row gap-1.5 text-info-600"
+              >
+                <Icon name="add-circle" size={13} />
+                <Typography variant="bodyMedium" className="text-info-600">
+                  {createLabel}
+                </Typography>
+              </button>
+            ) : null}
+          </div>
+        ) : null}
+
+        {filteredOptions.map((option) => (
+          <OptionRow
+            key={option.value}
+            option={option}
+            multiple={multiple}
+            active={selectedValue.includes(option.value)}
+            onSelect={() => handleSelect(option)}
+          />
+        ))}
+
+        <SelectFooter
+          additionMode={additionMode}
+          additionTerm={additionTerm}
+          canCreateOption={canCreateOption}
+          createLoading={createLoading}
+          multiple={multiple}
+          onAdditionTermChange={setAdditionTerm}
+          onAddModeOpen={() => {
+            setAdditionTerm(searchTerm.trim());
+            setAdditionMode(true);
+          }}
+          onAddModeClose={() => {
+            setAdditionMode(false);
+            setAdditionTerm("");
+            openDropdown();
+          }}
+          onCreateOption={handleCreate}
+          onReset={handleRemoveAll}
+          onSave={closeDropdown}
+        />
+      </div>
+    </div>
+  );
 
   return (
     <div
@@ -185,84 +318,7 @@ const SelectInner = (
           )}
         </button>
 
-        <div className={listClasses}>
-          <div className="relative flex flex-col gap-1">
-            {searchable ? (
-              <Input
-                type="text"
-                value={searchTerm}
-                disabled={disabled}
-                onChange={(event) => handleSearch(event.target.value)}
-                placeholder={SEARCH_PLACEHOLDER}
-                reserveHelperSpace={false}
-                leftIcon={<Icon name="search" size={14} />}
-                parentClassName="sticky top-0 z-10 p-1"
-              />
-            ) : null}
-
-            {loadingText ? (
-              <div className="px-4 py-2">
-                <Typography className="text-xs" tone="muted">
-                  {loadingText}
-                </Typography>
-              </div>
-            ) : null}
-
-            {!loadingText && filteredOptions.length === 0 ? (
-              <div className="px-4 py-3">
-                <Typography className="text-xs" tone="muted">
-                  {noResultsText}
-                </Typography>
-                {canCreateOption && searchTerm.trim() ? (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setAdditionTerm(searchTerm.trim());
-                      setAdditionMode(true);
-                    }}
-                    className="mt-2 flex flex-row gap-1.5 text-info-600"
-                  >
-                    <Icon name="add-circle" size={13} />
-                    <Typography variant="bodyMedium" className="text-info-600">
-                      {createLabel}
-                    </Typography>
-                  </button>
-                ) : null}
-              </div>
-            ) : null}
-
-            {filteredOptions.map((option) => (
-              <OptionRow
-                key={option.value}
-                option={option}
-                multiple={multiple}
-                active={selectedValue.includes(option.value)}
-                onSelect={() => handleSelect(option)}
-              />
-            ))}
-
-            <SelectFooter
-              additionMode={additionMode}
-              additionTerm={additionTerm}
-              canCreateOption={canCreateOption}
-              createLoading={createLoading}
-              multiple={multiple}
-              onAdditionTermChange={setAdditionTerm}
-              onAddModeOpen={() => {
-                setAdditionTerm(searchTerm.trim());
-                setAdditionMode(true);
-              }}
-              onAddModeClose={() => {
-                setAdditionMode(false);
-                setAdditionTerm("");
-                openDropdown();
-              }}
-              onCreateOption={handleCreate}
-              onReset={handleRemoveAll}
-              onSave={closeDropdown}
-            />
-          </div>
-        </div>
+        {menuPortalTarget ? createPortal(menuContent, menuPortalTarget) : menuContent}
       </div>
 
       {reserveHelperSpace || helperMessage ? (
