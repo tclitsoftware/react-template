@@ -8,8 +8,6 @@ import Checkbox from "components/checkbox";
 import Button from "components/button";
 import Icon from "components/icon";
 import { useAppTranslation } from "locale/useAppTranslation";
-import { getIn } from "yup/lib/util/reach";
-import { render } from "@testing-library/react";
 
 interface BatchCreateTableProps {
   fields: any[];
