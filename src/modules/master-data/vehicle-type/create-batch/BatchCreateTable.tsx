@@ -99,15 +99,17 @@ export const BatchCreateTable = ({
   const renderActions = (row: any) => {
     const index = getIndex(row);
     return (
-      <Button
-        variant="outline"
-        color="error"
-        size="small"
-        onClick={() => remove(index)}
-        disabled={fields.length === 1}
-      >
-        <Icon name="trash" size={14} />
-      </Button>
+      <div className="flex items-center justify-center">
+        <Button
+          variant="outline"
+          color="error"
+          size="small"
+          onClick={() => remove(index)}
+          disabled={fields.length === 1}
+        >
+          <Icon name="trash" size={14} />
+        </Button>
+      </div>
     );
   };
 
@@ -128,11 +130,13 @@ export const BatchCreateTable = ({
       {
         fieldId: "category_id",
         label: t("field-category"),
+        minWidth: "200px",
         render: renderCategoryId,
       },
       {
         fieldId: "temp_type_id",
         label: t("field-temp-type"),
+        minWidth: "200px",
         render: renderTempTypeId,
       },
       {
@@ -156,7 +160,8 @@ export const BatchCreateTable = ({
       {
         fieldId: "id" as any,
         label: "",
-        width: "50px",
+        width: "60px",
+        align: "center",
         render: renderActions,
       },
     ],

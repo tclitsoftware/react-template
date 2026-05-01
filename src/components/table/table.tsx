@@ -130,6 +130,11 @@ export interface Columns<T> {
   width?: string;
 
   /**
+   * Minimum width of the column.
+   */
+  minWidth?: string;
+
+  /**
    * If `true`, prevents this column from being moved via drag-and-drop.
    */
   dragDisabled?: boolean;
@@ -739,10 +744,10 @@ export function Table<T>({
       };
     }
 
-    if (column.width) {
+    if (column.width || column.minWidth) {
       return {
         width: column.width,
-        minWidth: column.width,
+        minWidth: column.minWidth || column.width,
       };
     }
 
