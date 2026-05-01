@@ -1,13 +1,13 @@
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import { Control, UseFormRegister, Controller } from "react-hook-form";
 import { BatchFormValue, VehicleTypeItemValue } from "../types";
 import { Table, Columns } from "components/table/table";
 import Input from "components/input";
 import Select from "components/select";
-import Checkbox from "components/checkbox";
 import Button from "components/button";
 import Icon from "components/icon";
 import { useAppTranslation } from "locale/useAppTranslation";
+import Switch from "components/switch";
 
 interface BatchCreateTableProps {
   fields: any[];
@@ -54,7 +54,6 @@ export const BatchCreateTable = ({
             options={categoryOptions}
             value={field.value}
             onValueChange={field.onChange}
-            overrideClassName="border-none bg-transparent"
             reserveHelperSpace={false}
             menuPortalTarget={document.body}
           />
@@ -74,7 +73,6 @@ export const BatchCreateTable = ({
             options={tempTypeOptions}
             value={field.value}
             onValueChange={field.onChange}
-            overrideClassName="border-none bg-transparent"
             reserveHelperSpace={false}
             menuPortalTarget={document.body}
           />
@@ -83,9 +81,19 @@ export const BatchCreateTable = ({
     );
   };
 
-  const renderCheckbox = (row: any, fieldName: keyof VehicleTypeItemValue) => {
+  const renderSwitch = (row: any, fieldName: keyof VehicleTypeItemValue) => {
     const index = getIndex(row);
-    return <Checkbox {...register(`items.${index}.${fieldName}` as const)} />;
+    return (
+      <Controller
+        name={`items.${index}.${fieldName}` as const}
+        control={control}
+        render={({ field }) => (
+          <div className="flex justify-center">
+            <Switch checked={!!field.value} onChange={field.onChange} />
+          </div>
+        )}
+      />
+    );
   };
 
   const renderActions = (row: any) => {
@@ -131,19 +139,19 @@ export const BatchCreateTable = ({
         fieldId: "is_chassis",
         label: t("field-is-chassis"),
         align: "center",
-        render: (row) => renderCheckbox(row, "is_chassis"),
+        render: (row) => renderSwitch(row, "is_chassis"),
       },
       {
         fieldId: "is_container",
         label: t("field-is-container"),
         align: "center",
-        render: (row) => renderCheckbox(row, "is_container"),
+        render: (row) => renderSwitch(row, "is_container"),
       },
       {
         fieldId: "is_active",
         label: t("field-is-active"),
         align: "center",
-        render: (row) => renderCheckbox(row, "is_active"),
+        render: (row) => renderSwitch(row, "is_active"),
       },
       {
         fieldId: "id" as any,

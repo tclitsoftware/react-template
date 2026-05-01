@@ -1021,7 +1021,16 @@ export function Table<T>({
                   ))
                 : null}
               {loading
-                ? Array.from({ length: skeletonRowsCount }).map((_, rowIndex) => (
+                ? Array.from({
+                    length:
+                      skeletonRowsCount !== 10
+                        ? skeletonRowsCount
+                        : limit && limit > 0
+                          ? limit
+                          : data.length > 0
+                            ? data.length
+                            : 10,
+                  }).map((_, rowIndex) => (
                     <tr key={`skeleton-row-${rowIndex}`}>
                       {selectable ? (
                         <td className="border-b border-dashed border-divider px-3 py-4">
