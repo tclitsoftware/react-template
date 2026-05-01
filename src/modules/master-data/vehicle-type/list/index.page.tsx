@@ -1,8 +1,8 @@
 import { useAppTranslation } from "locale/useAppTranslation";
 import { Table } from "components/table";
-import useVehicleTypeTable from "./useVehicleTypeTable";
+import useVehicleTypeTable from "./hooks/useVehicleTypeTable";
 import { MegaWrapperWrapperVehicleTypeRes as VehicleTypeRow } from "_services/modules/vehicleTypeWrapper";
-import { SelectionActionBar } from "./SelectionActionBar";
+import { SelectionActionBar } from "./components/SelectionActionBar";
 import { Pagination } from "components/table";
 import { useNavigate } from "react-router-dom";
 import { vehicleTypeCreatePageRouteName } from "../create/index.page";

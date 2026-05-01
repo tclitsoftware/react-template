@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { Control, UseFormRegister, Controller } from "react-hook-form";
-import { BatchFormValue, VehicleTypeItemValue } from "../types";
+import { BatchFormValue, VehicleTypeItemValue } from "../../types";
 import { Table, Columns } from "components/table/table";
 import Input from "components/input";
 import Select from "components/select";

@@ -1,4 +1,4 @@
-import { VehicleTypeItemValue } from "../types";
+import { VehicleTypeItemValue } from "../../types";
 
 export interface ExcelRow {
   "Vehicle Type"?: string;

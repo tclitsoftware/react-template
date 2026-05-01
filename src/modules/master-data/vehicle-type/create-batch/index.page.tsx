@@ -1,10 +1,10 @@
-import { useVehicleTypeBatchCreate } from "./useVehicleTypeBatchCreate";
+import { useVehicleTypeBatchCreate } from "./hooks/useVehicleTypeBatchCreate";
 import VehicleTypeFormCard from "../components/VehicleTypeFormCard";
 import Button from "components/button";
 import Icon from "components/icon";
-import { ExcelImporter } from "./ExcelImporter";
+import { ExcelImporter } from "./components/ExcelImporter";
 import { useAppTranslation } from "locale/useAppTranslation";
-import { BatchCreateTable } from "./BatchCreateTable";
+import { BatchCreateTable } from "./components/BatchCreateTable";
 import Typography from "components/typography";
 
 export const vehicleTypeBatchCreatePageRouteName = "/master-data/vehicle-type/batch-add";

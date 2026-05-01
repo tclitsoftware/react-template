@@ -6,7 +6,7 @@ import {
   useMegaVehicleTypeServiceV1ActivateVehicleTypesMutation,
   useMegaVehicleTypeServiceV1DeactivateVehicleTypesMutation,
 } from "_services/modules/vehicleTypeApi";
-import { vehicleTypeBatchSchema as schema, BatchFormValue } from "../types";
+import { vehicleTypeBatchSchema as schema, BatchFormValue } from "../../types";
 
 export const useVehicleTypeBatchEdit = () => {
   const location = useLocation();

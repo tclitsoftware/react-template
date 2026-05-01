@@ -3,7 +3,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useMegaVehicleTypeServiceV1CreateVehicleTypesMutation } from "_services/modules/vehicleTypeApi";
 import { useNavigate } from "react-router-dom";
-import { vehicleTypeBatchSchema as schema, BatchFormValue } from "../types";
+import { vehicleTypeBatchSchema as schema, BatchFormValue } from "../../types";
 
 export const useVehicleTypeCreate = () => {
   const navigate = useNavigate();

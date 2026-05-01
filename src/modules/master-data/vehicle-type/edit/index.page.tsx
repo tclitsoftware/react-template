@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import Button from "components/button";
 import Icon from "components/icon";
 import Typography from "components/typography";
-import { useVehicleTypeBatchEdit } from "./useVehicleTypeBatchEdit";
+import { useVehicleTypeBatchEdit } from "./hooks/useVehicleTypeBatchEdit";
 import VehicleTypeFormCard from "../components/VehicleTypeFormCard";
 import { useAppTranslation } from "locale/useAppTranslation";
 

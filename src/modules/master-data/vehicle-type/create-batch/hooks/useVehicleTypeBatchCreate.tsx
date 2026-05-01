@@ -7,8 +7,8 @@ import {
   useMegaVehicleTypeServiceV1ListVehicleTypeTempTypesQuery,
 } from "_services/modules/vehicleTypeApi";
 import { useNavigate } from "react-router-dom";
-import { vehicleTypeBatchSchema as schema, BatchFormValue } from "../types";
-import { mapExcelToVehicleType, ExcelRow } from "./importMapper";
+import { vehicleTypeBatchSchema as schema, BatchFormValue } from "../../types";
+import { mapExcelToVehicleType, ExcelRow } from "../utils/importMapper";
 import { useAppTranslation } from "locale/useAppTranslation";
 import * as XLSX from "xlsx";
 
