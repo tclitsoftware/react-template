@@ -10,7 +10,7 @@ export const login = (body: LoginReqI): Promise<AxiosResponse<LoginResI>> => {
 export const getUsers = (
   params: PagingDTO,
 ): Promise<AxiosResponse<GetUsersResI>> => {
-  return axios.get(`${process.env.REACT_APP_REST_HOST}/auth/admin/user`, {
+  return axios.get(`${import.meta.env.REACT_APP_REST_HOST}/auth/admin/user`, {
     params: { ...params },
   });
 };

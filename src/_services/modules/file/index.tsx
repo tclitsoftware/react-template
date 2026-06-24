@@ -13,7 +13,7 @@ export const uploadFileBulk = async (
   bodyFormData.append("type", "OTHER_URL");
 
   const response = await fetch(
-    `${process.env.REACT_APP_MEDIA_HOST}/dump`,
+    `${import.meta.env.REACT_APP_MEDIA_HOST}/dump`,
     {
       method: "POST",
       headers: {

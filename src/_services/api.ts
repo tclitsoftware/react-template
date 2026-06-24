@@ -19,7 +19,7 @@ export interface ApiErrorResponseI {
 }
 
 export const baseQuery = fetchBaseQuery({
-  baseUrl: process.env.REACT_APP_REST_HOST,
+  baseUrl: import.meta.env.REACT_APP_REST_HOST,
   prepareHeaders: (headers, { getState, endpoint }) => {
     const token = (getState() as RootState).auth.accessToken;
 
@@ -36,7 +36,7 @@ const baseQueryWithInterceptor: BaseQueryFn<
   unknown,
   FetchBaseQueryError
 > = async (args, api, extraOptions) => {
-  if (process.env.NODE_ENV === "development") {
+  if (import.meta.env.MODE === "development") {
     console.info('[RTK Api fetch]:', args);
   }
   let result = await baseQuery(args, api, extraOptions);
@@ -47,7 +47,7 @@ const baseQueryWithInterceptor: BaseQueryFn<
     }
     // showToast((result.error.data as ApiErrorResponseI).message || 'Unknown Error');
   }
-  if (process.env.NODE_ENV === "development") {
+  if (import.meta.env.MODE === "development") {
     console.info('[RTK Api result]:', result);
   }
   return result;

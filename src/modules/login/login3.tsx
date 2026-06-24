@@ -19,7 +19,7 @@ const LoginRef = () => {
       setIsloading(true);
       const email = emailRef.current?.value;
       const password = passwordRef.current?.value;
-      const response = await fetch(`${process.env.REACT_APP_REST_HOST}/auth/admin/login`, {
+      const response = await fetch(`${import.meta.env.REACT_APP_REST_HOST}/auth/admin/login`, {
         method: "POST",
         body: JSON.stringify({ email, password }),
         headers: {
